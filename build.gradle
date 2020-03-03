@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
 }
@@ -17,6 +17,9 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude module: 'junit'
     }
+
+    /* oracle jdbc driver */
+    compile files('libs/ojdbc6-11.2.0.3.jar')
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.0")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.6.0")
