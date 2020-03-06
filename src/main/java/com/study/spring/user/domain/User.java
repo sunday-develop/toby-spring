@@ -1,4 +1,4 @@
-package com.study.spring.user.dao;
+package com.study.spring.user.domain;
 
 public class User {
 
