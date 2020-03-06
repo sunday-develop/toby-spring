@@ -1,0 +1,11 @@
+/.idea/
+/.vscode/
+/.settings/
+/bin/
+/deploy/
+/target/
+/.classpath
+/.project
+/*.iml
+.DS_Store
+npm-debug.log*
