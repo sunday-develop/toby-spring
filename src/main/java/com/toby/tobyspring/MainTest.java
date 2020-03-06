@@ -1,5 +1,7 @@
 package com.toby.tobyspring;
 
+import com.toby.tobyspring.user.dao.ConnectionMaker;
+import com.toby.tobyspring.user.dao.DUserConnectionMaker;
 import com.toby.tobyspring.user.dao.UserDao;
 import com.toby.tobyspring.user.domain.User;
 
@@ -7,7 +9,8 @@ import java.sql.SQLException;
 
 public class MainTest {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao();
+        ConnectionMaker connectionMaker = new DUserConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
 
         User user = new User();
         user.setId("dahyekim");

@@ -4,11 +4,11 @@ import com.toby.tobyspring.user.domain.User;
 
 import java.sql.*;
 
-public abstract class UserDao {
+public class UserDao {
     private ConnectionMaker connectionMaker;
 
-    public UserDao() {
-        this.connectionMaker = new DUserConnectionMaker();
+    public UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
     }
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection connection = connectionMaker.makeNewConnection();
