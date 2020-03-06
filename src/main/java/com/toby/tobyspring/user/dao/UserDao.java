@@ -4,7 +4,7 @@ import com.toby.tobyspring.user.domain.User;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection connection = getConnection();
         // sql 실행
@@ -42,10 +42,5 @@ public class UserDao {
         return user;
     }
 
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
-        // DB 연결
-        Class.forName("oracle.jdbc.driver.OracleDriver");
-        Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "dahye", "dahye");
-        return connection;
-    }
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 }
