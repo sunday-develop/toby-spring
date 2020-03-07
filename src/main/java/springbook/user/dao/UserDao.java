@@ -2,18 +2,19 @@ package springbook.user.dao;
 
 import springbook.user.domain.User;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
 
-    private final ConnectionMaker connectionMaker;
+    private final DataSource dataSource;
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public void add(User user) throws SQLException {
-        final Connection con = connectionMaker.makeConnection();
+        final Connection con = dataSource.getConnection();
 
         final PreparedStatement ps = con.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
         ps.setString(1, user.getId());
@@ -27,7 +28,7 @@ public class UserDao {
     }
 
     public User get(String id) throws SQLException {
-        final Connection con = connectionMaker.makeConnection();
+        final Connection con = dataSource.getConnection();
 
         final PreparedStatement ps = con.prepareStatement("select * from users where id = ?");
         ps.setString(1, id);

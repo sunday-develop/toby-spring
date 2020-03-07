@@ -20,6 +20,9 @@ dependencies {
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.19'
 
     compile group: 'org.springframework', name: 'spring-context', version: "${springVersion}"
+    compile group: 'org.springframework', name: 'spring-jdbc', version: "${springVersion}"
+
+
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
