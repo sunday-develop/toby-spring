@@ -8,8 +8,8 @@ public class UserDao {
 
     private final ConnectionMaker connectionMaker;
 
-    protected UserDao() {
-        connectionMaker = new DConnectionMaker();
+    protected UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
     }
 
     public void add(User user) throws SQLException {
@@ -41,22 +41,6 @@ public class UserDao {
         con.close();
 
         return user;
-    }
-
-    public static void main(String[] args) throws SQLException {
-        final UserDao dao = new UserDao();
-
-        final User user = User.of("whiteship", "백기선", "married");
-
-        dao.add(user);
-
-        System.out.println(user.getId() + " 등록 성공");
-
-        final User user2 = dao.get(user.getId());
-        System.out.println(user2.getName());
-        System.out.println(user2.getPassword());
-
-        System.out.println(user2.getId() + " 조회 성공");
     }
 
 }
