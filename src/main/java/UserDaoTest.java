@@ -1,8 +1,7 @@
-import com.study.spring.user.dao.DaoFactory;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.User;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.sql.SQLException;
 
@@ -10,7 +9,7 @@ public class UserDaoTest {
 
     public static void main(String[] args) throws SQLException {
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        ApplicationContext context = new GenericXmlApplicationContext("spring/applicationContext.xml");
         UserDao userDao = context.getBean("userDao", UserDao.class);
 
         User user1 = new User();
