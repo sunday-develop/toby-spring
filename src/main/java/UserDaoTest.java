@@ -1,3 +1,4 @@
+import com.study.spring.user.dao.CountingConnectionMaker;
 import com.study.spring.user.dao.DaoFactory;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.User;
@@ -27,5 +28,8 @@ public class UserDaoTest {
         System.out.println(user2.getPassword());
 
         System.out.println(user2.getId() + " 조회 성공");
+
+        CountingConnectionMaker ccm = context.getBean("connectionMaker", CountingConnectionMaker.class);
+        System.out.println("Connection counter : " + ccm.getCounter());
     }
 }
