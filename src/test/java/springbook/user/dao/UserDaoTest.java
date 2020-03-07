@@ -24,6 +24,9 @@ class UserDaoTest {
         System.out.println(user2.getPassword());
 
         System.out.println(user2.getId() + " 조회 성공");
+
+        final CountingConnectionMaker ccm = context.getBean(CountingConnectionMaker.class);
+        System.out.println("Connection counter : " + ccm.getCounter());
     }
 
 }
