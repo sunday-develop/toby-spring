@@ -1,16 +1,16 @@
-import com.study.spring.user.dao.CountingConnectionMaker;
+import com.study.spring.user.dao.DaoFactory;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.User;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
 
 public class UserDaoTest {
 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    public static void main(String[] args) throws SQLException {
 
-        ApplicationContext context = new GenericXmlApplicationContext("spring/applicationContext.xml");
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         UserDao userDao = context.getBean("userDao", UserDao.class);
 
         User user1 = new User();
@@ -27,8 +27,5 @@ public class UserDaoTest {
         System.out.println(user2.getPassword());
 
         System.out.println(user2.getId() + " 조회 성공");
-
-        CountingConnectionMaker ccm = context.getBean("connectionMaker", CountingConnectionMaker.class);
-        System.out.println("Connection counter : " + ccm.getCounter());
     }
 }
