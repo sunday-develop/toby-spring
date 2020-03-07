@@ -6,14 +6,14 @@ import java.sql.*;
 
 public class UserDao {
 
-    private final SimpleConnectionMaker simpleConnectionMaker;
+    private final ConnectionMaker connectionMaker;
 
     protected UserDao() {
-        simpleConnectionMaker = new SimpleConnectionMaker();
+        connectionMaker = new DConnectionMaker();
     }
 
     public void add(User user) throws SQLException {
-        final Connection con = simpleConnectionMaker.makeNewConnection();
+        final Connection con = connectionMaker.makeConnection();
 
         final PreparedStatement ps = con.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
         ps.setString(1, user.getId());
@@ -27,7 +27,7 @@ public class UserDao {
     }
 
     public User get(String id) throws SQLException {
-        final Connection con = simpleConnectionMaker.makeNewConnection();
+        final Connection con = connectionMaker.makeConnection();
 
         final PreparedStatement ps = con.prepareStatement("select * from users where id = ?");
         ps.setString(1, id);
