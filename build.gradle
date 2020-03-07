@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id "org.flywaydb.flyway" version "6.3.0"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.19'
+
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.0'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.15.0'
+}
+
+flyway {
+    url = "jdbc:mysql://localhost:3306/springbook"
+    user = "spring"
+    password = "book"
+    encoding = 'UTF-8'
+    outOfOrder = true
+    validateOnMigrate = true
+}
