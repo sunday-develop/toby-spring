@@ -8,7 +8,7 @@ public class UserDao {
 
     private final ConnectionMaker connectionMaker;
 
-    protected UserDao(ConnectionMaker connectionMaker) {
+    public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
 

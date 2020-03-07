@@ -1,5 +1,8 @@
 package springbook.user.dao;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import springbook.user.config.DaoFactory;
 import springbook.user.domain.User;
 
 import java.sql.SQLException;
@@ -7,8 +10,8 @@ import java.sql.SQLException;
 class UserDaoTest {
 
     public static void main(String[] args) throws SQLException {
-        final DaoFactory daoFactory = new DaoFactory();
-        final UserDao dao = daoFactory.userDao();
+        final ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        final UserDao dao = context.getBean(UserDao.class);
 
         final User user = User.of("whiteship", "백기선", "married");
 
