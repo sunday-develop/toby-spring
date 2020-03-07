@@ -4,7 +4,7 @@ import springbook.user.domain.User;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
 
     public void add(User user) throws SQLException {
         Connection con = getConnection();
@@ -37,15 +37,10 @@ public class UserDao {
         return user;
     }
 
-    private Connection getConnection() throws SQLException {
-        final String url = "jdbc:mysql://localhost:3306/springbook";
-        final String user = "spring";
-        final String password = "book";
-        return DriverManager.getConnection(url, user, password);
-    }
+    public abstract Connection getConnection() throws SQLException;
 
     public static void main(String[] args) throws SQLException {
-        final UserDao dao = new UserDao();
+        final UserDao dao = new NUserDao();
 
         final User user = User.of("whiteship", "백기선", "married");
 
