@@ -7,10 +7,7 @@ import java.sql.*;
 public class UserDao {
 
     public void add(User user) throws SQLException {
-        final String url = "jdbc:mysql://localhost:3306/springbook";
-        final String dbUser = "spring";
-        final String dbPassword = "book";
-        Connection con = DriverManager.getConnection(url, dbUser, dbPassword);
+        Connection con = getConnection();
 
         final PreparedStatement ps = con.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
         ps.setString(1, user.getId());
@@ -24,10 +21,7 @@ public class UserDao {
     }
 
     public User get(String id) throws SQLException {
-        final String url = "jdbc:mysql://localhost:3306/springbook";
-        final String dbUser = "spring";
-        final String dbPassword = "book";
-        Connection con = DriverManager.getConnection(url, dbUser, dbPassword);
+        Connection con = getConnection();
 
         final PreparedStatement ps = con.prepareStatement("select * from users where id = ?");
         ps.setString(1, id);
@@ -41,6 +35,13 @@ public class UserDao {
         con.close();
 
         return user;
+    }
+
+    private Connection getConnection() throws SQLException {
+        final String url = "jdbc:mysql://localhost:3306/springbook";
+        final String user = "spring";
+        final String password = "book";
+        return DriverManager.getConnection(url, user, password);
     }
 
     public static void main(String[] args) throws SQLException {
