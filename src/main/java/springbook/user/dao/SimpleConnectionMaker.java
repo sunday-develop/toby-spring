@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class NUserDao extends UserDao {
+public class SimpleConnectionMaker {
 
-    public Connection getConnection() throws SQLException {
+    public Connection makeNewConnection() throws SQLException {
         final String url = "jdbc:mysql://localhost:3306/springbook";
         final String user = "spring";
         final String password = "book";
