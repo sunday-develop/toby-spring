@@ -1,3 +1,4 @@
+import com.study.spring.user.dao.NUserDao;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.User;
 
@@ -5,7 +6,7 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        UserDao userDao = new UserDao();
+        UserDao userDao = new NUserDao();
 
         User user1 = new User();
         user1.setId("whiteship");
