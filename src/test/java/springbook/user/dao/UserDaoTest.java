@@ -7,8 +7,8 @@ import java.sql.SQLException;
 class UserDaoTest {
 
     public static void main(String[] args) throws SQLException {
-        final ConnectionMaker connectionMaker = new DConnectionMaker();
-        final UserDao dao = new UserDao(connectionMaker);
+        final DaoFactory daoFactory = new DaoFactory();
+        final UserDao dao = daoFactory.userDao();
 
         final User user = User.of("whiteship", "백기선", "married");
 
