@@ -10,6 +10,7 @@ public class UserDao {
     public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
+
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection connection = connectionMaker.makeNewConnection();
         // sql 실행
