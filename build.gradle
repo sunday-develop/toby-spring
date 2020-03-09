@@ -20,6 +20,12 @@ dependencies {
 
     /* oracle jdbc driver */
     compile files('libs/ojdbc6-11.2.0.3.jar')
+    compile group: 'cglib', name: 'cglib', version: '2.2.2'
+    compile group: 'commons-logging', name: 'commons-logging', version: '1.2'
+    compile group: 'org.springframework', name: 'spring-beans', version: '5.2.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context', version: '5.2.2.RELEASE'
+    compile group: 'org.springframework', name: 'spring-expression', version: '5.2.4.RELEASE'
+    compile group: 'org.springframework', name: 'spring-core', version: '5.2.1.RELEASE'
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.0")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.6.0")

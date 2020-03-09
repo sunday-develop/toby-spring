@@ -8,7 +8,7 @@ public class DUserConnectionMaker implements ConnectionMaker {
     @Override
     public Connection makeNewConnection() throws ClassNotFoundException, SQLException {
         Class.forName("oracle.jdbc.driver.OracleDriver");
-        Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "dahye", "dahye");
+        Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "dahye", "test");
         return connection;
     }
 }
