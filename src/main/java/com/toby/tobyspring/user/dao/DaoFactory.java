@@ -2,18 +2,30 @@ package com.toby.tobyspring.user.dao;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 @Configuration
 public class DaoFactory {
     @Bean
     public UserDao userDao() {
         UserDao userDao = new UserDao();
-        userDao.setConnectionMaker(connectionMaker());
+        userDao.setDataSource(dataSource());
         return userDao;
     }
 
     @Bean
-    public ConnectionMaker connectionMaker() {
-        return new DUserConnectionMaker();
+    public DataSource dataSource() {
+        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+
+        dataSource.setDriverClass(oracle.jdbc.driver.OracleDriver.class);
+        dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:orcl");
+        dataSource.setUsername("dahye");
+        dataSource.setPassword("test");
+
+        return dataSource;
     }
 }

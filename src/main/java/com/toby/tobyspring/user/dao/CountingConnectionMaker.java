@@ -1,20 +1,19 @@
 package com.toby.tobyspring.user.dao;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.sql.DataSource;
 
 public class CountingConnectionMaker implements ConnectionMaker {
     int counter = 0;
-    private ConnectionMaker realConnectionMaker;
+    private DataSource dataSource;
 
-    public CountingConnectionMaker(ConnectionMaker connectionMaker) {
-        this.realConnectionMaker = connectionMaker;
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
-    public Connection makeNewConnection() throws ClassNotFoundException, SQLException {
+    public DataSource makeNewConnection() {
         this.counter++;
-        return realConnectionMaker.makeNewConnection();
+        return dataSource;
     }
 
     public int getCounter() {

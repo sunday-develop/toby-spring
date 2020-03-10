@@ -17,7 +17,7 @@ public class UserDaoConnectionCountingTest {
         userDao.get("dahyekim");
         userDao.get("dahyekim");
 
-        CountingConnectionMaker countingConnectionMaker = context.getBean("connectionMaker", CountingConnectionMaker.class);
-        System.out.println("connection counter : " + countingConnectionMaker.getCounter());
+//        CountingConnectionMaker countingConnectionMaker = context.getBean("dataSource", CountingConnectionMaker.class);
+//        System.out.println("connection counter : " + countingConnectionMaker.getCounter());
     }
 }
