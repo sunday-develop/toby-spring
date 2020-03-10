@@ -4,6 +4,7 @@ import com.toby.tobyspring.user.dao.DaoFactory;
 import com.toby.tobyspring.user.dao.UserDao;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 public class ObjectTest {
     public static void main(String[] args) {
@@ -14,7 +15,7 @@ public class ObjectTest {
         System.out.println(dao1);
         System.out.println(dao2);
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
         UserDao dao3 = context.getBean("userDao", UserDao.class);
         UserDao dao4 = context.getBean("userDao", UserDao.class);
 
