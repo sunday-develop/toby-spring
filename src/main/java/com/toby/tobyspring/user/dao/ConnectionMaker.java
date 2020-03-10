@@ -1,8 +1,9 @@
 package com.toby.tobyspring.user.dao;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface ConnectionMaker {
-    public Connection makeNewConnection() throws ClassNotFoundException, SQLException;
+    public DataSource makeNewConnection() throws ClassNotFoundException, SQLException;
 }
