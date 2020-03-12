@@ -3,7 +3,6 @@ package com.toby.tobyspring.user;
 import com.toby.tobyspring.user.dao.DaoFactory;
 import com.toby.tobyspring.user.dao.UserDao;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 public class ObjectTest {
