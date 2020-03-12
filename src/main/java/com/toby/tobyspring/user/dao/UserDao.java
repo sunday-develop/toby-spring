@@ -12,7 +12,7 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
+    public void add(User user) throws SQLException {
         Connection connection = dataSource.getConnection();
         // sql 실행
         PreparedStatement preparedStatement = connection.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
@@ -27,7 +27,7 @@ public class UserDao {
         connection.close();
     }
 
-    public User get(String id) throws ClassNotFoundException, SQLException {
+    public User get(String id) throws SQLException {
         Connection connection = dataSource.getConnection();
 
         // sql 실행
