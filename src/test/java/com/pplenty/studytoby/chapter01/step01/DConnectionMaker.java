@@ -7,7 +7,7 @@ import java.sql.SQLException;
 /**
  * Created by yusik on 2020/03/13.
  */
-public class SimpleConnectionMaker implements ConnectionMaker {
+public class DConnectionMaker implements ConnectionMaker {
 
     @Override
     public Connection makeConnection() throws SQLException {

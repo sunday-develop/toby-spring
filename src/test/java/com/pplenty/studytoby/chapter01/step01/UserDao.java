@@ -10,15 +10,15 @@ import java.sql.SQLException;
  */
 public class UserDao {
 
-    private SimpleConnectionMaker simpleConnectionMaker;
+    private ConnectionMaker connectionMaker;
 
     public UserDao() {
-        this.simpleConnectionMaker = new SimpleConnectionMaker();
+        connectionMaker = new DConnectionMaker();
     }
 
     public void add(User user) throws SQLException {
 
-        Connection con = simpleConnectionMaker.makeNewConnection();
+        Connection con = connectionMaker.makeConnection();
 
         PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
 
@@ -34,7 +34,7 @@ public class UserDao {
 
     public User get(String id) throws SQLException {
 
-        Connection con = simpleConnectionMaker.makeNewConnection();
+        Connection con = connectionMaker.makeConnection();
 
         PreparedStatement ps = con.prepareStatement("select * from toby.users where id = ?");
         ps.setString(1, id);
