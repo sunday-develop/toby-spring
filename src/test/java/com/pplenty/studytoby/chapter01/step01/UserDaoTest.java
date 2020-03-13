@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by yusik on 2020/03/09.
  */
 @DisplayName("오브젝트와 의존관계")
-public class MainTest {
+public class UserDaoTest {
 
     @BeforeEach
     void setUp() throws SQLException {
@@ -36,8 +36,29 @@ public class MainTest {
 
         // given
         ConnectionMaker connectionMaker = new DConnectionMaker();
-//        ConnectionMaker connectionMaker = new SimpleConnectionMaker();
         UserDao userDao = new UserDao(connectionMaker);
+
+        User user = new User();
+        user.setId("koh");
+        user.setName("yusik");
+        user.setPassword("1234");
+
+        // when
+        userDao.add(user);
+        User result = userDao.get("koh");
+
+        // then
+        assertThat(result.getId()).isEqualTo(user.getId());
+        System.out.println(result);
+
+    }
+
+    @DisplayName("팩토리 사용")
+    @Test
+    void factory() throws SQLException {
+
+        // given
+        UserDao userDao = new DaoFactory().userDao();
 
         User user = new User();
         user.setId("koh");
