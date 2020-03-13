@@ -10,8 +10,15 @@ public class DaoFactory {
      * 어떻게 만들고 어떻게 준비시킬지를 결정한다.
      */
     public UserDao userDao() {
-        ConnectionMaker connectionMaker = new DConnectionMaker();
-        return new UserDao(connectionMaker);
+        return new UserDao(new DConnectionMaker());
+    }
+
+    public AccountDao accountDao() {
+        return new AccountDao(new DConnectionMaker());
+    }
+
+    public MessageDao messageDao() {
+        return new MessageDao(new DConnectionMaker());
     }
 
 }
