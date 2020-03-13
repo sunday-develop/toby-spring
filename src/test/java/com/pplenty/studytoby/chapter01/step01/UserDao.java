@@ -8,11 +8,17 @@ import java.sql.SQLException;
 /**
  * Created by yusik on 2020/03/09.
  */
-public abstract class UserDao {
+public class UserDao {
+
+    private SimpleConnectionMaker simpleConnectionMaker;
+
+    public UserDao() {
+        this.simpleConnectionMaker = new SimpleConnectionMaker();
+    }
 
     public void add(User user) throws SQLException {
 
-        Connection con = getConnection();
+        Connection con = simpleConnectionMaker.makeNewConnection();
 
         PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
 
@@ -28,7 +34,7 @@ public abstract class UserDao {
 
     public User get(String id) throws SQLException {
 
-        Connection con = getConnection();
+        Connection con = simpleConnectionMaker.makeNewConnection();
 
         PreparedStatement ps = con.prepareStatement("select * from toby.users where id = ?");
         ps.setString(1, id);
@@ -47,8 +53,6 @@ public abstract class UserDao {
         return user;
 
     }
-
-    public abstract Connection getConnection() throws SQLException;
 
 }
 

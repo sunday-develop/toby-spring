@@ -35,7 +35,7 @@ public class MainTest {
     void add() throws SQLException {
 
         // given
-        UserDao userDao = new DUserDao();
+        UserDao userDao = new UserDao();
 //        UserDao userDao = new NUserDao();
         User user = new User();
         user.setId("koh");
