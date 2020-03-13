@@ -35,8 +35,10 @@ public class MainTest {
     void add() throws SQLException {
 
         // given
-        UserDao userDao = new UserDao();
-//        UserDao userDao = new NUserDao();
+        ConnectionMaker connectionMaker = new DConnectionMaker();
+//        ConnectionMaker connectionMaker = new SimpleConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
+
         User user = new User();
         user.setId("koh");
         user.setName("yusik");
