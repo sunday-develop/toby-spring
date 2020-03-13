@@ -30,7 +30,7 @@ public class UserDaoTest {
     @DisplayName("add() 메소드와 get() 메소드에 대한 테스트")
     @Test
     public void addAndGet() throws SQLException {
-        
+
         userDao.deleteAll();
         assertEquals(userDao.getCount(), 0);
 
