@@ -16,20 +16,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserDaoTest {
 
     private UserDao userDao;
+    private User user1;
+    private User user2;
 
     @BeforeEach
     public void setUp() {
         ApplicationContext context = new GenericXmlApplicationContext("spring/applicationContext.xml");
         userDao = context.getBean("userDao", UserDao.class);
+        user1 = new User("user1", "username1", "username11");
+        user2 = new User("user2", "username2", "username22");
     }
 
     @DisplayName("add() 메소드와 get() 메소드에 대한 테스트")
     @Test
     public void addAndGet() throws SQLException {
-
-        User user1 = new User("user1", "username1", "username11");
-        User user2 = new User("user2", "username2", "username22");
-
+        
         userDao.deleteAll();
         assertEquals(userDao.getCount(), 0);
 
