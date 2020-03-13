@@ -1,6 +1,5 @@
-package com.study.spring.user;
+package com.study.spring.user.dao;
 
-import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
