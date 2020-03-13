@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  maria:
+    image: mariadb
+    container_name: "dev-mariadb"
+    restart: always
+    ports:
+      - "63306:3306"
+    volumes:
+      - ~/docker/mariadb/etc/mysql/init.d/setup-user.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ~/docker/mariadb/etc/mysql/conf.d:/etc/mysql/conf.d
+      - ~/docker/mariadb/var/lib/mysql:/var/lib/mysql
+      - ~/docker/mariadb/var/log/maria:/var/log/maria
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
+      - TZ="Asia/Seoul"

@@ -29,7 +29,6 @@ public class UserDao {
         Connection con = DriverManager.getConnection(
                 "jdbc:mariadb://localhost:63306/toby", "jason", "qwe123");
 
-
         PreparedStatement ps = con.prepareStatement("select * from toby.users where id = ?");
         ps.setString(1, id);
 
