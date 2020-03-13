@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by yusik on 2020/03/09.
  */
-@DisplayName("1.1 초난감 DAO")
+@DisplayName("오브젝트와 의존관계")
 public class MainTest {
 
     @BeforeEach
@@ -30,7 +30,7 @@ public class MainTest {
 
     }
 
-    @DisplayName("UserDao")
+    @DisplayName("UserDao 의 변화")
     @Test
     void add() throws SQLException {
 
