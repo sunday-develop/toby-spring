@@ -10,21 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
  * @ref https://junit.org/junit5/docs/current/user-guide/
  * @ref https://howtodoinjava.com/junit5/before-each-annotation-example/
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "/applicationContext.xml")
 @DisplayName("userDao test")
 public class UserDaoTest {
 
-    @Autowired
     UserDao userDao;
 
     private User user1;
@@ -33,6 +33,10 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setup() {
+        userDao = new UserDao();
+        DataSource dataSource = new SingleConnectionDataSource("jdbc:oracle:thin:@localhost:1521:orcl", "dahye", "test", true);
+        userDao.setDataSource(dataSource);
+
         user1 = new User("dahyekim", "김다혜", "dahye");
         user2 = new User("toby", "토비", "toby");
         user3 = new User("whiteship", "백기선", "white");
