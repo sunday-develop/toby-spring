@@ -17,20 +17,44 @@ public class UserDaoTest {
     public void addAndGet() throws SQLException {
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
         UserDao userDao = context.getBean("userDao", UserDao.class);
+        User user1 = new User("dahyekim", "김다혜", "dahye");
+        User user2 = new User("toby", "토비", "toby");
 
         userDao.deleteAll();
         Assertions.assertEquals(0, userDao.getCount());
 
-        User user = new User();
-        user.setId("dahyekim");
-        user.setName("김다혜");
-        user.setPassword("pass");
+        userDao.add(user1);
+        userDao.add(user2);
+        Assertions.assertEquals(2, userDao.getCount());
 
-        userDao.add(user);
+        User userget1 = userDao.get(user1.getId());
+        Assertions.assertEquals(userget1.getName(), user1.getName());
+        Assertions.assertEquals(userget1.getPassword(), user1.getPassword());
+
+        User userget2 = userDao.get(user2.getId());
+        Assertions.assertEquals(userget2.getName(), user2.getName());
+        Assertions.assertEquals(userget2.getPassword(), user2.getPassword());
+    }
+
+    @Test
+    @DisplayName("getCount() 테스트")
+    public void count() throws SQLException {
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+        UserDao userDao = context.getBean("userDao", UserDao.class);
+        User user1 = new User("dahyekim", "김다혜", "dahye");
+        User user2 = new User("toby", "토비", "toby");
+        User user3 = new User("whiteship", "백기선", "white");
+
+        userDao.deleteAll();
+        Assertions.assertEquals(0, userDao.getCount());
+
+        userDao.add(user1);
         Assertions.assertEquals(1, userDao.getCount());
 
-        User user2 = userDao.get("dahyekim");
-        Assertions.assertEquals(user2.getName(), user.getName());
-        Assertions.assertEquals(user2.getPassword(), user.getPassword());
+        userDao.add(user2);
+        Assertions.assertEquals(2, userDao.getCount());
+
+        userDao.add(user3);
+        Assertions.assertEquals(3, userDao.getCount());
     }
 }
