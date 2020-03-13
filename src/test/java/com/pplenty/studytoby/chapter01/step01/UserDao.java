@@ -1,11 +1,14 @@
 package com.pplenty.studytoby.chapter01.step01;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by yusik on 2020/03/09.
  */
-public class UserDao {
+public abstract class UserDao {
 
     public void add(User user) throws SQLException {
 
@@ -45,10 +48,7 @@ public class UserDao {
 
     }
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(
-                "jdbc:mariadb://localhost:63306/toby", "jason", "qwe123");
-    }
+    public abstract Connection getConnection() throws SQLException;
 
 }
 
