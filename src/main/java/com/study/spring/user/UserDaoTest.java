@@ -1,6 +1,8 @@
-package com.study.spring.user.dao;
+package com.study.spring.user;
 
+import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.User;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
@@ -8,13 +10,11 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.sql.SQLException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-class UserDaoTest {
+public class UserDaoTest {
 
     @DisplayName("add() 메소드와 get() 메소드에 대한 테스트")
     @Test
-    void addAndGet() throws SQLException {
+    public void addAndGet() throws SQLException {
 
         ApplicationContext context = new GenericXmlApplicationContext("spring/applicationContext.xml");
         UserDao userDao = context.getBean("userDao", UserDao.class);
@@ -30,7 +30,7 @@ class UserDaoTest {
 
         User user2 = userDao.get(user1.getId());
 
-        assertThat(user2.getName()).isEqualTo(user1.getName());
-        assertThat(user2.getPassword()).isEqualTo(user1.getPassword());
+        Assertions.assertThat(user2.getName()).isEqualTo(user1.getName());
+        Assertions.assertThat(user2.getPassword()).isEqualTo(user1.getPassword());
     }
 }
