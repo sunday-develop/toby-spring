@@ -1,13 +1,15 @@
 package com.study.spring.user.dao;
 
 import com.study.spring.user.domain.User;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserDaoTest {
 
@@ -19,7 +21,7 @@ public class UserDaoTest {
         UserDao userDao = context.getBean("userDao", UserDao.class);
 
         userDao.deleteAll();
-        Assertions.assertThat(userDao.getCount()).isEqualTo(0);
+        assertEquals(userDao.getCount(), 0);
 
         User user1 = new User();
         user1.setId("whiteship");
@@ -27,11 +29,11 @@ public class UserDaoTest {
         user1.setPassword("married");
 
         userDao.add(user1);
-        Assertions.assertThat(userDao.getCount()).isEqualTo(1);
+        assertEquals(userDao.getCount(), 1);
 
         User user2 = userDao.get(user1.getId());
 
-        Assertions.assertThat(user2.getName()).isEqualTo(user1.getName());
-        Assertions.assertThat(user2.getPassword()).isEqualTo(user1.getPassword());
+        assertEquals(user2.getName(), user1.getName());
+        assertEquals(user2.getPassword(), user1.getPassword());
     }
 }
