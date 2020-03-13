@@ -18,14 +18,16 @@ public class UserDaoTest {
         ApplicationContext context = new GenericXmlApplicationContext("spring/applicationContext.xml");
         UserDao userDao = context.getBean("userDao", UserDao.class);
 
+        userDao.deleteAll();
+        Assertions.assertThat(userDao.getCount()).isEqualTo(0);
+
         User user1 = new User();
         user1.setId("whiteship");
         user1.setName("back");
         user1.setPassword("married");
 
         userDao.add(user1);
-
-        System.out.println(user1.getId() + " 등록 성공");
+        Assertions.assertThat(userDao.getCount()).isEqualTo(1);
 
         User user2 = userDao.get(user1.getId());
 
