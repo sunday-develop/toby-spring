@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.sql.SQLException;
 
@@ -56,5 +57,19 @@ public class UserDaoTest {
 
         userDao.add(user3);
         Assertions.assertEquals(3, userDao.getCount());
+    }
+
+    @Test
+    @DisplayName("get() 메소드의 예외상황에 대한 테스트")
+    public void getUserFailure() throws SQLException {
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+        UserDao userDao = context.getBean("userDao", UserDao.class);
+
+        userDao.deleteAll();
+        Assertions.assertEquals(0, userDao.getCount());
+
+        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
+            userDao.get("unkown_id");
+        });
     }
 }

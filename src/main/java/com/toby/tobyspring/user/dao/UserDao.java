@@ -1,6 +1,7 @@
 package com.toby.tobyspring.user.dao;
 
 import com.toby.tobyspring.user.domain.User;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -35,16 +36,21 @@ public class UserDao {
         preparedStatement.setString(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        User user = new User();
-        user.setId(resultSet.getString("id"));
-        user.setName(resultSet.getString("name"));
-        user.setPassword(resultSet.getString("password"));
+
+        User user = null;
+        if (resultSet.next()) {
+            user = new User();
+            user.setId(resultSet.getString("id"));
+            user.setName(resultSet.getString("name"));
+            user.setPassword(resultSet.getString("password"));
+        }
 
         // 자원 회수
         resultSet.close();
         preparedStatement.close();
         connection.close();
+
+        if (user == null) throw new EmptyResultDataAccessException(1);
 
         return user;
     }
@@ -64,7 +70,7 @@ public class UserDao {
 
         return count;
     }
-    
+
     public void deleteAll() throws SQLException {
         Connection connection = dataSource.getConnection();
 
