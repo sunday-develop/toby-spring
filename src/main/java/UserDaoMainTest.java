@@ -25,9 +25,16 @@ public class UserDaoMainTest {
         launcher.execute(request, listener);
         TestExecutionSummary summary = listener.getSummary();
 
-        for (TestExecutionSummary.Failure failure : summary.getFailures()) {
-            if (Objects.nonNull(failure.getException())) {
-                throw new RuntimeException(failure.getException());
+        System.out.println("# of containers found: " + summary.getContainersFoundCount());
+        System.out.println("# of containers skipped: " + summary.getContainersSkippedCount());
+        System.out.println("# of tests found: " + summary.getTestsFoundCount());
+        System.out.println("# of tests skipped: " + summary.getTestsSkippedCount());
+
+        if (summary.getFailures().size() > 0) {
+            for (TestExecutionSummary.Failure failure : summary.getFailures()) {
+                if (Objects.nonNull(failure.getException())) {
+                    throw new RuntimeException(failure.getException());
+                }
             }
         }
     }
