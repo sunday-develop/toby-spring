@@ -9,8 +9,7 @@ public class UserDao {
 
     public void add(User user) throws SQLException {
 
-        Connection con = DriverManager.getConnection(
-                "jdbc:mariadb://localhost:63306/toby", "jason", "qwe123");
+        Connection con = getConnection();
 
         PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
 
@@ -26,8 +25,7 @@ public class UserDao {
 
     public User get(String id) throws SQLException {
 
-        Connection con = DriverManager.getConnection(
-                "jdbc:mariadb://localhost:63306/toby", "jason", "qwe123");
+        Connection con = getConnection();
 
         PreparedStatement ps = con.prepareStatement("select * from toby.users where id = ?");
         ps.setString(1, id);
@@ -45,6 +43,11 @@ public class UserDao {
 
         return user;
 
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                "jdbc:mariadb://localhost:63306/toby", "jason", "qwe123");
     }
 
 }
