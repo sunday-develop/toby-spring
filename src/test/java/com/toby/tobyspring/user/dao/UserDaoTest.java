@@ -25,22 +25,17 @@ import java.sql.SQLException;
 public class UserDaoTest {
 
     @Autowired
-    ApplicationContext applicationContext;
+    UserDao userDao;
 
-    private UserDao userDao;
     private User user1;
     private User user2;
     private User user3;
 
     @BeforeEach
     public void setup() {
-        userDao = applicationContext.getBean("userDao", UserDao.class);
         user1 = new User("dahyekim", "김다혜", "dahye");
         user2 = new User("toby", "토비", "toby");
         user3 = new User("whiteship", "백기선", "white");
-
-        System.out.println(this.applicationContext);
-        System.out.println(this);
     }
 
     @Test
