@@ -5,17 +5,27 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.SQLException;
 
 /**
+ * @ref https://junit.org/junit5/docs/current/user-guide/
  * @ref https://howtodoinjava.com/junit5/before-each-annotation-example/
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations = "/applicationContext.xml")
 @DisplayName("userDao test")
 public class UserDaoTest {
+
+    @Autowired
+    ApplicationContext applicationContext;
 
     private UserDao userDao;
     private User user1;
@@ -24,11 +34,13 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setup() {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-        userDao = context.getBean("userDao", UserDao.class);
+        userDao = applicationContext.getBean("userDao", UserDao.class);
         user1 = new User("dahyekim", "김다혜", "dahye");
         user2 = new User("toby", "토비", "toby");
         user3 = new User("whiteship", "백기선", "white");
+
+        System.out.println(this.applicationContext);
+        System.out.println(this);
     }
 
     @Test
