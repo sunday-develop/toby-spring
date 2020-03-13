@@ -3,6 +3,8 @@ package com.pplenty.studytoby.chapter01.step01;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -59,6 +61,29 @@ public class UserDaoTest {
 
         // given
         UserDao userDao = new DaoFactory().userDao();
+
+        User user = new User();
+        user.setId("koh");
+        user.setName("yusik");
+        user.setPassword("1234");
+
+        // when
+        userDao.add(user);
+        User result = userDao.get("koh");
+
+        // then
+        assertThat(result.getId()).isEqualTo(user.getId());
+        System.out.println(result);
+
+    }
+
+    @DisplayName("application context 를 이용")
+    @Test
+    void applicationContext() throws SQLException {
+
+        // given
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        UserDao userDao = context.getBean("userDao", UserDao.class);
 
         User user = new User();
         user.setId("koh");

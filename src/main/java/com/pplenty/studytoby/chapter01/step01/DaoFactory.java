@@ -1,27 +1,31 @@
 package com.pplenty.studytoby.chapter01.step01;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 /**
  * Created by yusik on 2020/03/13.
  */
+@Configuration
 public class DaoFactory {
 
-    /**
-     * 팩토리의 메소드는 UserDao 타입의 오브젝트를
-     * 어떻게 만들고 어떻게 준비시킬지를 결정한다.
-     */
+    @Bean
     public UserDao userDao() {
         return new UserDao(connectionMaker());
     }
 
+    @Bean
     public AccountDao accountDao() {
         return new AccountDao(connectionMaker());
     }
 
+    @Bean
     public MessageDao messageDao() {
         return new MessageDao(connectionMaker());
     }
 
-    private DConnectionMaker connectionMaker() {
+    @Bean
+    public DConnectionMaker connectionMaker() {
         return new DConnectionMaker();
     }
 
