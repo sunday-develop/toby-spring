@@ -28,23 +28,21 @@ class UserDaoTest {
         final ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         final UserDao dao = context.getBean(UserDao.class);
 
+        final User user1 = User.of("gyumee", "박성철", "springno1");
+        final User user2 = User.of("leegw700", "이길원", "springno2");
+        final User user3 = User.of("bumjin", "박범진", "springno3");
+
         dao.deleteAll();
         assertThat(dao.getCount()).isZero();
 
-        final User user = User.builder()
-                .id("gyumee")
-                .name("박성철")
-                .password("springno1")
-                .build();
-
-        dao.add(user);
-
+        dao.add(user1);
         assertThat(dao.getCount()).isOne();
 
-        final User user2 = dao.get(user.getId());
+        dao.add(user2);
+        assertThat(dao.getCount()).isEqualTo(2);
 
-        assertThat(user2.getName()).isEqualTo(user.getName());
-        assertThat(user2.getPassword()).isEqualTo(user.getPassword());
+        dao.add(user3);
+        assertThat(dao.getCount()).isEqualTo(3);
     }
 
 }
