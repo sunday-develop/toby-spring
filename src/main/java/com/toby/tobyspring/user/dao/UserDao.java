@@ -1,83 +1,46 @@
 package com.toby.tobyspring.user.dao;
 
 import com.toby.tobyspring.user.domain.User;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.util.List;
 
 public class UserDao {
-    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
 
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void add(User user) throws SQLException {
-        Connection connection = dataSource.getConnection();
-        // sql 실행
-        PreparedStatement preparedStatement = connection.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
-        preparedStatement.setString(1, user.getId());
-        preparedStatement.setString(2, user.getName());
-        preparedStatement.setString(3, user.getPassword());
-
-        preparedStatement.executeUpdate();
-
-        // 자원 회수
-        preparedStatement.close();
-        connection.close();
+    public void add(final User user) {
+        this.jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)",
+                user.getId(), user.getName(), user.getPassword());
     }
 
-    public User get(String id) throws SQLException {
-        Connection connection = dataSource.getConnection();
-
-        // sql 실행
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from users where id = ?");
-        preparedStatement.setString(1, id);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        User user = null;
-        if (resultSet.next()) {
-            user = new User();
-            user.setId(resultSet.getString("id"));
-            user.setName(resultSet.getString("name"));
-            user.setPassword(resultSet.getString("password"));
-        }
-
-        // 자원 회수
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
-
-        if (user == null) throw new EmptyResultDataAccessException(1);
-
+    private RowMapper<User> userRowMapper = (rs, rowNum) -> {
+        User user = new User();
+        user.setId(rs.getString("id"));
+        user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
         return user;
+    };
+
+    public User get(String id) {
+        return this.jdbcTemplate.queryForObject("select * from users where id = ?",
+                new Object[]{id}, this.userRowMapper);
     }
 
-    public int getCount() throws SQLException {
-        Connection connection = dataSource.getConnection();
-
-        PreparedStatement preparedStatement = connection.prepareStatement("select count(*) from users");
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        int count = resultSet.getInt(1);
-
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
-
-        return count;
+    public List<User> getAll() {
+        return this.jdbcTemplate.query("select * from users order by id", this.userRowMapper);
     }
 
-    public void deleteAll() throws SQLException {
-        Connection connection = dataSource.getConnection();
+    public int getCount() {
+        return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+    }
 
-        PreparedStatement preparedStatement = connection.prepareStatement("delete from users");
-        preparedStatement.executeUpdate();
-
-        preparedStatement.close();
-        connection.close();
+    public void deleteAll() {
+        this.jdbcTemplate.update("delete from users");
     }
 }
