@@ -1,6 +1,7 @@
 package springbook.user.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
@@ -8,6 +9,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class UserDao {
+
+    private static final RowMapper<User> USER_MAPPER = (rs, rowNum) -> User.builder()
+            .id(rs.getString("id"))
+            .name(rs.getString("name"))
+            .password(rs.getString("password"))
+            .build();
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -21,13 +28,7 @@ public class UserDao {
     }
 
     public User get(String id) throws SQLException {
-        return jdbcTemplate.queryForObject("select * from users where id = ?",
-                new Object[]{id},
-                (rs, rowNum) -> User.builder()
-                        .id(rs.getString("id"))
-                        .name(rs.getString("name"))
-                        .password(rs.getString("password"))
-                        .build());
+        return jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id}, USER_MAPPER);
     }
 
     public void deleteAll() {
@@ -39,12 +40,7 @@ public class UserDao {
     }
 
     public List<User> getAll() {
-        return jdbcTemplate.query("select * from users order by id",
-                (rs, rowNum) -> User.builder()
-                        .id(rs.getString("id"))
-                        .name(rs.getString("name"))
-                        .password(rs.getString("password"))
-                        .build());
+        return jdbcTemplate.query("select * from users order by id", USER_MAPPER);
     }
 
 }

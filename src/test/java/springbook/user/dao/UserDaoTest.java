@@ -27,11 +27,11 @@ class UserDaoTest {
         );
 
         dao = new UserDao(dataSource);
+        dao.deleteAll();
     }
 
     @Test
     void count() throws Exception {
-        dao.deleteAll();
         assertThat(dao.getCount()).isZero();
 
         dao.add(user1);
@@ -49,7 +49,6 @@ class UserDaoTest {
         final User user1 = User.of("gyumee", "박성철", "springno1");
         final User user2 = User.of("leegw700", "이길원", "springno2");
 
-        dao.deleteAll();
         assertThat(dao.getCount()).isZero();
 
         dao.add(user1);
@@ -67,7 +66,6 @@ class UserDaoTest {
 
     @Test
     void getUserFailure() throws Exception {
-        dao.deleteAll();
         assertThat(dao.getCount()).isZero();
 
         assertThatThrownBy(() -> dao.get("unknown_id"))
@@ -76,7 +74,6 @@ class UserDaoTest {
 
     @Test
     void getAll() throws Exception {
-        dao.deleteAll();
 
         final List<User> users0 = dao.getAll();
         assertThat(users0).isEmpty();
