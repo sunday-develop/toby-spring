@@ -52,20 +52,8 @@ public class UserDao {
         jdbcTemplate.update("delete from users");
     }
 
-    public int getCount() throws SQLException {
-        final Connection con = dataSource.getConnection();
-
-        PreparedStatement ps = con.prepareStatement("select count(*) from users");
-
-        final ResultSet rs = ps.executeQuery();
-        rs.next();
-        int count = rs.getInt(1);
-
-        rs.close();
-        ps.close();
-        con.close();
-
-        return count;
+    public int getCount() {
+        return jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
     }
 
 }
