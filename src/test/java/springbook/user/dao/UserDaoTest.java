@@ -30,19 +30,21 @@ class UserDaoTest {
 
         final User user1 = User.of("gyumee", "박성철", "springno1");
         final User user2 = User.of("leegw700", "이길원", "springno2");
-        final User user3 = User.of("bumjin", "박범진", "springno3");
 
         dao.deleteAll();
         assertThat(dao.getCount()).isZero();
 
         dao.add(user1);
-        assertThat(dao.getCount()).isOne();
-
         dao.add(user2);
         assertThat(dao.getCount()).isEqualTo(2);
 
-        dao.add(user3);
-        assertThat(dao.getCount()).isEqualTo(3);
+        User userGet1 = dao.get(user1.getId());
+        assertThat(userGet1.getName()).isEqualTo(user1.getName());
+        assertThat(userGet1.getPassword()).isEqualTo(user1.getPassword());
+
+        User userGet2 = dao.get(user2.getId());
+        assertThat(userGet2.getName()).isEqualTo(user2.getName());
+        assertThat(userGet2.getPassword()).isEqualTo(user2.getPassword());
     }
 
 }
