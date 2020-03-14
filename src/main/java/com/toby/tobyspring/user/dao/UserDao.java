@@ -11,13 +11,18 @@ import java.sql.SQLException;
 
 public class UserDao {
     private DataSource dataSource;
+    private JdbcContext jdbcContext;
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    public void setJdbcContext(JdbcContext jdbcContext) {
+        this.jdbcContext = jdbcContext;
+    }
+
     public void add(final User user) throws SQLException {
-        this.jdbcContextWithStatementStrategy(connection -> {
+        jdbcContext.workWithStatementStrategy(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
             preparedStatement.setString(1, user.getId());
             preparedStatement.setString(2, user.getName());
@@ -91,34 +96,6 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        this.jdbcContextWithStatementStrategy(connection -> connection.prepareStatement("delete from users"));
-    }
-
-    public void jdbcContextWithStatementStrategy(StatementStrategy statementStrategy) throws SQLException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            connection = dataSource.getConnection();
-
-            preparedStatement = statementStrategy.makePreparedStatement(connection);
-
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException ignored) {
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ignored) {
-                }
-            }
-        }
+        jdbcContext.workWithStatementStrategy(connection -> connection.prepareStatement("delete from users"));
     }
 }

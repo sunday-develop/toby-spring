@@ -3,6 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="jdbcContext" class="com.toby.tobyspring.user.dao.JdbcContext">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="oracle.jdbc.driver.OracleDriver"/>
         <property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl" />
@@ -12,5 +16,6 @@
 
     <bean id="userDao" class="com.toby.tobyspring.user.dao.UserDao">
         <property name="dataSource" ref="dataSource"/>
+        <property name="jdbcContext" ref="jdbcContext"/>
     </bean>
 </beans>
