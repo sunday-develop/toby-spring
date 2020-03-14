@@ -2,13 +2,13 @@ package springbook.study.sigleton;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import springbook.user.config.DaoFactory;
+import springbook.user.config.Config;
 import springbook.user.dao.UserDao;
 
 public class SingletonTest {
 
     public static void main(String[] args) {
-        final DaoFactory factory = new DaoFactory();
+        final Config factory = new Config();
         final UserDao dao1 = factory.userDao();
         final UserDao dao2 = factory.userDao();
 
@@ -18,7 +18,7 @@ public class SingletonTest {
 
         System.out.println("------------------------------------");
 
-        final ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        final ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
         final UserDao dao3 = context.getBean(UserDao.class);
         final UserDao dao4 = context.getBean(UserDao.class);
 

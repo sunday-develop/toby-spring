@@ -2,18 +2,26 @@ package springbook.user.dao;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
-import springbook.user.config.DaoFactory;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import springbook.user.config.Config;
 import springbook.user.domain.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = Config.class)
 class UserDaoTest {
 
     private UserDao dao;
+
+    @Autowired
+    private ApplicationContext context;
 
     private final User user1 = User.of("gyumee", "박성철", "springno1");
     private final User user2 = User.of("leegw700", "이길원", "springno2");
@@ -21,7 +29,6 @@ class UserDaoTest {
 
     @BeforeEach
     void setup() {
-        final ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         this.dao = context.getBean(UserDao.class);
     }
 
