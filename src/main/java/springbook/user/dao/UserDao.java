@@ -56,8 +56,12 @@ public class UserDao {
 
     public void deleteAll() throws SQLException {
         final StatementStrategy strategy = new DeleteAllStatement();
-        try (final Connection con = dataSource.getConnection();
-             final PreparedStatement ps = strategy.makePreparedStatement(con)) {
+        jdbcContextWithStatementStrategy(strategy);
+    }
+
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = stmt.makePreparedStatement(con);) {
 
             ps.executeUpdate();
         }
