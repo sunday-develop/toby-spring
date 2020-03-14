@@ -8,13 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +41,7 @@ public class UserDaoTest {
 
     @DisplayName("getAll()에 대한 테스트")
     @Test
-    public void getAll() throws SQLException {
+    public void getAll() {
         userDao.deleteAll();
 
         List<User> userList0 = userDao.getAll();
@@ -73,7 +69,7 @@ public class UserDaoTest {
 
     @DisplayName("add() 메소드와 get() 메소드에 대한 테스트")
     @Test
-    public void addAndGet() throws SQLException {
+    public void addAndGet() {
 
         userDao.deleteAll();
         assertEquals(userDao.getCount(), 0);
@@ -93,7 +89,7 @@ public class UserDaoTest {
 
     @DisplayName("get() 메소드의 예외 상황에 대한 테스트")
     @Test
-    public void getUserFailure() throws SQLException {
+    public void getUserFailure() {
 
         userDao.deleteAll();
         assertEquals(userDao.getCount(), 0);
