@@ -58,48 +58,7 @@ public class UserDao {
         this.jdbcTemplate.update("DELETE FROM users");
     }
 
-    public int getCount() throws SQLException {
-
-        Connection c = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            c = dataSource.getConnection();
-            ps = c.prepareStatement("SELECT count(*) from users");
-
-            rs = ps.executeQuery();
-            rs.next();
-            int count = rs.getInt(1);
-
-            return count;
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ignored) {
-
-                }
-
-                if (ps != null) {
-                    try {
-                        ps.close();
-                    } catch (SQLException ignored) {
-
-                    }
-                }
-
-                if (c != null) {
-                    try {
-                        c.close();
-                    } catch (SQLException ignored) {
-
-                    }
-                }
-            }
-        }
+    public Integer getCount() throws SQLException {
+        return this.jdbcTemplate.queryForObject("SELECT count(*) FROM users", Integer.class);
     }
 }
