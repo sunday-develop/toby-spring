@@ -13,24 +13,16 @@ import java.sql.SQLException;
 public class UserDao {
 
     private final DataSource dataSource;
-    private final JdbcContext jdbcContext;
     private final JdbcTemplate jdbcTemplate;
 
     public UserDao(DataSource dataSource) {
         this.dataSource = dataSource;
-        this.jdbcContext = new JdbcContext(dataSource);
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void add(User user) throws SQLException {
-
-        jdbcContext.workWithStatementStrategy(con -> {
-            final PreparedStatement ps = con.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            return ps;
-        });
+    public void add(User user) {
+        jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)",
+                user.getId(), user.getName(), user.getPassword());
     }
 
     public User get(String id) throws SQLException {
@@ -56,7 +48,7 @@ public class UserDao {
         return user;
     }
 
-    public void deleteAll() throws SQLException {
+    public void deleteAll() {
         jdbcTemplate.update("delete from users");
     }
 
