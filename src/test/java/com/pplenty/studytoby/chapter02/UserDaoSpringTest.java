@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * Created by yusik on 2020/03/14.
  */
 
+@DisplayName("테스트 - SpringBootTest 이용")
 @SpringBootTest
 @ContextConfiguration("classpath:di/userDaoFactory.xml")
 public class UserDaoSpringTest {
@@ -36,13 +37,11 @@ public class UserDaoSpringTest {
     private User user2;
     private User user3;
 
-    @BeforeAll
-    static void beforeAll() throws SQLException {
-    }
-
     @BeforeEach
     void setUp() throws SQLException {
 
+        System.out.println(this.context);
+        System.out.println(this);
         // given fixture
         userDao = context.getBean("userDao", UserDao.class);
         user1 = new User("pplenty", "yusik", "1234");
