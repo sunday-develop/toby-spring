@@ -1,5 +1,6 @@
 package springbook.user.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
@@ -34,12 +35,18 @@ public class UserDao {
         ps.setString(1, id);
 
         final ResultSet rs = ps.executeQuery();
-        rs.next();
-
-        final User user = User.of(rs.getString("id"), rs.getString("name"), rs.getString("password"));
-
+         User user = null;
+        if (rs.next()) {
+            user = User.builder()
+                    .id(rs.getString("id"))
+                    .name(rs.getString("name"))
+                    .password(rs.getString("password"))
+                    .build();
+        }
         rs.close();
         con.close();
+
+        if (user == null) throw new EmptyResultDataAccessException(1);
 
         return user;
     }
