@@ -14,9 +14,9 @@ public class UserDao {
     private final DataSource dataSource;
     private final JdbcContext jdbcContext;
 
-    public UserDao(DataSource dataSource, JdbcContext jdbcContext) {
+    public UserDao(DataSource dataSource) {
         this.dataSource = dataSource;
-        this.jdbcContext = jdbcContext;
+        this.jdbcContext = new JdbcContext(dataSource);
     }
 
     public void add(User user) throws SQLException {
