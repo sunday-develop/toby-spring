@@ -28,6 +28,9 @@ class UserDaoTest {
         final ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         final UserDao dao = context.getBean(UserDao.class);
 
+        dao.deleteAll();
+        assertThat(dao.getCount()).isZero();
+
         final User user = User.builder()
                 .id("gyumee")
                 .name("박성철")
@@ -36,28 +39,12 @@ class UserDaoTest {
 
         dao.add(user);
 
-        System.out.println(user.getId() + " 등록 성공");
+        assertThat(dao.getCount()).isOne();
 
         final User user2 = dao.get(user.getId());
 
         assertThat(user2.getName()).isEqualTo(user.getName());
         assertThat(user2.getPassword()).isEqualTo(user.getPassword());
-    }
-
-    public static void main(String[] args) {
-        final LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
-                .selectors(selectClass(UserDaoTest.class))
-                .build();
-
-        final Launcher launcher = LauncherFactory.create();
-
-        final SummaryGeneratingListener listener = new SummaryGeneratingListener();
-
-        launcher.registerTestExecutionListeners(listener);
-        launcher.execute(request);
-
-        TestExecutionSummary summary = listener.getSummary();
-        summary.printTo(new PrintWriter(System.out));
     }
 
 }
