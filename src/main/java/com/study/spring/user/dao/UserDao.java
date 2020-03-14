@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class UserDao {
+public class UserDao {
 
     private DataSource dataSource;
 
@@ -65,7 +65,8 @@ public abstract class UserDao {
 
         try {
             c = dataSource.getConnection();
-            ps = makeStatement(c);
+            StatementStrategy strategy = new DeleteAllStrategy();
+            ps = strategy.makePreparedStatement(c);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e;
@@ -132,6 +133,4 @@ public abstract class UserDao {
             }
         }
     }
-
-    abstract PreparedStatement makeStatement(Connection c) throws SQLException;
 }
