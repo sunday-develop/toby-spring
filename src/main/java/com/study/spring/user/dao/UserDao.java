@@ -1,53 +1,45 @@
 package com.study.spring.user.dao;
 
 import com.study.spring.user.domain.User;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
 public class UserDao {
 
-    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
+
+    private RowMapper<User> userRowMapper = (resultSet, i) -> {
+        User user = new User();
+        user.setId(resultSet.getString("id"));
+        user.setName(resultSet.getString("name"));
+        user.setPassword(resultSet.getString("password"));
+        return user;
+    };
 
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void add(User user) throws SQLException {
-        Connection c = dataSource.getConnection();
-
-        PreparedStatement ps = c.prepareStatement("INSERT INTO users(id, name, password) VALUES (?, ?, ?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
+    public void add(final User user) {
+        this.jdbcTemplate.update("INSERT INTO users(id, name, password) VALUES (?, ?, ?)", user.getId(), user.getName(), user.getPassword());
     }
 
-    public User get(String id) throws SQLException {
-        Connection c = dataSource.getConnection();
+    public User get(String id) {
+        return this.jdbcTemplate.queryForObject("SELECT * FROM users WHERE id = ?", new Object[] { id }, this.userRowMapper);
+    }
 
-        PreparedStatement ps = c.prepareStatement("SELECT * FROM users WHERE id = ?");
-        ps.setString(1, id);
+    public void deleteAll() {
+        this.jdbcTemplate.update("DELETE FROM users");
+    }
 
-        ResultSet rs = ps.executeQuery();
-        rs.next();
+    public Integer getCount() {
+        return this.jdbcTemplate.queryForObject("SELECT count(*) FROM users", Integer.class);
+    }
 
-        User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
-
-        rs.close();
-        ps.close();
-        c.close();
-
-        return user;
+    public List<User> getAll() {
+        return this.jdbcTemplate.query("SELECT * FROM users ORDER by id", this.userRowMapper);
     }
 }
