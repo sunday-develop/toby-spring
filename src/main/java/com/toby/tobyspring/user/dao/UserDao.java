@@ -17,18 +17,8 @@ public class UserDao {
     }
 
     public void add(User user) throws SQLException {
-        Connection connection = dataSource.getConnection();
-        // sql 실행
-        PreparedStatement preparedStatement = connection.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
-        preparedStatement.setString(1, user.getId());
-        preparedStatement.setString(2, user.getName());
-        preparedStatement.setString(3, user.getPassword());
-
-        preparedStatement.executeUpdate();
-
-        // 자원 회수
-        preparedStatement.close();
-        connection.close();
+        StatementStrategy statementStrategy = new AddStatement(user);
+        this.jdbcContextWithStatementStrategy(statementStrategy);
     }
 
     public User get(String id) throws SQLException {
@@ -95,7 +85,7 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        StatementStrategy statementStrategy = new DeleteAllStrategy();
+        StatementStrategy statementStrategy = new DeleteAllStatement();
         this.jdbcContextWithStatementStrategy(statementStrategy);
     }
 
