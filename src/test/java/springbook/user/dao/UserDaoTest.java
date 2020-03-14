@@ -1,10 +1,8 @@
 package springbook.user.dao;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -18,21 +16,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ContextConfiguration(classes = Config.class)
 class UserDaoTest {
 
-    private UserDao dao;
-
     @Autowired
-    private ApplicationContext context;
+    private UserDao dao;
 
     private final User user1 = User.of("gyumee", "박성철", "springno1");
     private final User user2 = User.of("leegw700", "이길원", "springno2");
     private final User user3 = User.of("bumjin", "박범진", "springno3");
 
-    @BeforeEach
-    void setup() {
-        this.dao = context.getBean(UserDao.class);
-        System.out.println(this.context);
-        System.out.println(this);
-    }
 
     @Test
     void count() throws Exception {
