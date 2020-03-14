@@ -17,20 +17,14 @@ public class UserDao {
     }
 
     public void add(final User user) throws SQLException {
-        class AddStatement implements StatementStrategy {
-            @Override
-            public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement preparedStatement = connection.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
-                preparedStatement.setString(1, user.getId());
-                preparedStatement.setString(2, user.getName());
-                preparedStatement.setString(3, user.getPassword());
+        this.jdbcContextWithStatementStrategy(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
+            preparedStatement.setString(1, user.getId());
+            preparedStatement.setString(2, user.getName());
+            preparedStatement.setString(3, user.getPassword());
 
-                return preparedStatement;
-            }
-        }
-
-        StatementStrategy statementStrategy = new AddStatement();
-        this.jdbcContextWithStatementStrategy(statementStrategy);
+            return preparedStatement;
+        });
     }
 
     public User get(String id) throws SQLException {
@@ -97,15 +91,7 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        class DeleteAllStatement implements StatementStrategy {
-            @Override
-            public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
-                return connection.prepareStatement("delete from users");
-            }
-        }
-
-        StatementStrategy statementStrategy = new DeleteAllStatement();
-        this.jdbcContextWithStatementStrategy(statementStrategy);
+        this.jdbcContextWithStatementStrategy(connection -> connection.prepareStatement("delete from users"));
     }
 
     public void jdbcContextWithStatementStrategy(StatementStrategy statementStrategy) throws SQLException {
