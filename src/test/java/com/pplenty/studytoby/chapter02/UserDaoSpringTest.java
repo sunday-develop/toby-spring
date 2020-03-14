@@ -29,8 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserDaoSpringTest {
 
     @Autowired
-    private ApplicationContext context;
-
     private UserDao userDao;
 
     private User user1;
@@ -40,10 +38,7 @@ public class UserDaoSpringTest {
     @BeforeEach
     void setUp() throws SQLException {
 
-        System.out.println(this.context);
-        System.out.println(this);
         // given fixture
-        userDao = context.getBean("userDao", UserDao.class);
         user1 = new User("pplenty", "yusik", "1234");
         user2 = new User("kohyusik", "usik", "4321");
         user3 = new User("usikzzang", "YUSU", "qwer");
