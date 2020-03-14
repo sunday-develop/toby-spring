@@ -30,6 +30,8 @@ class UserDaoTest {
     @BeforeEach
     void setup() {
         this.dao = context.getBean(UserDao.class);
+        System.out.println(this.context);
+        System.out.println(this);
     }
 
     @Test
