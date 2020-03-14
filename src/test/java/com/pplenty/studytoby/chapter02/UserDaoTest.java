@@ -3,6 +3,7 @@ package com.pplenty.studytoby.chapter02;
 import com.pplenty.studytoby.User;
 import com.pplenty.studytoby.UserDao;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -14,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by yusik on 2020/03/14.
  */
+@DisplayName("테스트")
 public class UserDaoTest {
 
     UserDao userDao;
@@ -25,6 +27,7 @@ public class UserDaoTest {
         userDao.deleteAll();
     }
 
+    @DisplayName("사용자 생성 및 조회")
     @Test
     void addAndGet() throws SQLException {
 
@@ -43,5 +46,25 @@ public class UserDaoTest {
         assertThat(count).isEqualTo(1);
         assertThat(result.getId()).isEqualTo(user.getId());
         assertThat(result.getPassword()).isEqualTo(user.getPassword());
+    }
+
+    @DisplayName("여러 사용자 추가 & 갯수 조회 테스트")
+    @Test
+    void count() throws SQLException {
+
+        // given
+        User user = new User();
+        user.setId("koh");
+        user.setName("yusik");
+        user.setPassword("1234");
+        User user2 = new User("ko", "yu", "sik");
+
+        // when
+        // then
+        assertThat(userDao.getCount()).isEqualTo(0);
+        userDao.add(user);
+        assertThat(userDao.getCount()).isEqualTo(1);
+        userDao.add(user2);
+        assertThat(userDao.getCount()).isEqualTo(2);
     }
 }
