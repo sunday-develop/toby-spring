@@ -4,9 +4,7 @@ import com.mysql.cj.jdbc.Driver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import springbook.user.dao.ConnectionMaker;
-import springbook.user.dao.CountingConnectionMaker;
-import springbook.user.dao.DConnectionMaker;
+import springbook.user.dao.JdbcContext;
 import springbook.user.dao.UserDao;
 
 import javax.sql.DataSource;
@@ -16,7 +14,12 @@ public class Config {
 
     @Bean
     public UserDao userDao() {
-        return new UserDao(dataSource());
+        return new UserDao(dataSource(), jdbcContext());
+    }
+
+    @Bean
+    public JdbcContext jdbcContext() {
+        return new JdbcContext(dataSource());
     }
 
     @Bean

@@ -25,7 +25,7 @@ class UserDaoTest {
                 "jdbc:mysql://localhost:3306/springbook", "spring", "book", true
         );
 
-        dao = new UserDao(dataSource);
+        dao = new UserDao(dataSource, new JdbcContext(dataSource));
     }
 
     @Test
