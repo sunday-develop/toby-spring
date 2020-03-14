@@ -15,6 +15,10 @@ class UserDaoTest {
 
     private UserDao dao;
 
+    private final User user1 = User.of("gyumee", "박성철", "springno1");
+    private final User user2 = User.of("leegw700", "이길원", "springno2");
+    private final User user3 = User.of("bumjin", "박범진", "springno3");
+
     @BeforeEach
     void setup() {
         final ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
@@ -23,10 +27,6 @@ class UserDaoTest {
 
     @Test
     void count() throws Exception {
-        final User user1 = User.of("gyumee", "박성철", "springno1");
-        final User user2 = User.of("leegw700", "이길원", "springno2");
-        final User user3 = User.of("bumjin", "박범진", "springno3");
-
         dao.deleteAll();
         assertThat(dao.getCount()).isZero();
 
