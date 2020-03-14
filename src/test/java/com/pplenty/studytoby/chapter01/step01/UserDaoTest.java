@@ -77,7 +77,7 @@ public class UserDaoTest {
 
     }
 
-    @DisplayName("application context 를 이용")
+    @DisplayName("application context 를 이용하여 get bean")
     @Test
     void applicationContext() throws SQLException {
 
@@ -100,4 +100,41 @@ public class UserDaoTest {
 
     }
 
+    @DisplayName("Bean 동일성 비교 by factory")
+    @Test
+    void equalsBeanByFactory() {
+
+        // given
+        DaoFactory factory = new DaoFactory();
+
+        // when
+        UserDao userDao = factory.userDao();
+        UserDao userDao2 = factory.userDao();
+
+        // then
+        assertThat(userDao == userDao2).isFalse();
+        assertThat(userDao).isNotEqualTo(userDao2);
+        System.out.println(userDao);
+        System.out.println(userDao2);
+
+    }
+
+    @DisplayName("Bean 동일성 비교 by application context")
+    @Test
+    void equalsBean() {
+
+        // given
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+
+        // when
+        UserDao userDao = context.getBean("userDao", UserDao.class);
+        UserDao userDao2 = context.getBean("userDao", UserDao.class);
+
+        // then
+        assertThat(userDao == userDao2).isTrue();
+        assertThat(userDao).isEqualTo(userDao2);
+        System.out.println(userDao);
+        System.out.println(userDao2);
+
+    }
 }
