@@ -5,14 +5,13 @@ import springbook.user.domain.User;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.List;
 
 public class UserDao {
 
-    private final DataSource dataSource;
     private final JdbcTemplate jdbcTemplate;
 
     public UserDao(DataSource dataSource) {
-        this.dataSource = dataSource;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -37,6 +36,15 @@ public class UserDao {
 
     public int getCount() {
         return jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+    }
+
+    public List<User> getAll() {
+        return jdbcTemplate.query("select * from users order by id",
+                (rs, rowNum) -> User.builder()
+                        .id(rs.getString("id"))
+                        .name(rs.getString("name"))
+                        .password(rs.getString("password"))
+                        .build());
     }
 
 }

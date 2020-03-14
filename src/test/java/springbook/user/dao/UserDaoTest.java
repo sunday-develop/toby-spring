@@ -7,6 +7,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -71,6 +72,35 @@ class UserDaoTest {
 
         assertThatThrownBy(() -> dao.get("unknown_id"))
             .isInstanceOf(EmptyResultDataAccessException.class);
+    }
+
+    @Test
+    void getAll() throws Exception {
+        dao.deleteAll();
+
+        dao.add(user1);
+        final List<User> users1 = dao.getAll();
+        assertThat(users1).hasSize(1);
+        checkSameUser(user1, users1.get(0));
+
+        dao.add(user2);
+        final List<User> users2 = dao.getAll();
+        assertThat(users2).hasSize(2);
+        checkSameUser(user1, users2.get(0));
+        checkSameUser(user2, users2.get(1));
+
+        dao.add(user3);
+        final List<User> users3 = dao.getAll();
+        assertThat(users3).hasSize(3);
+        checkSameUser(user3, users3.get(0));
+        checkSameUser(user1, users3.get(1));
+        checkSameUser(user2, users3.get(2));
+    }
+
+    private void checkSameUser(User user1, User user2) {
+        assertThat(user1.getId()).isEqualTo(user2.getId());
+        assertThat(user1.getName()).isEqualTo(user2.getName());
+        assertThat(user1.getPassword()).isEqualTo(user2.getPassword());
     }
 
 }
