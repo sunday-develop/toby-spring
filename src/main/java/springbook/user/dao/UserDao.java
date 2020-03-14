@@ -4,7 +4,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDao {
 
@@ -35,7 +38,7 @@ public class UserDao {
         ps.setString(1, id);
 
         final ResultSet rs = ps.executeQuery();
-         User user = null;
+        User user = null;
         if (rs.next()) {
             user = User.builder()
                     .id(rs.getString("id"))
@@ -52,13 +55,11 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        final Connection con = dataSource.getConnection();
+        try (final Connection con = dataSource.getConnection();
+             final PreparedStatement ps = con.prepareStatement("delete from users")) {
 
-        final PreparedStatement ps = con.prepareStatement("delete from users");
-        ps.executeUpdate();
-
-        ps.close();
-        con.close();
+            ps.executeUpdate();
+        }
     }
 
     public int getCount() throws SQLException {
