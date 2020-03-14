@@ -31,7 +31,7 @@ public class UserDaoTest {
     @BeforeAll
     static void beforeAll() throws SQLException {
 
-        ApplicationContext context = new GenericXmlApplicationContext("/di/userDaoFactory.xml");
+        ApplicationContext context = new GenericXmlApplicationContext("/di/applicationContext.xml");
         userDao = context.getBean("userDao", UserDao.class);
     }
 

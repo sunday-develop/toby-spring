@@ -36,7 +36,7 @@ public class UserDaoTestFromXml {
     void genericXml() {
 
         // given
-        ApplicationContext context = new GenericXmlApplicationContext("/di/userDaoFactory.xml");
+        ApplicationContext context = new GenericXmlApplicationContext("/di/applicationContext.xml");
 
         // when
         UserDao userDao = context.getBean("userDao", UserDao.class);
@@ -56,7 +56,7 @@ public class UserDaoTestFromXml {
 
         // given
 //        ApplicationContext context = new ClassPathXmlApplicationContext("userDao.xml", UserDao.class);
-        ApplicationContext context = new ClassPathXmlApplicationContext("/di/userDaoFactory.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("/di/applicationContext.xml");
 
         // when
         UserDao userDao = context.getBean("userDao", UserDao.class);

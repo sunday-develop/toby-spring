@@ -15,7 +15,7 @@ class UserDaoTestByMain {
     public static void main(String[] args) throws SQLException {
 
         // given
-        ApplicationContext context = new GenericXmlApplicationContext("/di/userDaoFactory.xml");
+        ApplicationContext context = new GenericXmlApplicationContext("/di/applicationContext.xml");
         UserDao userDao = context.getBean("userDao", UserDao.class);
         userDao.deleteAll();
 

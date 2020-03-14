@@ -2,7 +2,6 @@ package com.pplenty.studytoby.chapter02;
 
 import com.pplenty.studytoby.User;
 import com.pplenty.studytoby.UserDao;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -25,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("테스트 - SpringBootTest 이용")
 @SpringBootTest
-@ContextConfiguration("classpath:di/userDaoFactory.xml")
+@ContextConfiguration("classpath:di/applicationContext.xml")
 public class UserDaoSpringTest {
 
     @Autowired
@@ -38,6 +36,7 @@ public class UserDaoSpringTest {
     @BeforeEach
     void setUp() throws SQLException {
 
+        System.out.println(userDao);
         // given fixture
         user1 = new User("pplenty", "yusik", "1234");
         user2 = new User("kohyusik", "usik", "4321");

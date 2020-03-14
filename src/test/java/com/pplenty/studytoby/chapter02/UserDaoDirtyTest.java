@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("테스트 - DirtiesContext 이용")
 @SpringBootTest
-@ContextConfiguration("classpath:di/userDaoFactory.xml")
+@ContextConfiguration("classpath:di/applicationContext.xml")
 @DirtiesContext
 public class UserDaoDirtyTest {
 
