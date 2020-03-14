@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Created by yusik on 2020/03/14.
  */
-@DisplayName("Junit5 학습테스트")
+@DisplayName("Junit5 학습 테스트")
 class Junit5LeaningTest {
 
     @BeforeAll
