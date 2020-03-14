@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Calculator {
 
     public int calcSum(String filePath) throws IOException {
-        try (final BufferedReader br = new BufferedReader(new FileReader(filePath));) {
+        final BufferedReaderCallback sumCallback = br -> {
             int sum = 0;
             while (true) {
                 final String line = br.readLine();
@@ -18,6 +18,13 @@ public class Calculator {
                 sum += Integer.parseInt(line);
             }
             return sum;
+        };
+        return fileReadTemplate(filePath, sumCallback);
+    }
+
+    public int fileReadTemplate(String filePath, BufferedReaderCallback callback) throws IOException {
+        try (final BufferedReader br = new BufferedReader(new FileReader(filePath));) {
+            return callback.doSomethingWithReader(br);
         }
     }
 
