@@ -30,7 +30,14 @@ public class CalcSumTest {
     @DisplayName("파일의 숫자 곱을 계산하는 코드의 테스트")
     @Test
     public void multiplyOfNumbers() throws IOException {
-        Integer sum = calculator.calMultiply(numFilepath);
-        assertEquals(sum, 24);
+        Integer multiply = calculator.calMultiply(numFilepath);
+        assertEquals(multiply, 24);
+    }
+
+    @DisplayName("파일의 문자열을 이어 붙이는 테스트")
+    @Test
+    public void concatenateOfNumbers() throws IOException {
+        String result = calculator.concatenate(numFilepath);
+        assertEquals(result, "1234");
     }
 }
