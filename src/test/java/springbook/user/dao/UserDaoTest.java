@@ -1,5 +1,6 @@
 package springbook.user.dao;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import springbook.user.config.DaoFactory;
@@ -8,13 +9,20 @@ import springbook.user.domain.User;
 import java.sql.SQLException;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class UserDaoTest {
 
-    public static void main(String[] args) throws SQLException {
+    @Test
+    void addAndGet() throws Exception {
         final ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
         final UserDao dao = context.getBean(UserDao.class);
 
-        final User user = User.of("whiteship", "백기선", "married");
+        final User user = User.builder()
+                .id("gyumee")
+                .name("박성철")
+                .password("springno1")
+                .build();
 
         dao.add(user);
 
@@ -22,14 +30,8 @@ class UserDaoTest {
 
         final User user2 = dao.get(user.getId());
 
-        if (!Objects.equals(user.getName(), user2.getName())) {
-            System.out.println("테스트 실패 (name)");
-        } else if (!Objects.equals(user.getPassword(), user.getPassword())) {
-            System.out.println("테스트 실패 (password)");
-        } else {
-            System.out.println("테스트 성공");
-        }
-
+        assertThat(user2.getName()).isEqualTo(user.getName());
+        assertThat(user2.getPassword()).isEqualTo(user.getPassword());
     }
 
 }
