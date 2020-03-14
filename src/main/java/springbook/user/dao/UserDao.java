@@ -55,15 +55,12 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
+        final StatementStrategy strategy = new DeleteAllStatement();
         try (final Connection con = dataSource.getConnection();
-             final PreparedStatement ps = makeStatement(con)) {
+             final PreparedStatement ps = strategy.makePreparedStatement(con)) {
 
             ps.executeUpdate();
         }
-    }
-
-    private PreparedStatement makeStatement(Connection con) throws SQLException {
-        return con.prepareStatement("delete from users");
     }
 
     public int getCount() throws SQLException {
