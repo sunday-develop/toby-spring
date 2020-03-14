@@ -32,22 +32,22 @@ public class UserDao {
     }
 
     public User get(String id) throws SQLException {
-        final Connection con = dataSource.getConnection();
-
-        final PreparedStatement ps = con.prepareStatement("select * from users where id = ?");
-        ps.setString(1, id);
-
-        final ResultSet rs = ps.executeQuery();
         User user = null;
-        if (rs.next()) {
-            user = User.builder()
-                    .id(rs.getString("id"))
-                    .name(rs.getString("name"))
-                    .password(rs.getString("password"))
-                    .build();
+        try (final Connection con = dataSource.getConnection();
+             final PreparedStatement ps = con.prepareStatement("select * from users where id = ?");) {
+
+            ps.setString(1, id);
+
+            try (final ResultSet rs = ps.executeQuery();) {
+                if (rs.next()) {
+                    user = User.builder()
+                            .id(rs.getString("id"))
+                            .name(rs.getString("name"))
+                            .password(rs.getString("password"))
+                            .build();
+                }
+            }
         }
-        rs.close();
-        con.close();
 
         if (user == null) throw new EmptyResultDataAccessException(1);
 
