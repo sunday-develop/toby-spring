@@ -26,7 +26,7 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setup() {
-        userDao = new UserDaoDeleteAll();
+        userDao = new UserDao();
         DataSource dataSource = new SingleConnectionDataSource("jdbc:oracle:thin:@localhost:1521:orcl", "dahye", "test", true);
         userDao.setDataSource(dataSource);
 

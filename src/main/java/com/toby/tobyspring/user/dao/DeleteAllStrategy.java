@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class UserDaoDeleteAll extends UserDao {
+public class DeleteAllStrategy implements StatementStrategy {
     @Override
-    protected PreparedStatement makeStatement(Connection connection) throws SQLException {
+    public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
         return connection.prepareStatement("delete from users");
     }
 }
