@@ -27,7 +27,6 @@ public class UserDaoTest {
                 "jdbc:mariadb://localhost:63306/toby", "jason", "qwe123");
 
         PreparedStatement ps = con.prepareStatement("truncate toby.users");
-
         ps.executeUpdate();
 
     }
