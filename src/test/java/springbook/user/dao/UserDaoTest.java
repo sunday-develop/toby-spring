@@ -78,6 +78,9 @@ class UserDaoTest {
     void getAll() throws Exception {
         dao.deleteAll();
 
+        final List<User> users0 = dao.getAll();
+        assertThat(users0).isEmpty();
+
         dao.add(user1);
         final List<User> users1 = dao.getAll();
         assertThat(users1).hasSize(1);
