@@ -28,6 +28,24 @@ public class UserDao {
         Connection con = dataSource.getConnection();
         PreparedStatement ps = con.prepareStatement("truncate toby.users");
         ps.executeUpdate();
+
+        ps.close();
+        con.close();
+    }
+
+    public int getCount() throws SQLException {
+        Connection con = dataSource.getConnection();
+        PreparedStatement ps = con.prepareStatement("select count(*) from toby.users");
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+        rs.close();
+        ps.close();
+        con.close();
+
+        return count;
+
     }
 
     public void add(User user) throws SQLException {
