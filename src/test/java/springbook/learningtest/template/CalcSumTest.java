@@ -26,4 +26,14 @@ public class CalcSumTest {
         assertThat(calculator.calcMultiply(numFilePath)).isEqualTo(24);
     }
 
+    @Test
+    void multiplyOfNumbersWithBiFunction() throws Exception {
+        assertThat(calculator.calcMultiplyWithBiFunction(numFilePath)).isEqualTo(24);
+    }
+
+    @Test
+    void multiplyOfNumbersWithStream() throws Exception {
+        assertThat(calculator.calcMultiplyWithStream(numFilePath)).isEqualTo(24);
+    }
+
 }
