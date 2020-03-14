@@ -5,6 +5,8 @@ import com.pplenty.studytoby.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
@@ -40,6 +42,28 @@ public class UserDaoTest {
         // when
         userDao.add(user);
         User result = userDao.get("koh");
+        int count = userDao.getCount();
+
+        // then
+        assertThat(count).isEqualTo(1);
+        assertThat(result.getId()).isEqualTo(user.getId());
+        assertThat(result.getPassword()).isEqualTo(user.getPassword());
+    }
+
+    @DisplayName("사용자 생성 및 조회(junit5)")
+    @ParameterizedTest
+    @CsvFileSource(resources = "/users.csv", numLinesToSkip = 1)
+    void addAndGetFromCsv(String id, String name, String password) throws SQLException {
+
+        // given
+        User user = new User();
+        user.setId(id);
+        user.setName(name);
+        user.setPassword(password);
+
+        // when
+        userDao.add(user);
+        User result = userDao.get(id);
         int count = userDao.getCount();
 
         // then
