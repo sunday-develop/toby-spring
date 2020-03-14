@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("테스트 - SpringBootTest 이용")
 @SpringBootTest
-@ContextConfiguration("classpath:di/applicationContext.xml")
+@ContextConfiguration("classpath:test-applicationContext.xml")
 public class UserDaoSpringTest {
 
     @Autowired
