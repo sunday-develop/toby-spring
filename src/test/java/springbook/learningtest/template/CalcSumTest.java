@@ -27,6 +27,11 @@ public class CalcSumTest {
     }
 
     @Test
+    void concatenateStrings() throws Exception {
+        assertThat(calculator.concatenate(numFilePath)).isEqualTo("1234");
+    }
+
+    @Test
     void multiplyOfNumbersWithBiFunction() throws Exception {
         assertThat(calculator.calcMultiplyWithBiFunction(numFilePath)).isEqualTo(24);
     }
