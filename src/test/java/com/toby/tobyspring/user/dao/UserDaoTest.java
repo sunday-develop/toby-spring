@@ -30,10 +30,6 @@ public class UserDaoTest {
         DataSource dataSource = new SingleConnectionDataSource("jdbc:oracle:thin:@localhost:1521:orcl", "dahye", "test", true);
         userDao.setDataSource(dataSource);
 
-        JdbcContext jdbcContext = new JdbcContext();
-        jdbcContext.setDataSource(dataSource);
-        userDao.setJdbcContext(jdbcContext);
-
         user1 = new User("dahyekim", "김다혜", "dahye");
         user2 = new User("toby", "토비", "toby");
         user3 = new User("whiteship", "백기선", "white");
