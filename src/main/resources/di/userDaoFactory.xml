@@ -3,10 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="myConnectionMaker" class="com.pplenty.studytoby.chapter01.step01.DConnectionMaker"/>
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource"/>
 
     <bean id="userDao" class="com.pplenty.studytoby.chapter01.step01.UserDao">
-        <constructor-arg name="connectionMaker" ref="myConnectionMaker"/>
+        <constructor-arg name="dataSource" ref="dataSource"/>
     </bean>
 
 </beans>

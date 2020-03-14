@@ -1,5 +1,6 @@
 package com.pplenty.studytoby.chapter01.step01;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,15 +11,22 @@ import java.sql.SQLException;
  */
 public class UserDao {
 
-    private ConnectionMaker connectionMaker;
+    private DataSource dataSource;
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+    public UserDao() {
+    }
+
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public void add(User user) throws SQLException {
 
-        Connection con = connectionMaker.makeConnection();
+        Connection con = dataSource.getConnection();
 
         PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
 
@@ -34,7 +42,7 @@ public class UserDao {
 
     public User get(String id) throws SQLException {
 
-        Connection con = connectionMaker.makeConnection();
+        Connection con = dataSource.getConnection();
 
         PreparedStatement ps = con.prepareStatement("select * from toby.users where id = ?");
         ps.setString(1, id);

@@ -3,8 +3,10 @@ package com.pplenty.studytoby.chapter01.step01;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mariadb.jdbc.Driver;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,8 +38,11 @@ public class UserDaoTest {
     void add() throws SQLException {
 
         // given
-        ConnectionMaker connectionMaker = new DConnectionMaker();
-        UserDao userDao = new UserDao(connectionMaker);
+        UserDao userDao = new UserDao();
+        userDao.setDataSource(new SimpleDriverDataSource(
+                new Driver(),
+                "jdbc:mariadb://localhost:63306/toby", "jason", "qwe123"
+        ));
 
         User user = new User();
         user.setId("koh");
