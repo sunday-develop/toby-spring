@@ -1,94 +1,46 @@
 package com.toby.tobyspring.user.dao;
 
 import com.toby.tobyspring.user.domain.User;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
 public class UserDao {
-    private DataSource dataSource;
-    private JdbcContext jdbcContext;
+    private JdbcTemplate jdbcTemplate;
 
     public void setDataSource(DataSource dataSource) {
-        this.jdbcContext = new JdbcContext();
-        this.jdbcContext.setDataSource(dataSource);
-
-        this.dataSource = dataSource;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void add(final User user) throws SQLException {
-        this.jdbcContext.executeSql("insert into users(id, name, password) values(?, ?, ?)",
+    public void add(final User user) {
+        this.jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)",
                 user.getId(), user.getName(), user.getPassword());
     }
 
-    public User get(String id) throws SQLException {
-        Connection connection = dataSource.getConnection();
-
-        // sql 실행
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from users where id = ?");
-        preparedStatement.setString(1, id);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        User user = null;
-        if (resultSet.next()) {
-            user = new User();
-            user.setId(resultSet.getString("id"));
-            user.setName(resultSet.getString("name"));
-            user.setPassword(resultSet.getString("password"));
-        }
-
-        // 자원 회수
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
-
-        if (user == null) throw new EmptyResultDataAccessException(1);
-
+    private RowMapper<User> userRowMapper = (rs, rowNum) -> {
+        User user = new User();
+        user.setId(rs.getString("id"));
+        user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
         return user;
+    };
+
+    public User get(String id) {
+        return this.jdbcTemplate.queryForObject("select * from users where id = ?",
+                new Object[]{id}, this.userRowMapper);
     }
 
-    public int getCount() throws SQLException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement("select count(*) from users");
-
-            resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            return resultSet.getInt(1);
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException ignored) {
-                }
-            }
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException ignored) {
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ignored) {
-                }
-            }
-        }
+    public List<User> getAll() {
+        return this.jdbcTemplate.query("select * from users order by id", this.userRowMapper);
     }
 
-    public void deleteAll() throws SQLException {
-        this.jdbcContext.executeSql("delete from users");
+    public int getCount() {
+        return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+    }
+
+    public void deleteAll() {
+        this.jdbcTemplate.update("delete from users");
     }
 }
