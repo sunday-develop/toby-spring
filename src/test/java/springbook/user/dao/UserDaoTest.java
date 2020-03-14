@@ -6,6 +6,7 @@ import springbook.user.config.DaoFactory;
 import springbook.user.domain.User;
 
 import java.sql.SQLException;
+import java.util.Objects;
 
 class UserDaoTest {
 
@@ -20,10 +21,15 @@ class UserDaoTest {
         System.out.println(user.getId() + " 등록 성공");
 
         final User user2 = dao.get(user.getId());
-        System.out.println(user2.getName());
-        System.out.println(user2.getPassword());
 
-        System.out.println(user2.getId() + " 조회 성공");
+        if (!Objects.equals(user.getName(), user2.getName())) {
+            System.out.println("테스트 실패 (name)");
+        } else if (!Objects.equals(user.getPassword(), user.getPassword())) {
+            System.out.println("테스트 실패 (password)");
+        } else {
+            System.out.println("테스트 성공");
+        }
+
     }
 
 }
