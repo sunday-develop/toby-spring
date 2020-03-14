@@ -2,6 +2,7 @@ package com.pplenty.studytoby.chapter02;
 
 import com.pplenty.studytoby.User;
 import com.pplenty.studytoby.UserDao;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,12 +23,26 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("테스트")
 public class UserDaoTest {
 
-    UserDao userDao;
+    private static UserDao userDao;
+    private User user1;
+    private User user2;
+    private User user3;
+
+    @BeforeAll
+    static void beforeAll() throws SQLException {
+
+        ApplicationContext context = new GenericXmlApplicationContext("/di/userDaoFactory.xml");
+        userDao = context.getBean("userDao", UserDao.class);
+    }
 
     @BeforeEach
     void setUp() throws SQLException {
-        ApplicationContext context = new GenericXmlApplicationContext("/di/userDaoFactory.xml");
-        userDao = context.getBean("userDao", UserDao.class);
+
+        // given fixture
+        user1 = new User("pplenty", "yusik", "1234");
+        user2 = new User("kohyusik", "usik", "4321");
+        user3 = new User("usikzzang", "YUSU", "qwer");
+
         userDao.deleteAll();
     }
 
@@ -36,9 +51,6 @@ public class UserDaoTest {
     void addAndGet() throws SQLException {
 
         // given
-        User user1 = new User("pplenty", "yusik", "1234");
-        User user2 = new User("kohyusik", "usik", "4321");
-
         // when
         userDao.add(user1);
         userDao.add(user2);
