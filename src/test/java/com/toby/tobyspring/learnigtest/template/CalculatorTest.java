@@ -30,4 +30,10 @@ class CalculatorTest {
     public void multiplyOfNumbers() throws IOException {
         assertEquals(24, (int) calculator.calcMultiply(this.numFilepath));
     }
+
+    @Test
+    @DisplayName("파일 읽어 스트링 이어붙이기")
+    public void concatenateStrings() throws IOException {
+        assertEquals("1234", calculator.concatenate(this.numFilepath));
+    }
 }
