@@ -10,7 +10,7 @@
         <property name="password" value="qwe123"/>
     </bean>
 
-    <bean id="userDao" class="com.pplenty.studytoby.chapter01.step01.UserDao">
+    <bean id="userDao" class="com.pplenty.studytoby.UserDao">
         <constructor-arg name="dataSource" ref="myDataSource"/>
     </bean>
 

@@ -1,4 +1,4 @@
-package com.pplenty.studytoby.chapter01.step01;
+package com.pplenty.studytoby;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -22,6 +22,12 @@ public class UserDao {
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public void deleteAll() throws SQLException {
+        Connection con = dataSource.getConnection();
+        PreparedStatement ps = con.prepareStatement("truncate toby.users");
+        ps.executeUpdate();
     }
 
     public void add(User user) throws SQLException {

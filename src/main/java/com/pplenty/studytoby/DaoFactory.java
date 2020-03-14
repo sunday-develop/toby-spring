@@ -1,4 +1,4 @@
-package com.pplenty.studytoby.chapter01.step01;
+package com.pplenty.studytoby;
 
 import org.mariadb.jdbc.Driver;
 import org.springframework.context.annotation.Bean;
@@ -16,21 +16,6 @@ public class DaoFactory {
     @Bean
     public UserDao userDao() {
         return new UserDao(dataSource());
-    }
-
-    @Bean
-    public AccountDao accountDao() {
-        return new AccountDao(connectionMaker());
-    }
-
-    @Bean
-    public MessageDao messageDao() {
-        return new MessageDao(connectionMaker());
-    }
-
-    @Bean
-    public DConnectionMaker connectionMaker() {
-        return new DConnectionMaker();
     }
 
     @Bean

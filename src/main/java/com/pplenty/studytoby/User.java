@@ -1,4 +1,4 @@
-package com.pplenty.studytoby.chapter01.step01;
+package com.pplenty.studytoby;
 
 import java.util.StringJoiner;
 

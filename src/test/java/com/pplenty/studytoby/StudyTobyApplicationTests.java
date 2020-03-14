@@ -1,7 +1,5 @@
 package com.pplenty.studytoby;
 
-import com.pplenty.studytoby.chapter01.step01.DaoFactory;
-import com.pplenty.studytoby.chapter01.step01.UserDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
