@@ -1,7 +1,7 @@
 package springbook.learningtest.template;
 
-public interface LineCallback {
+public interface LineCallback<T> {
 
-    int doSomethingWithLine(String line, int value);
+    T doSomethingWithLine(String line, T value);
 
 }
