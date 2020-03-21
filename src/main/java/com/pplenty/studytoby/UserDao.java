@@ -36,7 +36,11 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        this.jdbcContext.workWithStatementStrategy(con -> con.prepareStatement("delete from toby.users"));
+        executeSql("delete from toby.users");
+    }
+
+    private void executeSql(String sql) throws SQLException {
+        this.jdbcContext.workWithStatementStrategy(con -> con.prepareStatement(sql));
     }
 
     public void add(User user) throws SQLException {
