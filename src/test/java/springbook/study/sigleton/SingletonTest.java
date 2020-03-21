@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import springbook.user.config.Config;
 import springbook.user.dao.UserDao;
+import springbook.user.dao.UserDaoJdbc;
 
 public class SingletonTest {
 
@@ -19,8 +20,8 @@ public class SingletonTest {
         System.out.println("------------------------------------");
 
         final ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
-        final UserDao dao3 = context.getBean(UserDao.class);
-        final UserDao dao4 = context.getBean(UserDao.class);
+        final UserDao dao3 = context.getBean(UserDaoJdbc.class);
+        final UserDao dao4 = context.getBean(UserDaoJdbc.class);
 
         System.out.println(dao3);
         System.out.println(dao4);

@@ -27,7 +27,7 @@ class UserDaoTest {
                 "jdbc:mysql://localhost:3306/springbook", "spring", "book", true
         );
 
-        userDao = new UserDao(dataSource);
+        userDao = new UserDaoJdbc(dataSource);
         userDao.deleteAll();
     }
 

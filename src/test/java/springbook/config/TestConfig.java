@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import springbook.user.dao.UserDao;
+import springbook.user.dao.UserDaoJdbc;
 
 import javax.sql.DataSource;
 
@@ -13,7 +14,7 @@ public class TestConfig {
 
     @Bean
     public UserDao userDao() {
-        return new UserDao(dataSource());
+        return new UserDaoJdbc(dataSource());
     }
 
     @Bean
