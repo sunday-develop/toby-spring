@@ -10,13 +10,8 @@
         <property name="password" value="qwe123"/>
     </bean>
 
-    <bean id="jdbcContext" class="com.pplenty.studytoby.chapter03.JdbcContext">
-        <property name="dataSource" ref="myDataSource"/>
-    </bean>
-
     <bean id="userDao" class="com.pplenty.studytoby.UserDao">
         <constructor-arg name="dataSource" ref="myDataSource"/>
-        <constructor-arg name="jdbcContext" ref="jdbcContext"/>
     </bean>
 
 </beans>

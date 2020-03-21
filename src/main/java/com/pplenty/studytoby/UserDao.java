@@ -1,7 +1,6 @@
 package com.pplenty.studytoby;
 
 import com.pplenty.studytoby.chapter03.JdbcContext;
-import com.pplenty.studytoby.chapter03.StatementStrategy;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
@@ -22,17 +21,18 @@ public class UserDao {
     public UserDao() {
     }
 
-    public UserDao(JdbcContext jdbcContext, DataSource dataSource) {
-        this.jdbcContext = jdbcContext;
-        this.dataSource = dataSource;
-    }
+    public UserDao(DataSource dataSource) {
+        this.jdbcContext = new JdbcContext();
+        this.jdbcContext.setDataSource(dataSource);
 
-    public void setJdbcContext(JdbcContext jdbcContext) {
-        this.jdbcContext = jdbcContext;
+        this.dataSource = dataSource;//
     }
 
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+        this.jdbcContext = new JdbcContext();
+        this.jdbcContext.setDataSource(dataSource);
+
+        this.dataSource = dataSource;//
     }
 
     public void deleteAll() throws SQLException {
