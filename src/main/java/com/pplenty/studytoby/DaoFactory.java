@@ -1,5 +1,6 @@
 package com.pplenty.studytoby;
 
+import com.pplenty.studytoby.chapter03.JdbcContext;
 import org.mariadb.jdbc.Driver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,7 @@ public class DaoFactory {
 
     @Bean
     public UserDao userDao() {
-        return new UserDao(dataSource());
+        return new UserDao(new JdbcContext(), dataSource());
     }
 
     @Bean
