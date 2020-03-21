@@ -1,10 +1,15 @@
 package com.study.spring.user.dao;
 
+import com.mysql.jdbc.MysqlErrorNumbers;
 import com.study.spring.user.domain.User;
+import com.study.spring.user.exception.DuplicationUserIdException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class UserDao {
@@ -41,5 +46,20 @@ public class UserDao {
 
     public List<User> getAll() {
         return this.jdbcTemplate.query("SELECT * FROM users ORDER by id", this.userRowMapper);
+    }
+
+    public void add() throws DuplicationUserIdException {
+
+        try {
+            DataSource dataSource = new SingleConnectionDataSource();
+            Connection c = dataSource.getConnection();
+        } catch (SQLException e) {
+
+            if (e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY) {
+                throw new DuplicationUserIdException(e); // 예외 전환
+            } else {
+                throw new RuntimeException(e); // 예외 포장
+            }
+        }
     }
 }
