@@ -27,74 +27,140 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        Connection con = dataSource.getConnection();
-        PreparedStatement ps = con.prepareStatement("truncate toby.users");
-        ps.executeUpdate();
-
-        ps.close();
-        con.close();
-    }
-
-    public int getCount() throws SQLException {
-        Connection con = dataSource.getConnection();
-        PreparedStatement ps = con.prepareStatement("select count(*) from toby.users");
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-        int count = rs.getInt(1);
-
-        rs.close();
-        ps.close();
-        con.close();
-
-        return count;
-
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = dataSource.getConnection();
+            ps = con.prepareStatement("truncate toby.users");
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException ignored) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException ignored) {
+                }
+            }
+        }
     }
 
     public void add(User user) throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = dataSource.getConnection();
+            ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException ignored) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException ignored) {
+                }
+            }
+        }
+    }
 
-        Connection con = dataSource.getConnection();
+    public int getCount() throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-        PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
-
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        con.close();
+        try {
+            con = dataSource.getConnection();
+            ps = con.prepareStatement("select count(*) from toby.users");
+            rs = ps.executeQuery();
+            rs.next();
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ignored) {
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException ignored) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException ignored) {
+                }
+            }
+        }
     }
 
     public User get(String id) throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-        Connection con = dataSource.getConnection();
+        try {
+            con = dataSource.getConnection();
+            ps = con.prepareStatement("select * from toby.users where id = ?");
+            rs = ps.executeQuery();
 
-        PreparedStatement ps = con.prepareStatement("select * from toby.users where id = ?");
-        ps.setString(1, id);
+            User user = null;
+            if (rs.next()) {
+                user = new User();
+                user.setId(rs.getString("id"));
+                user.setName(rs.getString("name"));
+                user.setPassword(rs.getString("password"));
+            }
 
-        ResultSet rs = ps.executeQuery();
+            if (user == null) {
+                throw new EmptyResultDataAccessException(1);
+            }
 
-        User user = null;
-        if (rs.next()) {
-            user = new User();
-            user.setId(rs.getString("id"));
-            user.setName(rs.getString("name"));
-            user.setPassword(rs.getString("password"));
+            return user;
+
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ignored) {
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException ignored) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException ignored) {
+                }
+            }
         }
-
-        rs.close();
-        ps.close();
-        con.close();
-
-        if (user == null) {
-            throw new EmptyResultDataAccessException(1);
-        }
-
-        return user;
-
     }
-
 }
 
 
