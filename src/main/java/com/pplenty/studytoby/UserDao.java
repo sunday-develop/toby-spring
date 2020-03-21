@@ -1,14 +1,9 @@
 package com.pplenty.studytoby;
 
 import com.pplenty.studytoby.chapter03.JdbcContext;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Created by yusik on 2020/03/09.
@@ -55,88 +50,33 @@ public class UserDao {
         );
     }
 
-    public int getCount() throws SQLException {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    public int getCount() {
+        Integer count = jdbcTemplate.query(
 
-        try {
-            con = dataSource.getConnection();
-            ps = con.prepareStatement("select count(*) from toby.users");
-            rs = ps.executeQuery();
-            rs.next();
-            return rs.getInt(1);
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ignored) {
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException ignored) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException ignored) {
-                }
-            }
-        }
+                con -> con.prepareStatement("select count(*) from toby.users"),
+
+                (rs) -> {
+                    rs.next();
+                    return rs.getInt(1);
+                });
+        return count;
     }
 
-    public User get(String id) throws SQLException {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    public User get(String id) {
 
-        try {
-            con = dataSource.getConnection();
-            ps = con.prepareStatement("select * from toby.users where id = ?");
-            ps.setString(1, id);
-            rs = ps.executeQuery();
+        return jdbcTemplate.queryForObject(
 
-            User user = null;
-            if (rs.next()) {
-                user = new User();
-                user.setId(rs.getString("id"));
-                user.setName(rs.getString("name"));
-                user.setPassword(rs.getString("password"));
-            }
+                "select * from toby.users where id = ?",
 
-            if (user == null) {
-                throw new EmptyResultDataAccessException(1);
-            }
+                new Object[]{id},
 
-            return user;
-
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ignored) {
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException ignored) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException ignored) {
-                }
-            }
-        }
+                (rs, rowNum) -> {
+                    User user = new User();
+                    user.setId(rs.getString("id"));
+                    user.setName(rs.getString("name"));
+                    user.setPassword(rs.getString("password"));
+                    return user;
+                });
     }
 }
 

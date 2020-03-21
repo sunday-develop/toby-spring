@@ -8,6 +8,7 @@ import java.sql.SQLException;
 /**
  * Created by yusik on 2020/03/22.
  */
+@Deprecated
 public class JdbcContext {
 
     private DataSource dataSource;
