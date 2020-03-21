@@ -1,10 +1,15 @@
 package com.toby.tobyspring.user.dao;
 
 import com.toby.tobyspring.user.domain.User;
+import com.toby.tobyspring.user.exception.DuplicateUserIdException;
+import oracle.jdbc.driver.OracleSQLException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
 
 public class UserDao {
@@ -15,8 +20,12 @@ public class UserDao {
     }
 
     public void add(final User user) {
-        this.jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)",
-                user.getId(), user.getName(), user.getPassword());
+        try {
+            this.jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)",
+                    user.getId(), user.getName(), user.getPassword());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateUserIdException(e);
+        }
     }
 
     private RowMapper<User> userRowMapper = (rs, rowNum) -> {
