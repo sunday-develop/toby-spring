@@ -1,6 +1,7 @@
 package com.toby.tobyspring.user.dao;
 
 import com.toby.tobyspring.user.domain.User;
+import com.toby.tobyspring.user.exception.DuplicateUserIdException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,7 @@ public class UserDaoTest {
 
     @Test
     @DisplayName("userDao 프로세스 검증")
-    public void addAndGet() throws SQLException {
+    public void addAndGet() {
         userDao.deleteAll();
         assertEquals(0, userDao.getCount());
 
@@ -59,7 +60,7 @@ public class UserDaoTest {
 
     @Test
     @DisplayName("getCount() 테스트")
-    public void count() throws SQLException {
+    public void count() {
         userDao.deleteAll();
         assertEquals(0, userDao.getCount());
 
@@ -75,7 +76,7 @@ public class UserDaoTest {
 
     @Test
     @DisplayName("get() 메소드의 예외상황에 대한 테스트")
-    public void getUserFailure() throws SQLException {
+    public void getUserFailure() {
         userDao.deleteAll();
         assertEquals(0, userDao.getCount());
 
@@ -86,7 +87,7 @@ public class UserDaoTest {
 
     @Test
     @DisplayName("getAll() 메소드 테스트")
-    public void getAll() throws SQLException {
+    public void getAll() {
         userDao.deleteAll();
 
         List<User> user0 = userDao.getAll();
@@ -117,5 +118,17 @@ public class UserDaoTest {
         assertEquals(user1.getId(), user2.getId());
         assertEquals(user1.getName(), user2.getName());
         assertEquals(user1.getPassword(), user2.getPassword());
+    }
+
+    @Test
+    @DisplayName("중복된 아이디를 등록하는 경우")
+    public void duplicateUser() {
+        userDao.deleteAll();
+        assertEquals(0, userDao.getCount());
+
+        userDao.add(user1);
+        Assertions.assertThrows(DuplicateUserIdException.class, () -> {
+            userDao.add(user1);
+        });
     }
 }
