@@ -2,6 +2,7 @@ package com.pplenty.studytoby;
 
 import com.pplenty.studytoby.chapter03.JdbcContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 public class UserDao {
 
     private JdbcContext jdbcContext;
+    private JdbcTemplate jdbcTemplate;
 
     private DataSource dataSource;
 
@@ -22,6 +24,8 @@ public class UserDao {
     }
 
     public UserDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+
         this.jdbcContext = new JdbcContext();
         this.jdbcContext.setDataSource(dataSource);
 
@@ -29,24 +33,26 @@ public class UserDao {
     }
 
     public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+
         this.jdbcContext = new JdbcContext();
         this.jdbcContext.setDataSource(dataSource);
 
         this.dataSource = dataSource;//
     }
 
-    public void deleteAll() throws SQLException {
-        this.jdbcContext.executeSql("delete from toby.users");
+    public void deleteAll() {
+//        jdbcTemplate.update(con -> con.prepareStatement("delete from toby.users"));
+        jdbcTemplate.update("delete from toby.users");
     }
 
-    public void add(User user) throws SQLException {
-        this.jdbcContext.workWithStatementStrategy(con -> {
-            PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            return ps;
-        });
+    public void add(User user) {
+        jdbcTemplate.update(
+                "insert into toby.users(id, name, password) values(?, ?, ?)",
+                user.getId(),
+                user.getName(),
+                user.getPassword()
+        );
     }
 
     public int getCount() throws SQLException {

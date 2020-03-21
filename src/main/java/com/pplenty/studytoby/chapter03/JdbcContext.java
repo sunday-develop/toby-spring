@@ -16,7 +16,7 @@ public class JdbcContext {
         this.dataSource = dataSource;
     }
 
-    public void executeSql(String sql) throws SQLException {
+    public void executeSql(final String sql) throws SQLException {
         workWithStatementStrategy(con -> con.prepareStatement(sql));
     }
 
