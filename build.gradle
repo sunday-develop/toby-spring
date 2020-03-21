@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id "org.flywaydb.flyway" version "6.3.0"
+    id "io.freefair.lombok" version "4.1.6"
 }
 
 group 'org.example'
@@ -25,15 +26,10 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-jdbc', version: "${springVersion}"
     testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
 
-
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
-    compileOnly 'org.projectlombok:lombok:1.18.12'
-
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "${junitVersion}"
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "${junitVersion}"
-
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.15.0'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.0'
 }
 
 flyway {
