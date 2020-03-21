@@ -1,5 +1,7 @@
 package com.pplenty.studytoby;
 
+import com.pplenty.studytoby.chapter03.DeleteAllStatement;
+import com.pplenty.studytoby.chapter03.StatementStrategy;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
@@ -31,7 +33,9 @@ public class UserDao {
         PreparedStatement ps = null;
         try {
             con = dataSource.getConnection();
-            ps = con.prepareStatement("delete from toby.users");
+
+            StatementStrategy strategy = new DeleteAllStatement();
+            ps = strategy.makePreparedStatement(con);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e;
