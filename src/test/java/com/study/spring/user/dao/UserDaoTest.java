@@ -1,12 +1,14 @@
 package com.study.spring.user.dao;
 
 import com.study.spring.user.domain.User;
+import com.study.spring.user.exception.DuplicationUserIdException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -101,5 +103,13 @@ public class UserDaoTest {
         assertEquals(user1.getId(), user2.getId());
         assertEquals(user1.getName(), user2.getName());
         assertEquals(user1.getPassword(), user2.getPassword());
+    }
+
+    public void useUserDaoAddMethod() throws DuplicateKeyException {
+        try {
+            userDao.add(new User());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicationUserIdException(e); // 예외를 전환할 때는 원인이 되는 예외를 중첩하는 것이 좋다.
+        }
     }
 }
