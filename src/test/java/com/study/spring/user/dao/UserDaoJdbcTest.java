@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
-public class UserDaoTest {
+public class UserDaoJdbcTest {
 
     @Autowired
     private ApplicationContext context;
@@ -32,7 +33,7 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setUp() {
-        userDao = context.getBean("userDao", UserDao.class);
+        userDao = context.getBean("userDao", UserDaoJdbc.class);
         user1 = new User("user1", "username1", "username11");
         user2 = new User("user2", "username2", "username22");
         user3 = new User("user3", "username3", "username33");
@@ -111,5 +112,15 @@ public class UserDaoTest {
         } catch (DuplicateKeyException e) {
             throw new DuplicationUserIdException(e); // 예외를 전환할 때는 원인이 되는 예외를 중첩하는 것이 좋다.
         }
+    }
+
+    @DisplayName("DataAcessException에 대한 테스트")
+    @Test
+    public void duplicateKey() {
+
+        userDao.deleteAll();
+
+        userDao.add(user1);
+        assertThrows(DataAccessException.class, () -> userDao.add(user1));
     }
 }
