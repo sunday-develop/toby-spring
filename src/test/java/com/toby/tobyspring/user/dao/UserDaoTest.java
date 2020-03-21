@@ -6,8 +6,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -19,10 +27,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @ref https://junit.org/junit5/docs/current/user-guide/
  * @ref https://howtodoinjava.com/junit5/before-each-annotation-example/
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations = "/applicationContext.xml")
 @DisplayName("userDao test")
 public class UserDaoTest {
 
-    UserDao userDao;
+    @Autowired
+    UserDaoJdbc userDao;
+
+    @Autowired
+    DataSource dataSource;
 
     private User user1;
     private User user2;
@@ -30,7 +44,7 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setup() {
-        userDao = new UserDao();
+        userDao = new UserDaoJdbc();
         DataSource dataSource = new SingleConnectionDataSource("jdbc:oracle:thin:@localhost:1521:orcl", "dahye", "test", true);
         userDao.setDataSource(dataSource);
 
@@ -130,5 +144,23 @@ public class UserDaoTest {
         Assertions.assertThrows(DuplicateUserIdException.class, () -> {
             userDao.add(user1);
         });
+    }
+
+    @Test
+    @DisplayName("SQLException 전환 기능의 학습 테스트")
+    public void learningTranslateException() {
+        userDao.deleteAll();
+        assertEquals(0, userDao.getCount());
+
+        try {
+            userDao.add(user1);
+            userDao.add(user1);
+        } catch (DuplicateKeyException e) {
+            SQLException sqlEx = (SQLException) e.getRootCause();
+            SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+
+            assertEquals(DuplicateKeyException.class, set.translate(null, null, sqlEx).getClass());
+        }
+
     }
 }
