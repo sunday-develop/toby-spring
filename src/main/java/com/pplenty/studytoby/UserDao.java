@@ -1,6 +1,5 @@
 package com.pplenty.studytoby;
 
-import com.pplenty.studytoby.chapter03.AddStatement;
 import com.pplenty.studytoby.chapter03.DeleteAllStatement;
 import com.pplenty.studytoby.chapter03.StatementStrategy;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -62,20 +61,13 @@ public class UserDao {
     }
 
     public void add(User user) throws SQLException {
-        class AddStatement implements StatementStrategy {
-            @Override
-            public PreparedStatement makePreparedStatement(Connection con) throws SQLException {
-
-                PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
-                ps.setString(1, user.getId());
-                ps.setString(2, user.getName());
-                ps.setString(3, user.getPassword());
-                return ps;
-
-            }
-        }
-
-        StatementStrategy stmt = new AddStatement();
+        StatementStrategy stmt = con -> {
+            PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
+            return ps;
+        };
         jdbcContextWithStatementStrategy(stmt);
     }
 
