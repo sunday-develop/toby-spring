@@ -7,6 +7,7 @@ import java.sql.SQLException;
 /**
  * Created by yusik on 2020/03/22.
  */
+@Deprecated
 public class DeleteAllStatement implements StatementStrategy {
     @Override
     public PreparedStatement makePreparedStatement(Connection con) throws SQLException {

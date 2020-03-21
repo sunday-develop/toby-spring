@@ -1,6 +1,5 @@
 package com.pplenty.studytoby;
 
-import com.pplenty.studytoby.chapter03.DeleteAllStatement;
 import com.pplenty.studytoby.chapter03.StatementStrategy;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -29,8 +28,17 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        StatementStrategy stmt = new DeleteAllStatement();// 선정한 전략 클래스의 오브젝트 생성
-        jdbcContextWithStatementStrategy(stmt);// 컨텍스트 호출. 전략 오브젝트 전달
+        jdbcContextWithStatementStrategy(con -> con.prepareStatement("delete from toby.users"));
+    }
+
+    public void add(User user) throws SQLException {
+        jdbcContextWithStatementStrategy(con -> {
+            PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
+            return ps;
+        });
     }
 
     public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
@@ -58,17 +66,6 @@ public class UserDao {
             }
         }
 
-    }
-
-    public void add(User user) throws SQLException {
-        StatementStrategy stmt = con -> {
-            PreparedStatement ps = con.prepareStatement("insert into toby.users(id, name, password) values(?, ?, ?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            return ps;
-        };
-        jdbcContextWithStatementStrategy(stmt);
     }
 
     public int getCount() throws SQLException {
