@@ -1,36 +1,50 @@
 package com.study.spring.user.dao;
 
 import com.study.spring.user.domain.User;
+import com.study.spring.user.exception.DuplicationUserIdException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
-public class UserDaoTest {
+public class UserDaoJdbcTest {
 
     @Autowired
     private ApplicationContext context;
 
+    @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private DataSource dataSource;
+
     private User user1;
     private User user2;
     private User user3;
 
     @BeforeEach
     public void setUp() {
-        userDao = context.getBean("userDao", UserDao.class);
         user1 = new User("user1", "username1", "username11");
         user2 = new User("user2", "username2", "username22");
         user3 = new User("user3", "username3", "username33");
@@ -101,5 +115,39 @@ public class UserDaoTest {
         assertEquals(user1.getId(), user2.getId());
         assertEquals(user1.getName(), user2.getName());
         assertEquals(user1.getPassword(), user2.getPassword());
+    }
+
+    public void useUserDaoAddMethod() throws DuplicateKeyException {
+        try {
+            userDao.add(new User());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicationUserIdException(e); // 예외를 전환할 때는 원인이 되는 예외를 중첩하는 것이 좋다.
+        }
+    }
+
+    @DisplayName("DataAcessException에 대한 테스트")
+    @Test
+    public void duplicateKey() {
+
+        userDao.deleteAll();
+
+        userDao.add(user1);
+        assertThrows(DataAccessException.class, () -> userDao.add(user1));
+    }
+
+    @DisplayName("SQLException 전환 기능의 학습 테스트")
+    @Test
+    public void sqlExceptionTranslate() {
+        userDao.deleteAll();
+
+        try {
+            userDao.add(user1);
+            userDao.add(user1);
+        } catch (DuplicateKeyException e) {
+
+            SQLException sqlException = (SQLException) e.getRootCause();
+            SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+            assertThat(set.translate(null, null, sqlException)).isInstanceOf(DuplicateKeyException.class);
+        }
     }
 }
