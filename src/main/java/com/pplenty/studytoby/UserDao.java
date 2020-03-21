@@ -31,7 +31,7 @@ public class UserDao {
         PreparedStatement ps = null;
         try {
             con = dataSource.getConnection();
-            ps = con.prepareStatement("truncate toby.users");
+            ps = makeStatement(con);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e;
@@ -49,6 +49,10 @@ public class UserDao {
                 }
             }
         }
+    }
+
+    private PreparedStatement makeStatement(Connection con) throws SQLException {
+        return con.prepareStatement("truncate toby.users");
     }
 
     public void add(User user) throws SQLException {
