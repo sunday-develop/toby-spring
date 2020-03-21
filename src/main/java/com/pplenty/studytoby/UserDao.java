@@ -31,7 +31,7 @@ public class UserDao {
         PreparedStatement ps = null;
         try {
             con = dataSource.getConnection();
-            ps = makeStatement(con);
+            ps = con.prepareStatement("delete from toby.users");
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e;
@@ -49,10 +49,6 @@ public class UserDao {
                 }
             }
         }
-    }
-
-    private PreparedStatement makeStatement(Connection con) throws SQLException {
-        return con.prepareStatement("truncate toby.users");
     }
 
     public void add(User user) throws SQLException {
@@ -126,6 +122,7 @@ public class UserDao {
         try {
             con = dataSource.getConnection();
             ps = con.prepareStatement("select * from toby.users where id = ?");
+            ps.setString(1, id);
             rs = ps.executeQuery();
 
             User user = null;
