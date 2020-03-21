@@ -1,43 +1,38 @@
 package com.pplenty.studytoby;
 
-import com.pplenty.studytoby.chapter03.JdbcContext;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 /**
  * Created by yusik on 2020/03/09.
  */
 public class UserDao {
 
-    private JdbcContext jdbcContext;
     private JdbcTemplate jdbcTemplate;
 
-    private DataSource dataSource;
+    private RowMapper<User> userRowMapper = (rs, rowNum) -> {
+        User user = new User();
+        user.setId(rs.getString("id"));
+        user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
+        return user;
+    };
 
     public UserDao() {
     }
 
     public UserDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-
-        this.jdbcContext = new JdbcContext();
-        this.jdbcContext.setDataSource(dataSource);
-
-        this.dataSource = dataSource;//
     }
 
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-
-        this.jdbcContext = new JdbcContext();
-        this.jdbcContext.setDataSource(dataSource);
-
-        this.dataSource = dataSource;//
     }
 
     public void deleteAll() {
-//        jdbcTemplate.update(con -> con.prepareStatement("delete from toby.users"));
         jdbcTemplate.update("delete from toby.users");
     }
 
@@ -52,9 +47,7 @@ public class UserDao {
 
     public int getCount() {
         Integer count = jdbcTemplate.query(
-
-                con -> con.prepareStatement("select count(*) from toby.users"),
-
+                "select count(*) from toby.users",
                 (rs) -> {
                     rs.next();
                     return rs.getInt(1);
@@ -63,20 +56,17 @@ public class UserDao {
     }
 
     public User get(String id) {
-
         return jdbcTemplate.queryForObject(
-
                 "select * from toby.users where id = ?",
-
                 new Object[]{id},
+                userRowMapper);
+    }
 
-                (rs, rowNum) -> {
-                    User user = new User();
-                    user.setId(rs.getString("id"));
-                    user.setName(rs.getString("name"));
-                    user.setPassword(rs.getString("password"));
-                    return user;
-                });
+    public List<User> getAll() {
+
+        return jdbcTemplate.query(
+                "select * from toby.users order by id",
+                userRowMapper);
     }
 }
 
