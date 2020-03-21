@@ -2,12 +2,15 @@ package springbook.user.dao;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import springbook.user.domain.User;
-import springbook.user.exeception.DuplicateUserIdException;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UserDaoTest {
 
     private UserDao userDao;
+    private DataSource dataSource;
 
     private final User user1 = User.of("gyumee", "박성철", "springno1");
     private final User user2 = User.of("leegw700", "이길원", "springno2");
@@ -23,7 +27,7 @@ class UserDaoTest {
 
     @BeforeEach
     void setup() {
-        final DataSource dataSource = new SingleConnectionDataSource(
+        dataSource = new SingleConnectionDataSource(
                 "jdbc:mysql://localhost:3306/springbook", "spring", "book", true
         );
 
@@ -63,11 +67,16 @@ class UserDaoTest {
     }
 
     @Test
-    void addDuplicateUserId() throws Exception {
-        userDao.add(user1);
+    void sqlExceptionTranslate() throws Exception {
+        try {
+            userDao.add(user1);
+            userDao.add(user1);
+        } catch (DuplicateKeyException e) {
+            SQLException sqlEx = (SQLException) e.getRootCause();
+            SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(dataSource);
 
-        assertThatThrownBy(() -> userDao.add(user1))
-                .isInstanceOf(DuplicateUserIdException.class);
+            assertThat(set.translate(null, null, sqlEx)).isExactlyInstanceOf(DuplicateKeyException.class);
+        }
     }
 
     @Test

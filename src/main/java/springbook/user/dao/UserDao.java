@@ -1,16 +1,14 @@
 package springbook.user.dao;
 
 import springbook.user.domain.User;
-import springbook.user.exeception.DuplicateUserIdException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface UserDao {
 
-    void add(User user) throws DuplicateUserIdException;
+    void add(User user);
 
-    User get(String id) throws SQLException;
+    User get(String id);
 
     void deleteAll();
 
