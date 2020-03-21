@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UserDaoTest {
 
     @Autowired
-    UserDaoJdbc userDao;
+    UserDao userDao;
 
     @Autowired
     DataSource dataSource;
@@ -44,10 +44,6 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setup() {
-        userDao = new UserDaoJdbc();
-        DataSource dataSource = new SingleConnectionDataSource("jdbc:oracle:thin:@localhost:1521:orcl", "dahye", "test", true);
-        userDao.setDataSource(dataSource);
-
         user1 = new User("adahyekim", "김다혜", "dahye");
         user2 = new User("btoby", "토비", "toby");
         user3 = new User("cwhiteship", "백기선", "white");
@@ -144,23 +140,5 @@ public class UserDaoTest {
         Assertions.assertThrows(DuplicateUserIdException.class, () -> {
             userDao.add(user1);
         });
-    }
-
-    @Test
-    @DisplayName("SQLException 전환 기능의 학습 테스트")
-    public void learningTranslateException() {
-        userDao.deleteAll();
-        assertEquals(0, userDao.getCount());
-
-        try {
-            userDao.add(user1);
-            userDao.add(user1);
-        } catch (DuplicateKeyException e) {
-            SQLException sqlEx = (SQLException) e.getRootCause();
-            SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
-
-            assertEquals(DuplicateKeyException.class, set.translate(null, null, sqlEx).getClass());
-        }
-
     }
 }
