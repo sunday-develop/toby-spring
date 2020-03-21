@@ -1,7 +1,7 @@
 package com.pplenty.studytoby.chapter02;
 
 import com.pplenty.studytoby.User;
-import com.pplenty.studytoby.UserDao;
+import com.pplenty.studytoby.UserDaoJdbc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("테스트")
 public class UserDaoTest {
 
-    private static UserDao userDao;
+    private static UserDaoJdbc userDao;
     private User user1;
     private User user2;
     private User user3;
@@ -32,7 +32,7 @@ public class UserDaoTest {
     static void beforeAll() throws SQLException {
 
         ApplicationContext context = new GenericXmlApplicationContext("/di/applicationContext.xml");
-        userDao = context.getBean("userDao", UserDao.class);
+        userDao = context.getBean("userDao", UserDaoJdbc.class);
     }
 
     @BeforeEach

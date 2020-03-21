@@ -1,7 +1,7 @@
 package com.pplenty.studytoby.chapter02;
 
 import com.pplenty.studytoby.User;
-import com.pplenty.studytoby.UserDao;
+import com.pplenty.studytoby.UserDaoJdbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("테스트 without spring")
 public class UserDaoTestWithoutSpring {
 
-    private UserDao userDao;
+    private UserDaoJdbc userDao;
     private User user1;
     private User user2;
     private User user3;
@@ -30,7 +30,7 @@ public class UserDaoTestWithoutSpring {
     @BeforeEach
     void setUp() throws SQLException {
 
-        userDao = new UserDao();
+        userDao = new UserDaoJdbc();
         DataSource dataSource = new SingleConnectionDataSource(
                 "jdbc:mariadb://localhost:63306/toby",
                 "jason",

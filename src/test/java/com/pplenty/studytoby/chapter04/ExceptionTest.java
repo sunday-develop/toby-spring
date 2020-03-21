@@ -1,43 +1,42 @@
-package com.pplenty.studytoby.chapter03;
+package com.pplenty.studytoby.chapter04;
 
 import com.pplenty.studytoby.User;
+import com.pplenty.studytoby.UserDao;
 import com.pplenty.studytoby.UserDaoJdbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Created by yusik on 2020/03/21.
+ * Created by yusik on 2020/03/22.
  */
-@DisplayName("템플릿")
+@DisplayName("예외")
 @SpringBootTest
 @ContextConfiguration("classpath:test-applicationContext.xml")
-class TemplateTest {
+public class ExceptionTest {
 
     @Autowired
-    private UserDaoJdbc userDao;
+    private UserDao userDao;
 
     @BeforeEach
     void setUp() {
         userDao.deleteAll();
     }
 
-    @DisplayName("모든 사용자 조회")
+    @DisplayName("유저 중복 예외")
     @Test
-    void getAll() {
-
-        // when
-        List<User> users = userDao.getAll();
-
-        // then
-        assertThat(users).isEmpty();
+    void duplicateUser() {
+        assertThrows(DuplicateKeyException.class, () -> {
+            userDao.add(new User("1", "name", "123"));
+            userDao.add(new User("1", "name", "123"));
+        });
 
     }
+
 }

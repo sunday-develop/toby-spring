@@ -1,7 +1,7 @@
 package com.pplenty.studytoby.chapter02;
 
 import com.pplenty.studytoby.User;
-import com.pplenty.studytoby.UserDao;
+import com.pplenty.studytoby.UserDaoJdbc;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
@@ -16,7 +16,7 @@ class UserDaoTestByMain {
 
         // given
         ApplicationContext context = new GenericXmlApplicationContext("/di/applicationContext.xml");
-        UserDao userDao = context.getBean("userDao", UserDao.class);
+        UserDaoJdbc userDao = context.getBean("userDao", UserDaoJdbc.class);
         userDao.deleteAll();
 
         // when

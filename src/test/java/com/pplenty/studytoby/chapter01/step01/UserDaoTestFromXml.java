@@ -1,6 +1,6 @@
 package com.pplenty.studytoby.chapter01.step01;
 
-import com.pplenty.studytoby.UserDao;
+import com.pplenty.studytoby.UserDaoJdbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,8 +39,8 @@ public class UserDaoTestFromXml {
         ApplicationContext context = new GenericXmlApplicationContext("/di/applicationContext.xml");
 
         // when
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-        UserDao userDao2 = context.getBean("userDao", UserDao.class);
+        UserDaoJdbc userDao = context.getBean("userDao", UserDaoJdbc.class);
+        UserDaoJdbc userDao2 = context.getBean("userDao", UserDaoJdbc.class);
 
         // then
         assertThat(userDao == userDao2).isTrue();
@@ -59,8 +59,8 @@ public class UserDaoTestFromXml {
         ApplicationContext context = new ClassPathXmlApplicationContext("/di/applicationContext.xml");
 
         // when
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-        UserDao userDao2 = context.getBean("userDao", UserDao.class);
+        UserDaoJdbc userDao = context.getBean("userDao", UserDaoJdbc.class);
+        UserDaoJdbc userDao2 = context.getBean("userDao", UserDaoJdbc.class);
 
         // then
         assertThat(userDao == userDao2).isTrue();

@@ -1,7 +1,7 @@
 package com.pplenty.studytoby.chapter02;
 
 import com.pplenty.studytoby.User;
-import com.pplenty.studytoby.UserDao;
+import com.pplenty.studytoby.UserDaoJdbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserDaoDirtyTest {
 
     @Autowired
-    private UserDao userDao;
+    private UserDaoJdbc userDao;
 
     private User user1;
     private User user2;

@@ -2,7 +2,7 @@ package com.pplenty.studytoby.chapter01.step01;
 
 import com.pplenty.studytoby.DaoFactory;
 import com.pplenty.studytoby.User;
-import com.pplenty.studytoby.UserDao;
+import com.pplenty.studytoby.UserDaoJdbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class UserDaoTest {
     void add() throws SQLException {
 
         // given
-        UserDao userDao = new UserDao();
+        UserDaoJdbc userDao = new UserDaoJdbc();
         userDao.setDataSource(new SimpleDriverDataSource(
                 new Driver(),
                 "jdbc:mariadb://localhost:63306/toby", "jason", "qwe123"
@@ -67,7 +67,7 @@ public class UserDaoTest {
     void factory() throws SQLException {
 
         // given
-        UserDao userDao = new DaoFactory().userDao();
+        UserDaoJdbc userDao = new DaoFactory().userDao();
 
         User user = new User();
         user.setId("koh");
@@ -90,7 +90,7 @@ public class UserDaoTest {
 
         // given
         ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao userDao = context.getBean("userDao", UserDao.class);
+        UserDaoJdbc userDao = context.getBean("userDao", UserDaoJdbc.class);
 
         User user = new User();
         user.setId("koh");
@@ -115,8 +115,8 @@ public class UserDaoTest {
         DaoFactory factory = new DaoFactory();
 
         // when
-        UserDao userDao = factory.userDao();
-        UserDao userDao2 = factory.userDao();
+        UserDaoJdbc userDao = factory.userDao();
+        UserDaoJdbc userDao2 = factory.userDao();
 
         // then
         assertThat(userDao == userDao2).isFalse();
@@ -134,8 +134,8 @@ public class UserDaoTest {
         ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
 
         // when
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-        UserDao userDao2 = context.getBean("userDao", UserDao.class);
+        UserDaoJdbc userDao = context.getBean("userDao", UserDaoJdbc.class);
+        UserDaoJdbc userDao2 = context.getBean("userDao", UserDaoJdbc.class);
 
         // then
         assertThat(userDao == userDao2).isTrue();
