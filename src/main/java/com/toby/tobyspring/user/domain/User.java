@@ -4,6 +4,9 @@ public class User {
     String id;
     String name;
     String password;
+    Grade grade;
+    int login;
+    int recomend;
 
     public String getId() {
         return id;
@@ -15,6 +18,18 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public int getLogin() {
+        return login;
+    }
+
+    public int getRecomend() {
+        return recomend;
     }
 
     public void setId(String id) {
@@ -29,13 +44,37 @@ public class User {
         this.password = password;
     }
 
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
+    public void setLogin(int login) {
+        this.login = login;
+    }
+
+    public void setRecomend(int recomend) {
+        this.recomend = recomend;
+    }
+
     public User() {
 
     }
 
-    public User(String id, String name, String password) {
+    public User(String id, String name, String password, Grade grade, int login, int recomend) {
         this.id = id;
         this.name = name;
         this.password = password;
+        this.grade = grade;
+        this.login = login;
+        this.recomend = recomend;
+    }
+
+    public void upgrade() {
+        Grade nextGrade = this.grade.nextGrade();
+        if (nextGrade == null) {
+            throw new IllegalArgumentException(this.grade + "은 업그레이드가 불가능합니다.");
+        } else {
+            this.grade = nextGrade;
+        }
     }
 }
