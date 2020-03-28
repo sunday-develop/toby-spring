@@ -124,7 +124,7 @@ class UserServiceTest {
         try {
             userService.upgrades();
             fail("TestUserServiceException expected");
-        } catch (TestUserServiceException | SQLException e) {
+        } catch (TestUserServiceException e) {
         }
 
         checkGrade(users.get(1), false);
