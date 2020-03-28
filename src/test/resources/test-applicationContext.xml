@@ -20,9 +20,7 @@
         <constructor-arg name="dataSource" ref="myDataSource"/>
     </bean>
 
-    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="alt1.gmail-smtp-in.l.google.com"/>
-    </bean>
+    <bean id="mailSender" class="com.pplenty.studytoby.chapter05.DummyMailSender"/>
 
     <bean id="userService" class="com.pplenty.studytoby.UserService">
         <constructor-arg name="userDao" ref="userDao"/>
