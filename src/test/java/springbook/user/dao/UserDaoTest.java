@@ -114,6 +114,7 @@ class UserDaoTest {
     @Test
     void update() throws Exception {
         userDao.add(user1);
+        userDao.add(user2);
 
         user1.setName("오민규");
         user1.setPassword("springno6");
@@ -124,6 +125,9 @@ class UserDaoTest {
 
         final User user1update = userDao.get(user1.getId());
         checkSameUser(user1, user1update);
+
+        final User user2same = userDao.get(user2.getId());
+        checkSameUser(user2, user2same);
     }
 
     private void checkSameUser(User user1, User user2) {
