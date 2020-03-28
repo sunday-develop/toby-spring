@@ -40,7 +40,7 @@ public class ServiceTest {
         user3 = new User("usikzzang", "YUSU", "qwer", Level.GOLD, 100, 40);
     }
 
-    @DisplayName("유저 중복 예외")
+    @DisplayName("추가필드 적용")
     @Test
     void addAndGet() {
 
@@ -58,6 +58,28 @@ public class ServiceTest {
         // then
         checkSameUser(userGet1, user1);
         checkSameUser(userGet2, user2);
+
+    }
+
+    @DisplayName("사용자 수정")
+    @Test
+    void update() {
+
+        // given
+        userDao.add(user1);
+
+        user1.setName("고유식");
+        user1.setPassword("studyhard");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(1000);
+        user1.setRecommend(999);
+
+        // when
+        userDao.update(user1);
+
+        // then
+        User userGet1 = userDao.get(user1.getId());
+        checkSameUser(userGet1, user1);
 
     }
 

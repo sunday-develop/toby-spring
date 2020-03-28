@@ -19,7 +19,7 @@ public class UserDaoJdbc implements UserDao {
         user.setName(rs.getString("name"));
         user.setPassword(rs.getString("password"));
         user.setLevel(Level.valueOf(rs.getInt("level")));
-        user.setLogin(rs.getInt("loing"));
+        user.setLogin(rs.getInt("login"));
         user.setRecommend(rs.getInt("recommend"));
         return user;
     };
@@ -35,10 +35,12 @@ public class UserDaoJdbc implements UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    @Override
     public void deleteAll() {
         jdbcTemplate.update("delete from toby.users");
     }
 
+    @Override
     public void add(User user) {
         jdbcTemplate.update(
                 "insert into toby.users(id, name, password, level, login, recommend) " +
@@ -52,6 +54,23 @@ public class UserDaoJdbc implements UserDao {
         );
     }
 
+    @Override
+    public void update(User user) {
+        jdbcTemplate.update(
+                "update toby.users set name = ?, password = ?, " +
+                        "level = ?, login = ?, recommend = ? " +
+                        "where id = ?",
+                user.getName(),
+                user.getPassword(),
+                user.getLevel().intValue(),
+                user.getLogin(),
+                user.getRecommend(),
+                user.getId()
+        );
+
+    }
+
+    @Override
     public int getCount() {
         Integer count = jdbcTemplate.query(
                 "select count(*) from toby.users",
@@ -62,6 +81,7 @@ public class UserDaoJdbc implements UserDao {
         return count;
     }
 
+    @Override
     public User get(String id) {
         return jdbcTemplate.queryForObject(
                 "select * from toby.users where id = ?",
@@ -69,6 +89,7 @@ public class UserDaoJdbc implements UserDao {
                 userRowMapper);
     }
 
+    @Override
     public List<User> getAll() {
 
         return jdbcTemplate.query(
