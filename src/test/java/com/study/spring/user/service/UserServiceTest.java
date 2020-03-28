@@ -14,6 +14,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.study.spring.user.service.UserService.MIN_LOG_COUNT_FOR_SILVER;
+import static com.study.spring.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -32,11 +34,11 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         userList = Arrays.asList(
-                new User("user1", "username1", "password1", Level.BASIC, 49, 0),
-                new User("user2", "username2", "password2", Level.BASIC, 50, 0),
-                new User("user3", "username3", "password3", Level.SILVER, 60, 29),
-                new User("user4", "username4", "password4", Level.SILVER, 60, 30),
-                new User("user5", "username5", "password5", Level.GOLD, 100, 100)
+                new User("user1", "username1", "password1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0),
+                new User("user2", "username2", "password2", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER, 0),
+                new User("user3", "username3", "password3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
+                new User("user4", "username4", "password4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+                new User("user5", "username5", "password5", Level.GOLD, 100, Integer.MAX_VALUE)
         );
     }
 
@@ -56,11 +58,11 @@ public class UserServiceTest {
 
         userService.upgradeLevels();
 
-        checkLevel(userList.get(0), Level.BASIC);
-        checkLevel(userList.get(1), Level.SILVER);
-        checkLevel(userList.get(2), Level.SILVER);
-        checkLevel(userList.get(3), Level.GOLD);
-        checkLevel(userList.get(4), Level.GOLD);
+        checkLevelUpgraded(userList.get(0), false);
+        checkLevelUpgraded(userList.get(1), true);
+        checkLevelUpgraded(userList.get(2), false);
+        checkLevelUpgraded(userList.get(3), true);
+        checkLevelUpgraded(userList.get(4), false);
     }
 
     @DisplayName("add() 메소드의 테스트")
@@ -82,9 +84,13 @@ public class UserServiceTest {
         assertEquals(userWithoutLevelRead.getLevel(), Level.BASIC);
     }
 
-    private void checkLevel(User user, Level expectedLevel) {
+    private void checkLevelUpgraded(User user, boolean upgraded) {
         User userUpdate = userDao.get(user.getId());
-        assertEquals(userUpdate.getLevel(), expectedLevel);
+        if (upgraded) {
+            assertEquals(userUpdate.getLevel(), user.getLevel().nextLevel());
+        } else {
+            assertEquals(userUpdate.getLevel(), user.getLevel());
+        }
     }
 }
 
