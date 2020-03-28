@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +20,6 @@ import static com.study.spring.user.service.DefaultUserLevelUpgradePolicy.MIN_RE
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
@@ -30,6 +30,9 @@ public class UserServiceTest {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private DataSource dataSource;
 
     private List<User> userList;
 
@@ -51,7 +54,7 @@ public class UserServiceTest {
 
     @DisplayName("레벨 업그레이드 하는 부분")
     @Test
-    public void upgradeLevels() {
+    public void upgradeLevels() throws Exception {
         userDao.deleteAll();
 
         for (User user : this.userList) {
@@ -89,14 +92,20 @@ public class UserServiceTest {
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
     @Test
     public void upgradeAllOrNothing() {
-        UserService testUserService = new TestUserService(userList.get(3).getId());
-        testUserService.setUserDao(this.userDao);
+
+        UserLevelUpgradePolicy userLevelUpgradePolicy = new TestUserLevelUpgradePolicy(userList.get(3).getId());
+        UserService userService = new UserService();
+
+        userService.setUserDao(this.userDao);
+        userService.setDataSource(this.dataSource);
+        userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
+
         userDao.deleteAll();
         for (User user : userList) {
             userDao.add(user);
         }
 
-        assertThrows(TestUserServiceException.class, testUserService::upgradeLevels);
+        assertThrows(TestUserServiceException.class, userService::upgradeLevels);
         checkLevelUpgraded(userList.get(1), false);
     }
 
@@ -109,22 +118,22 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserService extends UserService {
+    static class TestUserLevelUpgradePolicy extends DefaultUserLevelUpgradePolicy {
+
         private String id;
 
-        public TestUserService(String id) {
+        public TestUserLevelUpgradePolicy(String id) {
             this.id = id;
         }
 
         @Override
-        protected void upgradeLevel(User user) {
+        public void upgradeLevel(User user) {
             if (user.getId().equals(this.id)) {
                 throw new TestUserServiceException();
             }
 
-            super.upgradeLevel(user);
+            user.upgradeLevel();
         }
-
     }
 
     static class TestUserServiceException extends RuntimeException {
