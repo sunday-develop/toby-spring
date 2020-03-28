@@ -7,9 +7,14 @@ import java.util.StringJoiner;
  */
 public class User {
 
+    private static final int BASIC = 1;
+    private static final int SILVER = 2;
+    private static final int GOLD = 3;
+
     String id;
     String name;
     String password;
+    int level;
 
     public User() {
     }
@@ -42,6 +47,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     @Override
