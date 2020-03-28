@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -31,6 +32,9 @@ class UserServiceTest {
 
     @Autowired
     private PlatformTransactionManager transactionManager;
+
+    @Autowired
+    private MailSender mailSender;
 
     private final List<User> users = List.of(
             User.of("bumjin", "박범진", "p1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0, "email1@email.com"),
@@ -65,7 +69,8 @@ class UserServiceTest {
 
     @Test
     void upgradeAllOrNothing() throws Exception {
-        final UserService testUserService = new TestUserService(userDao, transactionManager, users.get(3).getId());
+        final UserService testUserService = new TestUserService(userDao, transactionManager, mailSender, users.get(3).getId()
+        );
 
         users.forEach(userDao::add);
 
@@ -108,9 +113,12 @@ class UserServiceTest {
 
         private String id;
 
-        public TestUserService(UserDao userDao, PlatformTransactionManager transactionManager, String id) {
+        public TestUserService(UserDao userDao,
+                               PlatformTransactionManager transactionManager,
+                               MailSender mailSender,
+                               String id) {
 
-            super(userDao, transactionManager);
+            super(userDao, transactionManager, mailSender);
             this.id = id;
         }
 

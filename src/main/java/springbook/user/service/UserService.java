@@ -1,7 +1,7 @@
 package springbook.user.service;
 
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -16,10 +16,15 @@ public class UserService {
 
     private final UserDao userDao;
     private final PlatformTransactionManager transactionManager;
+    private final MailSender mailSender;
 
-    public UserService(UserDao userDao, PlatformTransactionManager transactionManager) {
+    public UserService(UserDao userDao,
+                       PlatformTransactionManager transactionManager,
+                       MailSender mailSender) {
+
         this.userDao = userDao;
         this.transactionManager = transactionManager;
+        this.mailSender = mailSender;
     }
 
     public void upgradeLevels() {
@@ -58,9 +63,6 @@ public class UserService {
     }
 
     private void sendUpgradeEmail(User user) {
-        final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("mail.server.com");
-
         final SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setFrom("useradmin@ksug.org");
