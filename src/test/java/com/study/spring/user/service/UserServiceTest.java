@@ -18,6 +18,8 @@ import static com.study.spring.user.service.UserService.MIN_LOG_COUNT_FOR_SILVER
 import static com.study.spring.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
@@ -84,6 +86,20 @@ public class UserServiceTest {
         assertEquals(userWithoutLevelRead.getLevel(), Level.BASIC);
     }
 
+    @DisplayName("예외 발생 시 작업 취소 여부 테스트")
+    @Test
+    public void upgradeAllOrNothing() {
+        UserService testUserService = new TestUserService(userList.get(3).getId());
+        testUserService.setUserDao(this.userDao);
+        userDao.deleteAll();
+        for (User user : userList) {
+            userDao.add(user);
+        }
+
+        assertThrows(TestUserServiceException.class, testUserService::upgradeLevels);
+        checkLevelUpgraded(userList.get(1), false);
+    }
+
     private void checkLevelUpgraded(User user, boolean upgraded) {
         User userUpdate = userDao.get(user.getId());
         if (upgraded) {
@@ -91,6 +107,27 @@ public class UserServiceTest {
         } else {
             assertEquals(userUpdate.getLevel(), user.getLevel());
         }
+    }
+
+    static class TestUserService extends UserService {
+        private String id;
+
+        public TestUserService(String id) {
+            this.id = id;
+        }
+
+        @Override
+        protected void upgradeLevel(User user) {
+            if (user.getId().equals(this.id)) {
+                throw new TestUserServiceException();
+            }
+
+            super.upgradeLevel(user);
+        }
+
+    }
+
+    static class TestUserServiceException extends RuntimeException {
     }
 }
 
