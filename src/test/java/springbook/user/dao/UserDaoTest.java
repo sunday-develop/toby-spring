@@ -22,9 +22,9 @@ class UserDaoTest {
     private UserDao userDao;
     private DataSource dataSource;
 
-    private final User user1 = User.of("gyumee", "박성철", "springno1", Level.BASIC, 1, 0);
-    private final User user2 = User.of("leegw700", "이길원", "springno2", Level.SILVER, 55, 10);
-    private final User user3 = User.of("bumjin", "박범진", "springno3", Level.GOLD, 100, 40);
+    private final User user1 = User.of("gyumee", "박성철", "springno1", Level.BASIC, 1, 0, "email1@email.com");
+    private final User user2 = User.of("leegw700", "이길원", "springno2", Level.SILVER, 55, 10, "email2@email.com");
+    private final User user3 = User.of("bumjin", "박범진", "springno3", Level.GOLD, 100, 40, "email3@email.com");
 
     @BeforeEach
     void setup() {

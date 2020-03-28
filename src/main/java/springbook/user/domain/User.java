@@ -16,19 +16,28 @@ public class User {
     private Level level;
     private int login;
     private int recommend;
+    private String email;
 
     @Builder
-    private User(String id, String name, String password, Level level, int login, int recommend) {
+    private User(String id, String name, String password, Level level, int login, int recommend, String email) {
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
         this.password = Objects.requireNonNull(password);
         this.level = Objects.requireNonNull(level);
         this.login = Objects.requireNonNull(login);
         this.recommend = Objects.requireNonNull(recommend);
+        this.email = Objects.requireNonNull(email);
     }
 
-    public static User of(String id, String name, String password, Level level, int login, int recommend) {
-        return new User(id, name, password, level, login, recommend);
+    public static User of(String id,
+                          String name,
+                          String password,
+                          Level level,
+                          int login,
+                          int recommend,
+                          String email) {
+
+        return new User(id, name, password, level, login, recommend, email);
     }
 
     public void upgradeLevel() {

@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UserTest {
 
-    private final User user = User.of("id", "name", "pass", Level.BASIC, 0, 0);
+    private final User user = User.of("id", "name", "pass", Level.BASIC, 0, 0, "email@email.com");
 
     @ParameterizedTest
     @MethodSource("upgradeLevelParam")

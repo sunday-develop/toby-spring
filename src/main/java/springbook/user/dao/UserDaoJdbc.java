@@ -19,10 +19,11 @@ public class UserDaoJdbc implements UserDao {
             .level(Level.valueOf(rs.getInt("level")))
             .login(rs.getInt("login"))
             .recommend(rs.getInt("recommend"))
+            .email(rs.getString("email"))
             .build();
 
-    private static final String USER_ADD = "insert into users(id, name, password, level, login, recommend) " +
-            "values(:id, :name, :password, :level, :login, :recommend)";
+    private static final String USER_ADD = "insert into users(id, name, password, level, login, recommend, email) " +
+            "values(:id, :name, :password, :level, :login, :recommend, :email)";
 
     private static final String USER_GET = "select * from users where id = :id";
     private static final String USER_DELETE_ALL = "delete from users";
@@ -38,7 +39,8 @@ public class UserDaoJdbc implements UserDao {
             "password", user.getPassword(),
             "level", user.getLevel().intValue(),
             "login", user.getLogin(),
-            "recommend", user.getRecommend()
+            "recommend", user.getRecommend(),
+            "email", user.getEmail()
     );
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
