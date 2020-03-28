@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +27,9 @@ class UserServiceTest {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    DataSource dataSource;
 
     List<User> users;
 
@@ -47,7 +52,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자 레벨 업그레이드 테스트")
-    public void upgrades() {
+    public void upgrades() throws SQLException {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
@@ -111,6 +116,7 @@ class UserServiceTest {
         UserService userService = new TestUserService(users.get(3).getId());
         userService.setUserDao(this.userDao);
         userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
+        userService.setDataSource(dataSource);
 
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
@@ -118,7 +124,7 @@ class UserServiceTest {
         try {
             userService.upgrades();
             fail("TestUserServiceException expected");
-        } catch (TestUserServiceException e) {
+        } catch (TestUserServiceException | SQLException e) {
         }
 
         checkGrade(users.get(1), false);
