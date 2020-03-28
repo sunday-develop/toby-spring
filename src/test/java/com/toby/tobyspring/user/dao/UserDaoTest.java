@@ -39,9 +39,9 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setup() {
-        user1 = new User("adahyekim", "김다혜", "dahye", Grade.BASIC, 1, 0);
-        user2 = new User("btoby", "토비", "toby", Grade.SILVER, 55, 10);
-        user3 = new User("cwhiteship", "백기선", "white", Grade.GOLD, 100, 40);
+        user1 = new User("adahyekim", "김다혜", "dahye", Grade.BASIC, 1, 0, "dahyekim@nav.com");
+        user2 = new User("btoby", "토비", "toby", Grade.SILVER, 55, 10, "toby@nav.com");
+        user3 = new User("cwhiteship", "백기선", "white", Grade.GOLD, 100, 40, "white@nav.com");
     }
 
     @Test
@@ -123,7 +123,8 @@ public class UserDaoTest {
         assertEquals(user1.getPassword(), user2.getPassword());
         assertEquals(user1.getGrade(), user2.getGrade());
         assertEquals(user1.getLogin(), user2.getLogin());
-        assertEquals(user1.getRecomend(), user2.getRecomend());
+        assertEquals(user1.getRecommend(), user2.getRecommend());
+        assertEquals(user1.getEmail(), user2.getEmail());
     }
 
     @Test
@@ -150,7 +151,8 @@ public class UserDaoTest {
         user1.setPassword("vvshinevv");
         user1.setGrade(Grade.GOLD);
         user1.setLogin(1000);
-        user1.setRecomend(999);
+        user1.setRecommend(999);
+        user1.setEmail("vv@nav.com");
         userDao.update(user1);
 
         User user1update = userDao.get(user1.getId());

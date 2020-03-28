@@ -20,7 +20,7 @@ class UserTest {
     public void upgrade() {
         Grade[] grades = Grade.values();
         for (Grade grade : grades) {
-            if (grade.nextGrade() == null) continue;
+            if (grade.nextGrade() ==   null) continue;
             user.setGrade(grade);
             user.upgrade();
             assertEquals(grade.nextGrade(), user.getGrade());

@@ -15,7 +15,7 @@ public class DefaultUserUpgradePolicy implements UserUpgradePolicy {
             case BASIC:
                 return (user.getLogin() >= MIN_LOGCOUNT_FOR_SILVER);
             case SILVER:
-                return (user.getRecomend() >= MIN_RECOMMEND_FOR_GOLD);
+                return (user.getRecommend() >= MIN_RECOMMEND_FOR_GOLD);
             case GOLD:
                 return false;
             default:
