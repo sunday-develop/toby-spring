@@ -27,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserServiceTest {
 
     @Autowired
+    private TestUserService testUserService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -98,13 +101,32 @@ public class UserServiceTest {
 
     }
 
+    @DisplayName("예외 발생 시 작업 취소 여부")
+    @Test
+    void upgradeAllOrNothing() {
+        // given
+        for (User user : users) {
+            userDao.add(user);
+        }
+        testUserService.setId(users.get(3).getId());
+
+        // when
+        userService.upgradeLevels();
+        try {
+            testUserService.upgradeLevels();
+        } catch (TestUserServiceException ignore) {
+        }
+
+        // then
+        checkLevelUpgraded(users.get(1), false);
+    }
+
     private void checkLevelUpgraded(User user, boolean upgraded) {
         User userUpdate = userDao.get(user.getId());
         if (upgraded) {
             assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel().nextLevel());
-
         } else {
-            assertThat(userUpdate.getLevel()).isEqualTo(userUpdate.getLevel());
+            assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel());
         }
     }
 }

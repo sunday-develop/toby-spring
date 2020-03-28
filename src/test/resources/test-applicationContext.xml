@@ -21,4 +21,9 @@
         <constructor-arg name="policy" ref="policy"/>
     </bean>
 
+    <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserService">
+        <constructor-arg name="userDao" ref="userDao"/>
+        <constructor-arg name="policy" ref="policy"/>
+    </bean>
+
 </beans>
