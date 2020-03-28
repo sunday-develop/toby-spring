@@ -137,4 +137,25 @@ public class UserDaoTest {
             userDao.add(user1);
         });
     }
+
+    @Test
+    @DisplayName("사용자 정보 수정 메소드 테스트")
+    public void update() {
+        userDao.deleteAll();
+
+        userDao.add(user1);
+        userDao.add(user2);
+
+        user1.setName("최홍희");
+        user1.setPassword("vvshinevv");
+        user1.setGrade(Grade.GOLD);
+        user1.setLogin(1000);
+        user1.setRecomend(999);
+        userDao.update(user1);
+
+        User user1update = userDao.get(user1.getId());
+        checkSameUser(user1, user1update);
+        User user2same = userDao.get(user2.getId());
+        checkSameUser(user2same, user2);
+    }
 }
