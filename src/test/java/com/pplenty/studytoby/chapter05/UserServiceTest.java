@@ -45,8 +45,9 @@ public class UserServiceTest {
         // given fixture
         users = Arrays.asList(
                 new User("pplenty", "yusik", "1234", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER - 1, 0),
-                new User("kohyusik", "usik", "4321", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER, 0),
-                new User("kohyusik1", "고유식", "test", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
+                new User("kohyusik", "고유식", "4321",
+                        "jason.parsing+sendme@gmail.com", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER, 0),
+                new User("kohyusik1", "고유", "test", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
                 new User("kohyusik2", "권세희", "test", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
                 new User("kohyusik3", "유식", "test", Level.GOLD, 100, Integer.MAX_VALUE)
         );
