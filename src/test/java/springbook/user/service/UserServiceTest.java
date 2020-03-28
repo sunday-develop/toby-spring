@@ -11,6 +11,7 @@ import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +28,9 @@ class UserServiceTest {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private DataSource dataSource;
 
     private final List<User> users = List.of(
             User.of("bumjin", "박범진", "p1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0),
@@ -61,7 +65,7 @@ class UserServiceTest {
 
     @Test
     void upgradeAllOrNothing() throws Exception {
-        final UserService testUserService = new TestUserService(userDao, users.get(3).getId());
+        final UserService testUserService = new TestUserService(userDao, dataSource, users.get(3).getId());
 
         users.forEach(userDao::add);
 
@@ -104,8 +108,8 @@ class UserServiceTest {
 
         private String id;
 
-        public TestUserService(UserDao userDao, String id) {
-            super(userDao);
+        public TestUserService(UserDao userDao, DataSource dataSource, String id) {
+            super(userDao, dataSource);
             this.id = id;
         }
 
