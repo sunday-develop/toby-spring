@@ -14,8 +14,11 @@
         <constructor-arg name="dataSource" ref="myDataSource"/>
     </bean>
 
+    <bean id="policy" class="com.pplenty.studytoby.UserLevelUpgradeEventPolicy"/>
+
     <bean id="userService" class="com.pplenty.studytoby.UserService">
         <constructor-arg name="userDao" ref="userDao"/>
+        <constructor-arg name="policy" ref="policy"/>
     </bean>
 
 </beans>

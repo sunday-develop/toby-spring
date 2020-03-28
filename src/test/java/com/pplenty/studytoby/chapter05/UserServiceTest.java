@@ -14,8 +14,8 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.pplenty.studytoby.UserService.MIN_LOGIN_COUNT_FOR_SILVER;
-import static com.pplenty.studytoby.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static com.pplenty.studytoby.UserLevelUpgradeEventPolicy.MIN_LOGIN_COUNT_FOR_SILVER;
+import static com.pplenty.studytoby.UserLevelUpgradeEventPolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
