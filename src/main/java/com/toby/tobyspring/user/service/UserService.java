@@ -3,19 +3,16 @@ package com.toby.tobyspring.user.service;
 import com.toby.tobyspring.user.dao.UserDao;
 import com.toby.tobyspring.user.domain.Grade;
 import com.toby.tobyspring.user.domain.User;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 public class UserService {
     UserDao userDao;
     UserUpgradePolicy userUpgradePolicy;
-    private DataSource dataSource;
+    private PlatformTransactionManager transactionManager;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -25,13 +22,12 @@ public class UserService {
         this.userUpgradePolicy = userUpgradePolicy;
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
 
     public void upgrades() {
-        PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
-        TransactionStatus transactionStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        TransactionStatus transactionStatus = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
             List<User> users = userDao.getAll();
             for (User user : users) {
@@ -39,9 +35,9 @@ public class UserService {
                     upgrade(user);
                 }
             }
-            transactionManager.commit(transactionStatus);
+            this.transactionManager.commit(transactionStatus);
         } catch (RuntimeException e) {
-            transactionManager.rollback(transactionStatus);
+            this.transactionManager.rollback(transactionStatus);
             throw e;
         }
     }
