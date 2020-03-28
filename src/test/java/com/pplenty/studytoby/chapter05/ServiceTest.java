@@ -1,5 +1,6 @@
 package com.pplenty.studytoby.chapter05;
 
+import com.pplenty.studytoby.Level;
 import com.pplenty.studytoby.User;
 import com.pplenty.studytoby.UserDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,11 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DuplicateKeyException;
 
 import javax.sql.DataSource;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by yusik on 2020/03/28.
@@ -20,25 +20,53 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 public class ServiceTest {
 
-
     @Autowired
     private DataSource dataSource;
 
     @Autowired
     private UserDao userDao;
 
+    private User user1;
+    private User user2;
+    private User user3;
+
     @BeforeEach
     void setUp() {
         userDao.deleteAll();
+
+        // given fixture
+        user1 = new User("pplenty", "yusik", "1234", Level.BASIC, 1, 0);
+        user2 = new User("kohyusik", "usik", "4321", Level.SILVER, 55, 10);
+        user3 = new User("usikzzang", "YUSU", "qwer", Level.GOLD, 100, 40);
     }
 
     @DisplayName("유저 중복 예외")
     @Test
-    void duplicateUser() {
-        assertThrows(DuplicateKeyException.class, () -> {
-            userDao.add(new User("1", "name", "123"));
-            userDao.add(new User("1", "name", "123"));
-        });
+    void addAndGet() {
 
+        // given
+        userDao.add(user1);
+        userDao.add(user2);
+
+        // when
+        User userGet1 = userDao.get(user1.getId());
+        User userGet2 = userDao.get(user2.getId());
+
+        System.out.println(userGet1);
+        System.out.println(user1);
+
+        // then
+        checkSameUser(userGet1, user1);
+        checkSameUser(userGet2, user2);
+
+    }
+
+    private void checkSameUser(User user1, User user2) {
+        assertThat(user1.getId()).isEqualTo(user2.getId());
+        assertThat(user1.getName()).isEqualTo(user2.getName());
+        assertThat(user1.getPassword()).isEqualTo(user2.getPassword());
+        assertThat(user1.getLevel()).isEqualTo(user2.getLevel());
+        assertThat(user1.getLogin()).isEqualTo(user2.getLogin());
+        assertThat(user1.getRecommend()).isEqualTo(user2.getRecommend());
     }
 }

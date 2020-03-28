@@ -7,14 +7,12 @@ import java.util.StringJoiner;
  */
 public class User {
 
-    private static final int BASIC = 1;
-    private static final int SILVER = 2;
-    private static final int GOLD = 3;
-
     String id;
     String name;
     String password;
-    int level;
+    Level level;
+    int login;
+    int recommend;
 
     public User() {
     }
@@ -23,6 +21,15 @@ public class User {
         this.id = id;
         this.name = name;
         this.password = password;
+    }
+
+    public User(String id, String name, String password, Level level, int login, int recommend) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.level = level;
+        this.login = login;
+        this.recommend = recommend;
     }
 
     public String getId() {
@@ -49,17 +56,28 @@ public class User {
         this.password = password;
     }
 
-    public void setLevel(int level) {
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
         this.level = level;
     }
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
-                .add("id='" + id + "'")
-                .add("name='" + name + "'")
-                .add("password='" + password + "'")
-                .toString();
+    public int getLogin() {
+        return login;
+    }
+
+    public void setLogin(int login) {
+        this.login = login;
+    }
+
+    public int getRecommend() {
+        return recommend;
+    }
+
+    public void setRecommend(int recommend) {
+        this.recommend = recommend;
     }
 
     @Override
@@ -69,9 +87,13 @@ public class User {
 
         User user = (User) o;
 
+        if (getLogin() != user.getLogin()) return false;
+        if (getRecommend() != user.getRecommend()) return false;
         if (getId() != null ? !getId().equals(user.getId()) : user.getId() != null) return false;
         if (getName() != null ? !getName().equals(user.getName()) : user.getName() != null) return false;
-        return getPassword() != null ? getPassword().equals(user.getPassword()) : user.getPassword() == null;
+        if (getPassword() != null ? !getPassword().equals(user.getPassword()) : user.getPassword() != null)
+            return false;
+        return getLevel() == user.getLevel();
     }
 
     @Override
@@ -79,6 +101,21 @@ public class User {
         int result = getId() != null ? getId().hashCode() : 0;
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
+        result = 31 * result + (getLevel() != null ? getLevel().hashCode() : 0);
+        result = 31 * result + getLogin();
+        result = 31 * result + getRecommend();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+                .add("id='" + id + "'")
+                .add("name='" + name + "'")
+                .add("password='" + password + "'")
+                .add("level=" + level)
+                .add("login=" + login)
+                .add("recommend=" + recommend)
+                .toString();
     }
 }
