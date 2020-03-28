@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class User {
@@ -12,20 +14,22 @@ public class User {
     private String id;
     private String name;
     private String password;
+    private Level level;
+    private int login;
+    private int recommend;
 
     @Builder
-    public User(String id, String name, String password) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
+    private User(String id, String name, String password, Level level, int login, int recommend) {
+        this.id = Objects.requireNonNull(id);
+        this.name = Objects.requireNonNull(name);
+        this.password = Objects.requireNonNull(password);
+        this.level = Objects.requireNonNull(level);
+        this.login = Objects.requireNonNull(login);
+        this.recommend = Objects.requireNonNull(recommend);
     }
 
-    public static User of(String id, String name, String password) {
-        User user = new User();
-        user.id = id;
-        user.name = name;
-        user.password = password;
-        return user;
+    public static User of(String id, String name, String password, Level level, int login, int recommend) {
+        return new User(id, name, password, level, login, recommend);
     }
 
 }

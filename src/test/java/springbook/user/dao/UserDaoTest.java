@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
+import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
@@ -21,9 +22,9 @@ class UserDaoTest {
     private UserDao userDao;
     private DataSource dataSource;
 
-    private final User user1 = User.of("gyumee", "박성철", "springno1");
-    private final User user2 = User.of("leegw700", "이길원", "springno2");
-    private final User user3 = User.of("bumjin", "박범진", "springno3");
+    private final User user1 = User.of("gyumee", "박성철", "springno1", Level.BASIC, 1, 0);
+    private final User user2 = User.of("leegw700", "이길원", "springno2", Level.SILVER, 55, 10);
+    private final User user3 = User.of("bumjin", "박범진", "springno3", Level.GOLD, 100, 40);
 
     @BeforeEach
     void setup() {
