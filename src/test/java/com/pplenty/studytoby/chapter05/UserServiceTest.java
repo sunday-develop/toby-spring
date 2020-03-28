@@ -75,6 +75,28 @@ public class UserServiceTest {
 
     }
 
+    @DisplayName("사용자 추가: 경우에 따른 레벨 초기화")
+    @Test
+    void addLevelInitialize() {
+
+        // given
+        User userWithLevel = users.get(4); // GOLD level
+        User userWithoutLevel = users.get(0);
+        userWithoutLevel.setLevel(null);
+
+        // when
+        userService.add(userWithLevel);
+        userService.add(userWithoutLevel);
+        User userWithLevelRead = userDao.get(userWithLevel.getId());
+        User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
+
+        // then
+        assertThat(userWithLevelRead.getLevel()).isEqualTo(userWithLevel.getLevel());
+        assertThat(userWithoutLevelRead.getLevel()).isEqualTo(Level.BASIC);
+
+    }
+
+
     private void checkLevel(User user, Level level) {
         User userUpdate = userDao.get(user.getId());
         assertThat(userUpdate.getLevel()).isEqualTo(level);
