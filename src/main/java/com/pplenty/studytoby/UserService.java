@@ -13,6 +13,13 @@ public class UserService {
         this.userDao = userDao;
     }
 
+    public void add(User user) {
+        if (user.getLevel() == null) {
+            user.setLevel(Level.BASIC);
+        }
+        userDao.add(user);
+    }
+
     public void upgradeLevels() {
         List<User> users = userDao.getAll();
         for (User user : users) {
@@ -43,12 +50,5 @@ public class UserService {
             user.setLevel(Level.GOLD);
         }
         userDao.update(user);
-    }
-
-    public void add(User user) {
-        if (user.getLevel() == null) {
-            user.setLevel(Level.BASIC);
-        }
-        userDao.add(user);
     }
 }
