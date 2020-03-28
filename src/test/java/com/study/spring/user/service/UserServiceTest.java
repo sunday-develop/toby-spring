@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -34,6 +35,9 @@ public class UserServiceTest {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
     private List<User> userList;
 
     @BeforeEach
@@ -54,7 +58,7 @@ public class UserServiceTest {
 
     @DisplayName("레벨 업그레이드 하는 부분")
     @Test
-    public void upgradeLevels() throws Exception {
+    public void upgradeLevels() {
         userDao.deleteAll();
 
         for (User user : this.userList) {
@@ -97,7 +101,7 @@ public class UserServiceTest {
         UserService userService = new UserService();
 
         userService.setUserDao(this.userDao);
-        userService.setDataSource(this.dataSource);
+        userService.setTransactionManager(this.transactionManager);
         userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
 
         userDao.deleteAll();
