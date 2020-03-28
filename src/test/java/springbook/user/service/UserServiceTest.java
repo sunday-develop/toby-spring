@@ -14,6 +14,7 @@ import springbook.user.domain.User;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static springbook.user.service.UserService.MIN_LOG_COUNT_FOR_SILVER;
 import static springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
 
@@ -56,6 +57,22 @@ class UserServiceTest {
         checkLevelUpgraded(users.get(2), false);
         checkLevelUpgraded(users.get(3), true);
         checkLevelUpgraded(users.get(4), false);
+    }
+
+    @Test
+    void upgradeAllOrNothing() throws Exception {
+        final UserService testUserService = new TestUserService(userDao, users.get(3).getId());
+
+        users.forEach(userDao::add);
+
+        try {
+            testUserService.upgradeLevels();
+            fail("TestUSerServiceException expected");
+        } catch (TestUserServiceException e) {
+
+        }
+
+        checkLevelUpgraded(users.get(1), false);
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
