@@ -35,4 +35,8 @@ public class UserService {
         }
     }
 
+    public void add(User user) {
+        if (user.getGrade() == null) user.setGrade(Grade.BASIC);
+        userDao.add(user);
+    }
 }

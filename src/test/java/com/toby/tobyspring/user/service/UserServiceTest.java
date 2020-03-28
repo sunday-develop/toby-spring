@@ -65,4 +65,23 @@ class UserServiceTest {
         User userUpdate = userDao.get(user.getId());
         assertEquals(expectedGrade, userUpdate.getGrade());
     }
+
+    @Test
+    @DisplayName("add() 메소드 테스트")
+    public void add() {
+        userDao.deleteAll();
+
+        User userWithGrade = users.get(4);
+        User userWithoutGrade = users.get(0);
+        userWithoutGrade.setGrade(null);
+
+        userService.add(userWithGrade);
+        userService.add(userWithoutGrade);
+
+        User userWithGradeRead = userDao.get(userWithGrade.getId());
+        User userWithoutGradeRead = userDao.get(userWithoutGrade.getId());
+
+        assertEquals(userWithGrade.getGrade(), userWithGradeRead.getGrade());
+        assertEquals(Grade.BASIC, userWithoutGradeRead.getGrade());
+    }
 }
