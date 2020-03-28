@@ -1,11 +1,9 @@
 package com.pplenty.studytoby;
 
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -13,12 +11,12 @@ import java.util.List;
  */
 public class UserService {
 
-    private final DataSource dataSource;
+    private final PlatformTransactionManager transactionManager;
     private final UserDao userDao;
     private final UserLevelUpgradePolicy policy;
 
-    public UserService(DataSource dataSource, UserDao userDao, UserLevelUpgradePolicy policy) {
-        this.dataSource = dataSource;
+    public UserService(PlatformTransactionManager transactionManager, UserDao userDao, UserLevelUpgradePolicy policy) {
+        this.transactionManager = transactionManager;
         this.userDao = userDao;
         this.policy = policy;
     }
@@ -32,15 +30,12 @@ public class UserService {
 
     public void upgradeLevels() {
 
-        // JDBC 트랜잭션 추상 오브젝트 생성
-        PlatformTransactionManager transactionManager =
-                new DataSourceTransactionManager(dataSource);
-
         // 트랜잭션 시작
         TransactionStatus status = transactionManager.getTransaction(
                 new DefaultTransactionDefinition());
 
         try {
+            
             List<User> users = userDao.getAll();
             for (User user : users) {
                 upgradeLevel(user);
@@ -52,7 +47,6 @@ public class UserService {
             // 롤백
             transactionManager.rollback(status);
             throw e;
-        } finally {
         }
     }
 

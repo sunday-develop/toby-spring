@@ -16,14 +16,18 @@
 
     <bean id="policy" class="com.pplenty.studytoby.UserLevelUpgradeEventPolicy"/>
 
-    <bean id="userService" class="com.pplenty.studytoby.UserService">
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <constructor-arg name="dataSource" ref="myDataSource"/>
+    </bean>
+
+    <bean id="userService" class="com.pplenty.studytoby.UserService">
+        <constructor-arg name="transactionManager" ref="transactionManager"/>
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
     </bean>
 
     <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserService">
-        <constructor-arg name="dataSource" ref="myDataSource"/>
+        <constructor-arg name="transactionManager" ref="transactionManager"/>
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
     </bean>
