@@ -14,8 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
@@ -32,11 +31,11 @@ class UserServiceTest {
     @BeforeEach
     public void setUp() {
         users = Arrays.asList(
-                new User("dahye", "김다혜", "p1", Grade.BASIC, DefaultUserUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER - 1, 0),
-                new User("toby", "토비", "p2", Grade.BASIC, DefaultUserUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER, 0),
-                new User("white", "흰", "p3", Grade.SILVER, 60, DefaultUserUpgradePolicy.MIN_RECOMMEND_FOR_GOLD - 1),
-                new User("black", "검", "p4", Grade.SILVER, 60, DefaultUserUpgradePolicy.MIN_RECOMMEND_FOR_GOLD),
-                new User("yellow", "노랑", "p5", Grade.GOLD, 100, Integer.MAX_VALUE)
+                new User("adahye", "김다혜", "p1", Grade.BASIC, DefaultUserUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER - 1, 0),
+                new User("btoby", "토비", "p2", Grade.BASIC, DefaultUserUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER, 0),
+                new User("cwhite", "흰", "p3", Grade.SILVER, 60, DefaultUserUpgradePolicy.MIN_RECOMMEND_FOR_GOLD - 1),
+                new User("dblack", "검", "p4", Grade.SILVER, 60, DefaultUserUpgradePolicy.MIN_RECOMMEND_FOR_GOLD),
+                new User("eyellow", "노랑", "p5", Grade.GOLD, 100, Integer.MAX_VALUE)
         );
     }
 
@@ -87,5 +86,41 @@ class UserServiceTest {
 
         assertEquals(userWithGrade.getGrade(), userWithGradeRead.getGrade());
         assertEquals(Grade.BASIC, userWithoutGradeRead.getGrade());
+    }
+
+    static class TestUserService extends UserService {
+        private String id;
+
+        private TestUserService(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public void upgrade(User user) {
+            if (user.getId().equals(this.id)) throw new TestUserServiceException();
+            super.upgrade(user);
+        }
+    }
+
+    static class TestUserServiceException extends RuntimeException {
+    }
+
+    @DisplayName("예외 발생 시 작업 취소 여부 테스트")
+    @Test
+    public void upgradeAllOrNothing() {
+        UserService userService = new TestUserService(users.get(3).getId());
+        userService.setUserDao(this.userDao);
+        userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
+
+        userDao.deleteAll();
+        for (User user : users) userDao.add(user);
+
+        try {
+            userService.upgrades();
+            fail("TestUserServiceException expected");
+        } catch (TestUserServiceException e) {
+        }
+
+        checkGrade(users.get(1), false);
     }
 }
