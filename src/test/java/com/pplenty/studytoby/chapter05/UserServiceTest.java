@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class UserServiceTest {
 
     @DisplayName("사용자 레벨 업그레이드 검증")
     @Test
-    void upgradeLevels() {
+    void upgradeLevels() throws SQLException {
 
         // given
         for (User user : users) {
@@ -103,7 +104,7 @@ public class UserServiceTest {
 
     @DisplayName("예외 발생 시 작업 취소 여부")
     @Test
-    void upgradeAllOrNothing() {
+    void upgradeAllOrNothing() throws SQLException {
         // given
         for (User user : users) {
             userDao.add(user);
@@ -111,7 +112,6 @@ public class UserServiceTest {
         testUserService.setId(users.get(3).getId());
 
         // when
-        userService.upgradeLevels();
         try {
             testUserService.upgradeLevels();
         } catch (TestUserServiceException ignore) {

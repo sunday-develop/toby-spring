@@ -2,7 +2,7 @@ package com.pplenty.studytoby.chapter05;
 
 import com.pplenty.studytoby.*;
 
-import java.util.List;
+import javax.sql.DataSource;
 
 /**
  * Created by yusik on 2020/03/28.
@@ -11,8 +11,8 @@ public class TestUserService extends UserService {
 
     private String id;
 
-    public TestUserService(UserDao userDao, UserLevelUpgradePolicy policy) {
-        super(userDao, policy);
+    public TestUserService(DataSource dataSource, UserDao userDao, UserLevelUpgradePolicy policy) {
+        super(dataSource, userDao, policy);
     }
 
     public void setId(String id) {
