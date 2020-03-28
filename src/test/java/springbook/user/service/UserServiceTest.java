@@ -1,11 +1,13 @@
 package springbook.user.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import springbook.config.TestConfig;
+import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
@@ -20,6 +22,9 @@ class UserServiceTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserDao userDao;
+
     private final List<User> users = List.of(
             User.of("bumjin", "박범진", "p1", Level.BASIC, 49, 0),
             User.of("joytouch", "강명성", "p2", Level.BASIC, 50, 0),
@@ -28,9 +33,32 @@ class UserServiceTest {
             User.of("green", "오민규", "p5", Level.GOLD, 100, 100)
     );
 
+    @BeforeEach
+    void setup() {
+        userDao.deleteAll();
+    }
+
     @Test
     void bean() throws Exception {
         assertThat(userService).isNotNull();
+    }
+
+    @Test
+    void upgradeLevels() throws Exception {
+        users.forEach(userDao::add);
+
+        userService.upgradeLevels();
+
+        checkLevel(users.get(0), Level.BASIC);
+        checkLevel(users.get(1), Level.SILVER);
+        checkLevel(users.get(2), Level.SILVER);
+        checkLevel(users.get(3), Level.GOLD);
+        checkLevel(users.get(4), Level.GOLD);
+    }
+
+    private void checkLevel(User user, Level expectedLevel) {
+        final User userUpdate = userDao.get(user.getId());
+        assertThat(userUpdate.getLevel()).isSameAs(expectedLevel);
     }
 
 }
