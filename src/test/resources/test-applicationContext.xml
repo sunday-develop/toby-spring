@@ -20,16 +20,22 @@
         <constructor-arg name="dataSource" ref="myDataSource"/>
     </bean>
 
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="alt1.gmail-smtp-in.l.google.com"/>
+    </bean>
+
     <bean id="userService" class="com.pplenty.studytoby.UserService">
-        <constructor-arg name="transactionManager" ref="transactionManager"/>
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
+        <constructor-arg name="transactionManager" ref="transactionManager"/>
+        <constructor-arg name="mailSender" ref="mailSender"/>
     </bean>
 
     <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserService">
-        <constructor-arg name="transactionManager" ref="transactionManager"/>
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
+        <constructor-arg name="transactionManager" ref="transactionManager"/>
+        <constructor-arg name="mailSender" ref="mailSender"/>
     </bean>
 
 </beans>

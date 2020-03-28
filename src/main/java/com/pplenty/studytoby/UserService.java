@@ -1,7 +1,7 @@
 package com.pplenty.studytoby;
 
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -13,14 +13,19 @@ import java.util.List;
  */
 public class UserService {
 
-    private final PlatformTransactionManager transactionManager;
     private final UserDao userDao;
     private final UserLevelUpgradePolicy policy;
+    private final PlatformTransactionManager transactionManager;
+    private final MailSender mailSender;
 
-    public UserService(PlatformTransactionManager transactionManager, UserDao userDao, UserLevelUpgradePolicy policy) {
-        this.transactionManager = transactionManager;
+    public UserService(UserDao userDao,
+                       UserLevelUpgradePolicy policy,
+                       PlatformTransactionManager transactionManager,
+                       MailSender mailSender) {
         this.userDao = userDao;
         this.policy = policy;
+        this.transactionManager = transactionManager;
+        this.mailSender = mailSender;
     }
 
     public void add(User user) {
@@ -65,9 +70,6 @@ public class UserService {
         if (user.getEmail() == null) {
             return;
         }
-
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("alt1.gmail-smtp-in.l.google.com");
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("jason.parsing@gmail.com");

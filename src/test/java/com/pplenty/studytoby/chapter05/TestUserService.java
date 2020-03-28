@@ -4,6 +4,7 @@ import com.pplenty.studytoby.User;
 import com.pplenty.studytoby.UserDao;
 import com.pplenty.studytoby.UserLevelUpgradePolicy;
 import com.pplenty.studytoby.UserService;
+import org.springframework.mail.MailSender;
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
@@ -13,8 +14,11 @@ public class TestUserService extends UserService {
 
     private String id;
 
-    public TestUserService(PlatformTransactionManager transactionManager, UserDao userDao, UserLevelUpgradePolicy policy) {
-        super(transactionManager, userDao, policy);
+    public TestUserService(UserDao userDao,
+                           UserLevelUpgradePolicy policy,
+                           PlatformTransactionManager transactionManager,
+                           MailSender mailSender) {
+        super(userDao, policy, transactionManager, mailSender);
     }
 
     public void setId(String id) {
