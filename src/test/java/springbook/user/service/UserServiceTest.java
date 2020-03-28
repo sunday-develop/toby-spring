@@ -83,4 +83,25 @@ class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel()).isSameAs(Level.BASIC);
     }
 
+    static class TestUserService extends UserService {
+
+        private String id;
+
+        public TestUserService(UserDao userDao, String id) {
+            super(userDao);
+            this.id = id;
+        }
+
+        @Override
+        protected void upgradeLevel(User user) {
+            if (user.getId().equals(this.id)) {
+                throw new TestUserServiceException();
+            }
+            super.upgradeLevel(user);
+        }
+
+    }
+
+    private static class TestUserServiceException extends RuntimeException { }
+
 }
