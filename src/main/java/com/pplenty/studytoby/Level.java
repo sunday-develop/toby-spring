@@ -30,7 +30,7 @@ public enum Level {
             case 3:
                 return GOLD;
             default:
-                throw new AssertionError("Unknown valud: " + value);
+                throw new AssertionError("Unknown value: " + value);
         }
     }
 }
