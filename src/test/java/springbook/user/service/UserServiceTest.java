@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -58,9 +59,12 @@ class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext
     void upgradeLevels() throws Exception {
         users.forEach(userDao::add);
 
+        final MockMailSender mockMailSender = new MockMailSender();
+        userService = new UserService(userDao, transactionManager, mockMailSender);
         userService.upgradeLevels();
 
         checkLevelUpgraded(users.get(0), false);
@@ -68,6 +72,11 @@ class UserServiceTest {
         checkLevelUpgraded(users.get(2), false);
         checkLevelUpgraded(users.get(3), true);
         checkLevelUpgraded(users.get(4), false);
+
+        final List<String> requests = mockMailSender.getRequests();
+        assertThat(requests).hasSize(2);
+        assertThat(requests.get(0)).isEqualTo(users.get(1).getEmail());
+        assertThat(requests.get(1)).isEqualTo(users.get(3).getEmail());
     }
 
     @Test
