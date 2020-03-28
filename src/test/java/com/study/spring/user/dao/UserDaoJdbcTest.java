@@ -1,5 +1,6 @@
 package com.study.spring.user.dao;
 
+import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
 import com.study.spring.user.exception.DuplicationUserIdException;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,11 +21,9 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.assertj.core.api.Assertions.assertThat;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
@@ -45,9 +44,9 @@ public class UserDaoJdbcTest {
 
     @BeforeEach
     public void setUp() {
-        user1 = new User("user1", "username1", "username11");
-        user2 = new User("user2", "username2", "username22");
-        user3 = new User("user3", "username3", "username33");
+        user1 = new User("user1", "username1", "username11", Level.BASIC, 1, 0);
+        user2 = new User("user2", "username2", "username22", Level.SILVER, 55, 10);
+        user3 = new User("user3", "username3", "username33", Level.GOLD, 100, 40);
 
         System.out.println(this.context);
         System.out.println(this);
@@ -93,12 +92,10 @@ public class UserDaoJdbcTest {
         assertEquals(userDao.getCount(), 2);
 
         User userTarget1 = userDao.get(user1.getId());
-        assertEquals(userTarget1.getName(), user1.getName());
-        assertEquals(userTarget1.getPassword(), user1.getPassword());
+        checkSameUser(userTarget1, user1);
 
         User userTarget2 = userDao.get(user2.getId());
-        assertEquals(userTarget2.getName(), user2.getName());
-        assertEquals(userTarget2.getPassword(), user2.getPassword());
+        checkSameUser(userTarget2, user2);
     }
 
     @DisplayName("get() 메소드의 예외 상황에 대한 테스트")
@@ -115,6 +112,9 @@ public class UserDaoJdbcTest {
         assertEquals(user1.getId(), user2.getId());
         assertEquals(user1.getName(), user2.getName());
         assertEquals(user1.getPassword(), user2.getPassword());
+        assertEquals(user1.getLevel(), user2.getLevel());
+        assertEquals(user1.getLogin(), user2.getLogin());
+        assertEquals(user1.getRecommend(), user2.getRecommend());
     }
 
     public void useUserDaoAddMethod() throws DuplicateKeyException {
@@ -149,5 +149,27 @@ public class UserDaoJdbcTest {
             SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
             assertThat(set.translate(null, null, sqlException)).isInstanceOf(DuplicateKeyException.class);
         }
+    }
+
+    @DisplayName("보완된 update() 테스트")
+    @Test
+    public void update() {
+        userDao.deleteAll();
+
+        userDao.add(user1);
+        userDao.add(user2);
+
+        user1.setName("updated");
+        user1.setPassword("updated");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(10000);
+        user1.setRecommend(9999);
+
+        userDao.update(user1);
+
+        User user1Update = userDao.get(user1.getId());
+        checkSameUser(user1, user1Update);
+        User user2Same = userDao.get(user2.getId());
+        checkSameUser(user2, user2Same);
     }
 }
