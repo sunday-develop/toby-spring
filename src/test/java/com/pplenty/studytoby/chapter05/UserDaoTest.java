@@ -8,8 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.sql.DataSource;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,17 +17,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @DisplayName("서비스 추상화")
 @SpringBootTest
-public class ServiceTest {
-
-    @Autowired
-    private DataSource dataSource;
+@ContextConfiguration(locations = "classpath:test-applicationContext.xml")
+public class UserDaoTest {
 
     @Autowired
     private UserDao userDao;
 
     private User user1;
     private User user2;
-    private User user3;
 
     @BeforeEach
     void setUp() {
@@ -37,7 +33,6 @@ public class ServiceTest {
         // given fixture
         user1 = new User("pplenty", "yusik", "1234", Level.BASIC, 1, 0);
         user2 = new User("kohyusik", "usik", "4321", Level.SILVER, 55, 10);
-        user3 = new User("usikzzang", "YUSU", "qwer", Level.GOLD, 100, 40);
     }
 
     @DisplayName("추가필드 적용")

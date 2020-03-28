@@ -5,13 +5,17 @@
 
     <bean id="myDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.mariadb.jdbc.Driver"/>
-        <property name="url" value="jdbc:mariadb://localhost:63306/testdb"/>
+        <property name="url" value="jdbc:mariadb://localhost:63306/toby"/>
         <property name="username" value="jason"/>
         <property name="password" value="qwe123"/>
     </bean>
 
     <bean id="userDao" class="com.pplenty.studytoby.UserDaoJdbc">
         <constructor-arg name="dataSource" ref="myDataSource"/>
+    </bean>
+
+    <bean id="userService" class="com.pplenty.studytoby.UserService">
+        <constructor-arg name="userDao" ref="userDao"/>
     </bean>
 
 </beans>

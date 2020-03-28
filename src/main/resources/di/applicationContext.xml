@@ -14,4 +14,8 @@
         <constructor-arg name="dataSource" ref="myDataSource"/>
     </bean>
 
+    <bean id="userService" class="com.pplenty.studytoby.UserService">
+        <constructor-arg name="userDao" ref="userDao"/>
+    </bean>
+
 </beans>
