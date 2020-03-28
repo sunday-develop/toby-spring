@@ -31,4 +31,11 @@ public class User {
         return new User(id, name, password, level, login, recommend);
     }
 
+    public void upgradeLevel() {
+        final Level nextLevel = level.nextLevel()
+                .orElseThrow(() -> new IllegalStateException(level + "은 업그레이드가 불가능 합니다."));
+
+        this.level = nextLevel;
+    }
+
 }

@@ -2,6 +2,7 @@ package springbook.user.domain;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toUnmodifiableMap;
@@ -28,8 +29,8 @@ public enum Level {
         return value;
     }
 
-    public Level nextLevel() {
-        return next;
+    public Optional<Level> nextLevel() {
+        return Optional.ofNullable(next);
     }
 
     public static Level valueOf(int value) {
