@@ -55,7 +55,7 @@ public class UserServiceTest {
 
     @DisplayName("사용자 레벨 업그레이드 검증")
     @Test
-    void addAndGet() {
+    void upgradeLevels() {
 
         // given
         for (User user : users) {
@@ -67,11 +67,11 @@ public class UserServiceTest {
 
         // then
         System.out.println(users);
-        checkLevel(users.get(0), Level.BASIC);
-        checkLevel(users.get(1), Level.SILVER);
-        checkLevel(users.get(2), Level.SILVER);
-        checkLevel(users.get(3), Level.GOLD);
-        checkLevel(users.get(4), Level.GOLD);
+        checkLevelUpgraded(users.get(0), false);
+        checkLevelUpgraded(users.get(1), true);
+        checkLevelUpgraded(users.get(2), false);
+        checkLevelUpgraded(users.get(3), true);
+        checkLevelUpgraded(users.get(4), false);
 
     }
 
@@ -96,9 +96,13 @@ public class UserServiceTest {
 
     }
 
-
-    private void checkLevel(User user, Level level) {
+    private void checkLevelUpgraded(User user, boolean upgraded) {
         User userUpdate = userDao.get(user.getId());
-        assertThat(userUpdate.getLevel()).isEqualTo(level);
+        if (upgraded) {
+            assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel().nextLevel());
+
+        } else {
+            assertThat(userUpdate.getLevel()).isEqualTo(userUpdate.getLevel());
+        }
     }
 }
