@@ -24,6 +24,11 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-expression', version: '5.2.4.RELEASE'
     compile group: 'org.springframework', name: 'spring-core', version: '5.2.1.RELEASE'
     compile group: 'org.springframework', name: 'spring-jdbc', version: '5.2.2.RELEASE'
+    // https://mvnrepository.com/artifact/javax.mail/mail
+    compile group: 'javax.mail', name: 'mail', version: '1.4.1'
+    // https://mvnrepository.com/artifact/org.springframework/spring-context-support
+    compile group: 'org.springframework', name: 'spring-context-support', version: '5.2.4.RELEASE'
+
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testRuntime("org.junit.platform:junit-platform-runner:1.5.2")

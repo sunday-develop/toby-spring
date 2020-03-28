@@ -1,5 +1,6 @@
 package com.toby.tobyspring.user.dao;
 
+import com.toby.tobyspring.user.domain.Grade;
 import com.toby.tobyspring.user.domain.User;
 import com.toby.tobyspring.user.exception.DuplicateUserIdException;
 import org.springframework.dao.DuplicateKeyException;
@@ -18,8 +19,9 @@ public class UserDaoJdbc implements UserDao {
 
     public void add(final User user) {
         try {
-            this.jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)",
-                    user.getId(), user.getName(), user.getPassword());
+            this.jdbcTemplate.update("insert into users(id, name, password, grade, login, recommend, email) " +
+                            "values(?, ?, ?, ?, ?, ?, ?)",
+                    user.getId(), user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend(), user.getEmail());
         } catch (DuplicateKeyException e) {
             throw new DuplicateUserIdException(e);
         }
@@ -30,6 +32,10 @@ public class UserDaoJdbc implements UserDao {
         user.setId(rs.getString("id"));
         user.setName(rs.getString("name"));
         user.setPassword(rs.getString("password"));
+        user.setGrade(Grade.valueOf(rs.getInt("grade")));
+        user.setLogin(rs.getInt("login"));
+        user.setRecommend(rs.getInt("recommend"));
+        user.setEmail(rs.getString("email"));
         return user;
     };
 
@@ -48,5 +54,11 @@ public class UserDaoJdbc implements UserDao {
 
     public void deleteAll() {
         this.jdbcTemplate.update("delete from users");
+    }
+
+    @Override
+    public void update(User user) {
+        this.jdbcTemplate.update("update users set name = ?, password = ?, grade = ?, login = ?, recommend = ?, email = ? where id = ?",
+                user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
     }
 }
