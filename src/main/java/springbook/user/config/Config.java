@@ -6,11 +6,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
+import springbook.user.service.UserService;
 
 import javax.sql.DataSource;
 
 @Configuration
 public class Config {
+
+    @Bean
+    public UserService userService() {
+        return new UserService(userDao());
+    }
 
     @Bean
     public UserDao userDao() {
