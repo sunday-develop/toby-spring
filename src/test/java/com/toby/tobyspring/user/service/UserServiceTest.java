@@ -52,7 +52,7 @@ class UserServiceTest {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
-        userService.upgradeGrades();
+        userService.upgrades();
 
         checkGrade(users.get(0), Grade.BASIC);
         checkGrade(users.get(1), Grade.SILVER);
