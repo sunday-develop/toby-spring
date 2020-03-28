@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -34,6 +35,9 @@ public class UserServiceTest {
 
     @Autowired
     private PlatformTransactionManager transactionManager;
+
+    @Autowired
+    private MailSender mailSender;
 
     private List<User> userList;
 
@@ -92,7 +96,7 @@ public class UserServiceTest {
 
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
     @Test
-    public void upgradeAllOrNothing() {
+    public void upgradeAllOrNothingWithException() {
 
         UserLevelUpgradePolicy userLevelUpgradePolicy = new TestUserLevelUpgradePolicy(userList.get(3).getId());
         UserService userService = new UserService();
@@ -100,6 +104,7 @@ public class UserServiceTest {
         userService.setUserDao(this.userDao);
         userService.setTransactionManager(this.transactionManager);
         userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
+        userService.setMailSender(this.mailSender);
 
         userDao.deleteAll();
         for (User user : userList) {
