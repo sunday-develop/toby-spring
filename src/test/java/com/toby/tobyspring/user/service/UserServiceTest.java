@@ -8,11 +8,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,16 +36,19 @@ class UserServiceTest {
     @Autowired
     PlatformTransactionManager transactionManager;
 
+    @Autowired
+    MailSender mailSender;
+
     List<User> users;
 
     @BeforeEach
     public void setUp() {
         users = Arrays.asList(
-                new User("adahye", "김다혜", "p1", Grade.BASIC, DefaultUserUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER - 1, 0),
-                new User("btoby", "토비", "p2", Grade.BASIC, DefaultUserUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER, 0),
-                new User("cwhite", "흰", "p3", Grade.SILVER, 60, DefaultUserUpgradePolicy.MIN_RECOMMEND_FOR_GOLD - 1),
-                new User("dblack", "검", "p4", Grade.SILVER, 60, DefaultUserUpgradePolicy.MIN_RECOMMEND_FOR_GOLD),
-                new User("eyellow", "노랑", "p5", Grade.GOLD, 100, Integer.MAX_VALUE)
+                new User("adahye", "김다혜", "p1", Grade.BASIC, DefaultUserUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER - 1, 0, "dahye@nav.com"),
+                new User("btoby", "토비", "p2", Grade.BASIC, DefaultUserUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER, 0, "toby@nav.com"),
+                new User("cwhite", "흰", "p3", Grade.SILVER, 60, DefaultUserUpgradePolicy.MIN_RECOMMEND_FOR_GOLD - 1, "white@nav.com"),
+                new User("dblack", "검", "p4", Grade.SILVER, 60, DefaultUserUpgradePolicy.MIN_RECOMMEND_FOR_GOLD, "black@nav.com"),
+                new User("eyellow", "노랑", "p5", Grade.GOLD, 100, Integer.MAX_VALUE, "yellow@nav.com")
         );
     }
 
@@ -50,11 +58,33 @@ class UserServiceTest {
         assertNotNull(this.userService);
     }
 
+    static class MockMailSender implements MailSender {
+        private List<String> requests = new ArrayList<>();
+
+        public List<String> getRequests() {
+            return requests;
+        }
+
+        @Override
+        public void send(SimpleMailMessage simpleMessage) throws MailException {
+            requests.add(simpleMessage.getTo()[0]);
+        }
+
+        @Override
+        public void send(SimpleMailMessage... simpleMessages) throws MailException {
+
+        }
+    }
+
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @DisplayName("사용자 레벨 업그레이드 테스트")
     public void upgrades() throws SQLException {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
 
         userService.upgrades();
 
@@ -63,6 +93,11 @@ class UserServiceTest {
         checkGrade(users.get(2), false);
         checkGrade(users.get(3), true);
         checkGrade(users.get(4), false);
+
+        List<String> request = mockMailSender.getRequests();
+        assertEquals(2, request.size());
+        assertEquals(users.get(1).getEmail(), request.get(0));
+        assertEquals(users.get(3).getEmail(), request.get(1));
     }
 
     private void checkGrade(User user, boolean upgraded) {
@@ -117,6 +152,7 @@ class UserServiceTest {
         userService.setUserDao(this.userDao);
         userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
         userService.setTransactionManager(transactionManager);
+        userService.setMailSender(mailSender);
 
         userDao.deleteAll();
         for (User user : users) userDao.add(user);

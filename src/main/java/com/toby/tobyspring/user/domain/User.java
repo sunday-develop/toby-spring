@@ -6,7 +6,8 @@ public class User {
     String password;
     Grade grade;
     int login;
-    int recomend;
+    int recommend;
+    String email;
 
     public String getId() {
         return id;
@@ -28,8 +29,12 @@ public class User {
         return login;
     }
 
-    public int getRecomend() {
-        return recomend;
+    public int getRecommend() {
+        return recommend;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void setId(String id) {
@@ -52,21 +57,26 @@ public class User {
         this.login = login;
     }
 
-    public void setRecomend(int recomend) {
-        this.recomend = recomend;
+    public void setRecommend(int recommend) {
+        this.recommend = recommend;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public User() {
 
     }
 
-    public User(String id, String name, String password, Grade grade, int login, int recomend) {
+    public User(String id, String name, String password, Grade grade, int login, int recommend, String email) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.grade = grade;
         this.login = login;
-        this.recomend = recomend;
+        this.recommend = recommend;
+        this.email = email;
     }
 
     public void upgrade() {

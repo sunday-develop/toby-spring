@@ -19,9 +19,9 @@ public class UserDaoJdbc implements UserDao {
 
     public void add(final User user) {
         try {
-            this.jdbcTemplate.update("insert into users(id, name, password, grade, login, recommend) " +
-                            "values(?, ?, ?, ?, ?, ?)",
-                    user.getId(), user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecomend());
+            this.jdbcTemplate.update("insert into users(id, name, password, grade, login, recommend, email) " +
+                            "values(?, ?, ?, ?, ?, ?, ?)",
+                    user.getId(), user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend(), user.getEmail());
         } catch (DuplicateKeyException e) {
             throw new DuplicateUserIdException(e);
         }
@@ -34,7 +34,8 @@ public class UserDaoJdbc implements UserDao {
         user.setPassword(rs.getString("password"));
         user.setGrade(Grade.valueOf(rs.getInt("grade")));
         user.setLogin(rs.getInt("login"));
-        user.setRecomend(rs.getInt("recommend"));
+        user.setRecommend(rs.getInt("recommend"));
+        user.setEmail(rs.getString("email"));
         return user;
     };
 
@@ -57,7 +58,7 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public void update(User user) {
-        this.jdbcTemplate.update("update users set name = ?, password = ?, grade = ?, login = ?, recommend = ? where id = ?",
-                user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecomend(), user.getId());
+        this.jdbcTemplate.update("update users set name = ?, password = ?, grade = ?, login = ?, recommend = ?, email = ? where id = ?",
+                user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
     }
 }
