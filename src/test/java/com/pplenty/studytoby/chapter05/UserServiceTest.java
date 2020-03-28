@@ -104,7 +104,7 @@ public class UserServiceTest {
 
     @DisplayName("예외 발생 시 작업 취소 여부")
     @Test
-    void upgradeAllOrNothing() throws SQLException {
+    void upgradeAllOrNothing() {
         // given
         for (User user : users) {
             userDao.add(user);
