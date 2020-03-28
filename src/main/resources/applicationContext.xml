@@ -12,7 +12,10 @@
 
     <bean id="userService" class="com.toby.tobyspring.user.service.UserService">
         <property name="userDao" ref="userDao" />
+        <property name="userUpgradePolicy" ref="defaultUserUpgradePolicy" />
     </bean>
+
+    <bean id="defaultUserUpgradePolicy" class="com.toby.tobyspring.user.service.DefaultUserUpgradePolicy"/>
 
     <bean id="userDao" class="com.toby.tobyspring.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
