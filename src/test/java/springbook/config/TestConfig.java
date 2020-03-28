@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.mail.MailSender;
 import springbook.user.config.Config;
+import springbook.user.service.DummyMailSender;
 
 import javax.sql.DataSource;
 
@@ -23,6 +25,12 @@ public class TestConfig {
         dataSource.setUsername("spring");
         dataSource.setPassword("book");
         return dataSource;
+    }
+
+    @Bean
+    @Primary
+    public MailSender mailSender() {
+        return new DummyMailSender();
     }
 
 }
