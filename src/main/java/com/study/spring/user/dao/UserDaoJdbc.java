@@ -27,24 +27,36 @@ public class UserDaoJdbc implements UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    @Override
     public void add(final User user) {
         this.jdbcTemplate.update("INSERT INTO users(id, name, password, level, login, recommend) VALUES (?, ?, ?, ?, ?, ?)", user.getId(), user.getName(),
-                user.getPassword(), user.getLevel().intValue() , user.getLogin(), user.getRecommend());
+                user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
 
+    @Override
     public User get(String id) {
         return this.jdbcTemplate.queryForObject("SELECT * FROM users WHERE id = ?", new Object[] { id }, this.userRowMapper);
     }
 
+    @Override
     public void deleteAll() {
         this.jdbcTemplate.update("DELETE FROM users");
     }
 
+    @Override
     public Integer getCount() {
         return this.jdbcTemplate.queryForObject("SELECT count(*) FROM users", Integer.class);
     }
 
+    @Override
     public List<User> getAll() {
         return this.jdbcTemplate.query("SELECT * FROM users ORDER by id", this.userRowMapper);
+    }
+
+    @Override
+    public void update(User user) {
+        this.jdbcTemplate
+                .update("UPDATE users SET name = ?, password = ?, level = ?, login = ?, recommend = ? where id =  ?", user.getName(), user.getPassword(),
+                        user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId());
     }
 }

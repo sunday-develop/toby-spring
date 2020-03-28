@@ -150,4 +150,26 @@ public class UserDaoJdbcTest {
             assertThat(set.translate(null, null, sqlException)).isInstanceOf(DuplicateKeyException.class);
         }
     }
+
+    @DisplayName("보완된 update() 테스트")
+    @Test
+    public void update() {
+        userDao.deleteAll();
+
+        userDao.add(user1);
+        userDao.add(user2);
+
+        user1.setName("updated");
+        user1.setPassword("updated");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(10000);
+        user1.setRecommend(9999);
+
+        userDao.update(user1);
+
+        User user1Update = userDao.get(user1.getId());
+        checkSameUser(user1, user1Update);
+        User user2Same = userDao.get(user2.getId());
+        checkSameUser(user2, user2Same);
+    }
 }
