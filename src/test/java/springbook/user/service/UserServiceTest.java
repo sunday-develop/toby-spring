@@ -14,6 +14,8 @@ import springbook.user.domain.User;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static springbook.user.service.UserService.MIN_LOG_COUNT_FOR_SILVER;
+import static springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -26,11 +28,11 @@ class UserServiceTest {
     private UserDao userDao;
 
     private final List<User> users = List.of(
-            User.of("bumjin", "박범진", "p1", Level.BASIC, 49, 0),
-            User.of("joytouch", "강명성", "p2", Level.BASIC, 50, 0),
-            User.of("erwins", "신승한", "p3", Level.SILVER, 60, 29),
-            User.of("madnite1", "이상호", "p4", Level.SILVER, 60, 30),
-            User.of("green", "오민규", "p5", Level.GOLD, 100, 100)
+            User.of("bumjin", "박범진", "p1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0),
+            User.of("joytouch", "강명성", "p2", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER, 0),
+            User.of("erwins", "신승한", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
+            User.of("madnite1", "이상호", "p4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+            User.of("green", "오민규", "p5", Level.GOLD, 100, Integer.MAX_VALUE)
     );
 
     @BeforeEach
