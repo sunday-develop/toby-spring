@@ -61,4 +61,20 @@ class UserServiceTest {
         assertThat(userUpdate.getLevel()).isSameAs(expectedLevel);
     }
 
+    @Test
+    void add() throws Exception {
+        final User userWithLevel = users.get(4);
+        final User userWithoutLevel = users.get(0);
+        userWithoutLevel.setLevel(null);
+
+        userService.add(userWithLevel);
+        userService.add(userWithoutLevel);
+
+        final User userWithLevelRead = userDao.get(userWithLevel.getId());
+        final User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
+
+        assertThat(userWithLevelRead.getLevel()).isSameAs(userWithLevel.getLevel());
+        assertThat(userWithoutLevelRead.getLevel()).isSameAs(Level.BASIC);
+    }
+
 }
