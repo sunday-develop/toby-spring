@@ -28,6 +28,7 @@ public class UserService {
         this.mailSender = mailSender;
     }
 
+
     public void add(User user) {
         if (user.getLevel() == null) {
             user.setLevel(Level.BASIC);

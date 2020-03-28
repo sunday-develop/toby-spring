@@ -20,7 +20,7 @@
         <constructor-arg name="dataSource" ref="myDataSource"/>
     </bean>
 
-    <bean id="mailSender" class="com.pplenty.studytoby.chapter05.DummyMailSender"/>
+    <bean id="mailSender" class="com.pplenty.studytoby.chapter05.UserServiceTest$MockMailSender"/>
 
     <bean id="userService" class="com.pplenty.studytoby.UserService">
         <constructor-arg name="userDao" ref="userDao"/>

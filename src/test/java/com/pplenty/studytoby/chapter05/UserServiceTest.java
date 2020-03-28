@@ -9,11 +9,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.pplenty.studytoby.UserLevelUpgradeEventPolicy.MIN_LOGIN_COUNT_FOR_SILVER;
 import static com.pplenty.studytoby.UserLevelUpgradeEventPolicy.MIN_RECOMMEND_FOR_GOLD;
@@ -35,6 +41,9 @@ public class UserServiceTest {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private MockMailSender mailSender;
 
     private List<User> users;
 
@@ -122,12 +131,60 @@ public class UserServiceTest {
         checkLevelUpgraded(users.get(1), false);
     }
 
+    @DisplayName("mock 메일 발송 확인")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void upgradeLevelSendEmail() {
+
+        // given
+        for (User user : users) {
+            userDao.add(user);
+        }
+
+        // when
+        userService.upgradeLevels();
+
+        // then
+        System.out.println(users);
+        checkLevelUpgraded(users.get(0), false);
+        checkLevelUpgraded(users.get(1), true);
+        checkLevelUpgraded(users.get(2), false);
+        checkLevelUpgraded(users.get(3), true);
+        checkLevelUpgraded(users.get(4), false);
+
+        List<String> requests = mailSender.getRequests();
+        System.out.println(requests);
+        assertThat(requests.size()).isEqualTo(1);
+
+    }
+
     private void checkLevelUpgraded(User user, boolean upgraded) {
         User userUpdate = userDao.get(user.getId());
         if (upgraded) {
             assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel().nextLevel());
         } else {
             assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel());
+        }
+    }
+
+    public static class MockMailSender implements MailSender {
+
+        private List<String> requests = new ArrayList<>();
+
+        public List<String> getRequests() {
+            return requests;
+        }
+
+        @Override
+        public void send(SimpleMailMessage simpleMessage) throws MailException {
+            requests.add(Objects.requireNonNull(simpleMessage.getTo())[0]);
+        }
+
+        @Override
+        public void send(SimpleMailMessage... simpleMessages) throws MailException {
+            for (SimpleMailMessage simpleMessage : simpleMessages) {
+                requests.add(Objects.requireNonNull(simpleMessage.getTo())[0]);
+            }
         }
     }
 }
