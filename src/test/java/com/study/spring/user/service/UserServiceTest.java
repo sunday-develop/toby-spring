@@ -4,6 +4,7 @@ import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class UserServiceTest {
         assertNotNull(this.userService);
     }
 
+    @DisplayName("레벨 업그레이드 하는 부분")
     @Test
     public void upgradeLevels() {
         userDao.deleteAll();
@@ -59,6 +61,25 @@ public class UserServiceTest {
         checkLevel(userList.get(2), Level.SILVER);
         checkLevel(userList.get(3), Level.GOLD);
         checkLevel(userList.get(4), Level.GOLD);
+    }
+
+    @DisplayName("add() 메소드의 테스트")
+    @Test
+    public void add() {
+        userDao.deleteAll();
+
+        User userWithLevel = userList.get(4);
+        User userWithoutLevel = userList.get(0);
+        userWithLevel.setLevel(null);
+
+        userService.add(userWithLevel);
+        userService.add(userWithoutLevel);
+
+        User userWithLevelRead = userDao.get(userWithLevel.getId());
+        User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
+
+        assertEquals(userWithLevelRead.getLevel(), userWithLevel.getLevel());
+        assertEquals(userWithoutLevelRead.getLevel(), Level.BASIC);
     }
 
     private void checkLevel(User user, Level expectedLevel) {
