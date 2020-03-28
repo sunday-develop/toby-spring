@@ -8,6 +8,7 @@ import springbook.user.domain.User;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class UserDaoJdbc implements UserDao {
 
@@ -27,6 +28,18 @@ public class UserDaoJdbc implements UserDao {
     private static final String USER_DELETE_ALL = "delete from users";
     private static final String USER_GET_COUNT = "select count(*) from users";
     private static final String USER_GET_ALL = "select * from users order by id";
+    private static final String USER_UPDATE = "update users \n" +
+            "set name = :name, password = :password, level = :level, login = :login, recommend = :recommend\n" +
+            "where id = :id";
+
+    private static final Function<User, Map<String, ?>> USER_PARAM_CREATOR = user -> Map.<String, Object>of(
+            "id", user.getId(),
+            "name", user.getName(),
+            "password", user.getPassword(),
+            "level", user.getLevel().intValue(),
+            "login", user.getLogin(),
+            "recommend", user.getRecommend()
+    );
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -36,14 +49,7 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public void add(User user) {
-        jdbcTemplate.update(USER_ADD, Map.<String, Object>of(
-                "id", user.getId(),
-                "name", user.getName(),
-                "password", user.getPassword(),
-                "level", user.getLevel().intValue(),
-                "login", user.getLogin(),
-                "recommend", user.getRecommend()
-        ));
+        jdbcTemplate.update(USER_ADD, USER_PARAM_CREATOR.apply(user));
     }
 
     @Override
@@ -64,6 +70,11 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public List<User> getAll() {
         return jdbcTemplate.query(USER_GET_ALL, USER_MAPPER);
+    }
+
+    @Override
+    public void update(User user) {
+        jdbcTemplate.update(USER_UPDATE, USER_PARAM_CREATOR.apply(user));
     }
 
 }

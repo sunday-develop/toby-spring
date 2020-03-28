@@ -111,6 +111,21 @@ class UserDaoTest {
         checkSameUser(user2, users3.get(2));
     }
 
+    @Test
+    void update() throws Exception {
+        userDao.add(user1);
+
+        user1.setName("오민규");
+        user1.setPassword("springno6");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(100);
+        user1.setRecommend(999);
+        userDao.update(user1);
+
+        final User user1update = userDao.get(user1.getId());
+        checkSameUser(user1, user1update);
+    }
+
     private void checkSameUser(User user1, User user2) {
         assertThat(user1.getId()).isEqualTo(user2.getId());
         assertThat(user1.getName()).isEqualTo(user2.getName());

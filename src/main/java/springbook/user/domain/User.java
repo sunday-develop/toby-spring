@@ -1,16 +1,15 @@
 package springbook.user.domain;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
+@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class User {
 
+    @Setter(AccessLevel.PRIVATE)
     private String id;
     private String name;
     private String password;
