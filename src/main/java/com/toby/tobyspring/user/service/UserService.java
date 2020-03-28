@@ -53,8 +53,7 @@ public class UserService {
     }
 
     private void upgrade(User user) {
-        if (Grade.BASIC.equals(user.getGrade())) user.setGrade(Grade.SILVER);
-        else if (Grade.SILVER.equals(user.getGrade())) user.setGrade(Grade.GOLD);
+        user.upgrade();
         userDao.update(user);
     }
 

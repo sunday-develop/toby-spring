@@ -68,4 +68,13 @@ public class User {
         this.login = login;
         this.recomend = recomend;
     }
+
+    public void upgrade() {
+        Grade nextGrade = this.grade.nextGrade();
+        if (nextGrade == null) {
+            throw new IllegalArgumentException(this.grade + "은 업그레이드가 불가능합니다.");
+        } else {
+            this.grade = nextGrade;
+        }
+    }
 }

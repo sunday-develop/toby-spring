@@ -48,7 +48,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자 레벨 업그레이드 테스트")
-    public void upgradeGrades() {
+    public void upgrades() {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
