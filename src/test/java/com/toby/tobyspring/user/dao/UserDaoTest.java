@@ -1,5 +1,6 @@
 package com.toby.tobyspring.user.dao;
 
+import com.toby.tobyspring.user.domain.Grade;
 import com.toby.tobyspring.user.domain.User;
 import com.toby.tobyspring.user.exception.DuplicateUserIdException;
 import org.junit.jupiter.api.Assertions;
@@ -8,17 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
-import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,9 +39,9 @@ public class UserDaoTest {
 
     @BeforeEach
     public void setup() {
-        user1 = new User("adahyekim", "김다혜", "dahye");
-        user2 = new User("btoby", "토비", "toby");
-        user3 = new User("cwhiteship", "백기선", "white");
+        user1 = new User("adahyekim", "김다혜", "dahye", Grade.BASIC, 1, 0);
+        user2 = new User("btoby", "토비", "toby", Grade.SILVER, 55, 10);
+        user3 = new User("cwhiteship", "백기선", "white", Grade.GOLD, 100, 40);
     }
 
     @Test
@@ -60,12 +55,10 @@ public class UserDaoTest {
         assertEquals(2, userDao.getCount());
 
         User userget1 = userDao.get(user1.getId());
-        assertEquals(userget1.getName(), user1.getName());
-        assertEquals(userget1.getPassword(), user1.getPassword());
+        checkSameUser(user1, userget1);
 
         User userget2 = userDao.get(user2.getId());
-        assertEquals(userget2.getName(), user2.getName());
-        assertEquals(userget2.getPassword(), user2.getPassword());
+        checkSameUser(user2, userget2);
     }
 
     @Test
@@ -128,6 +121,9 @@ public class UserDaoTest {
         assertEquals(user1.getId(), user2.getId());
         assertEquals(user1.getName(), user2.getName());
         assertEquals(user1.getPassword(), user2.getPassword());
+        assertEquals(user1.getGrade(), user2.getGrade());
+        assertEquals(user1.getLogin(), user2.getLogin());
+        assertEquals(user1.getRecomend(), user2.getRecomend());
     }
 
     @Test
