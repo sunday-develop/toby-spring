@@ -5,20 +5,26 @@ package com.pplenty.studytoby;
  */
 public enum Level {
 
-    BASIC(1),
-    SILVER(2),
-    GOLD(3),
+    BASIC(1, Level.SILVER),
+    SILVER(2, Level.GOLD),
+    GOLD(3, null),
     ;
 
 
     private final int value;
+    private final Level next;
 
-    Level(int value) {
+    Level(int value, Level next) {
         this.value = value;
+        this.next = next;
     }
 
     public int intValue() {
         return value;
+    }
+
+    public Level nextLevel() {
+        return next;
     }
 
     public static Level valueOf(int value) {
