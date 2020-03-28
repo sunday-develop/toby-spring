@@ -33,9 +33,6 @@ public class UserServiceTest {
     private UserDao userDao;
 
     @Autowired
-    private DataSource dataSource;
-
-    @Autowired
     private PlatformTransactionManager transactionManager;
 
     private List<User> userList;
@@ -43,11 +40,11 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         userList = Arrays.asList(
-                new User("user1", "username1", "password1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0),
-                new User("user2", "username2", "password2", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER, 0),
-                new User("user3", "username3", "password3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
-                new User("user4", "username4", "password4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
-                new User("user5", "username5", "password5", Level.GOLD, 100, Integer.MAX_VALUE)
+                new User("user1", "username1", "password1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0, "vvshinevv@naver.com"),
+                new User("user2", "username2", "password2", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER, 0, "vvshinevv@naver.com"),
+                new User("user3", "username3", "password3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1, "vvshinevv@naver.com"),
+                new User("user4", "username4", "password4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD, "vvshinevv@naver.com"),
+                new User("user5", "username5", "password5", Level.GOLD, 100, Integer.MAX_VALUE, "vvshinevv@naver.com")
         );
     }
 
