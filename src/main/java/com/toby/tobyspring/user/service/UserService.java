@@ -6,7 +6,10 @@ import com.toby.tobyspring.user.domain.User;
 
 import java.util.List;
 
-public class UserService {
+public class UserService implements UserGradeUpgradePolicy {
+    public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
+    public static final int MIN_RECOMMEND_FOR_GOLD = 30;
+
     UserDao userDao;
 
     public void setUserDao(UserDao userDao) {
@@ -19,22 +22,6 @@ public class UserService {
             if (canUpgrade(user)) {
                 upgrade(user);
             }
-            Boolean changed = null;
-            if (Grade.BASIC.equals(user.getGrade()) && user.getLogin() >= 50) {
-                user.setGrade(Grade.SILVER);
-                changed = true;
-            } else if (Grade.SILVER.equals(user.getGrade()) && user.getRecomend() >= 30) {
-                user.setGrade(Grade.GOLD);
-                changed = true;
-            } else if (Grade.GOLD.equals(user.getGrade())) {
-                changed = false;
-            } else {
-                changed = false;
-            }
-
-            if (changed) {
-                userDao.update(user);
-            }
         }
     }
 
@@ -42,9 +29,9 @@ public class UserService {
         Grade currentGrade = user.getGrade();
         switch (currentGrade) {
             case BASIC:
-                return (user.getLogin() >= 50);
+                return (user.getLogin() >= MIN_LOGCOUNT_FOR_SILVER);
             case SILVER:
-                return (user.getRecomend() >= 30);
+                return (user.getRecomend() >= MIN_RECOMMEND_FOR_GOLD);
             case GOLD:
                 return false;
             default:

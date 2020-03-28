@@ -32,11 +32,11 @@ class UserServiceTest {
     @BeforeEach
     public void setUp() {
         users = Arrays.asList(
-                new User("dahye", "김다혜", "p1", Grade.BASIC, 49, 0),
-                new User("toby", "토비", "p2", Grade.BASIC, 50, 0),
-                new User("white", "흰", "p3", Grade.SILVER, 60, 29),
-                new User("black", "검", "p4", Grade.SILVER, 60, 30),
-                new User("yellow", "노랑", "p5", Grade.GOLD, 100, 100)
+                new User("dahye", "김다혜", "p1", Grade.BASIC, UserService.MIN_LOGCOUNT_FOR_SILVER - 1, 0),
+                new User("toby", "토비", "p2", Grade.BASIC, UserService.MIN_LOGCOUNT_FOR_SILVER, 0),
+                new User("white", "흰", "p3", Grade.SILVER, 60, UserService.MIN_RECOMMEND_FOR_GOLD - 1),
+                new User("black", "검", "p4", Grade.SILVER, 60, UserService.MIN_RECOMMEND_FOR_GOLD),
+                new User("yellow", "노랑", "p5", Grade.GOLD, 100, Integer.MAX_VALUE)
         );
     }
 
@@ -54,16 +54,20 @@ class UserServiceTest {
 
         userService.upgrades();
 
-        checkGrade(users.get(0), Grade.BASIC);
-        checkGrade(users.get(1), Grade.SILVER);
-        checkGrade(users.get(2), Grade.SILVER);
-        checkGrade(users.get(3), Grade.GOLD);
-        checkGrade(users.get(4), Grade.GOLD);
+        checkGrade(users.get(0), false);
+        checkGrade(users.get(1), true);
+        checkGrade(users.get(2), false);
+        checkGrade(users.get(3), true);
+        checkGrade(users.get(4), false);
     }
 
-    private void checkGrade(User user, Grade expectedGrade) {
+    private void checkGrade(User user, boolean upgraded) {
         User userUpdate = userDao.get(user.getId());
-        assertEquals(expectedGrade, userUpdate.getGrade());
+        if (upgraded) {
+            assertEquals(user.getGrade().nextGrade(), userUpdate.getGrade());
+        } else {
+            assertEquals(user.getGrade(), userUpdate.getGrade());
+        }
     }
 
     @Test
