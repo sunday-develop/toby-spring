@@ -67,19 +67,21 @@ public class ServiceTest {
 
         // given
         userDao.add(user1);
+        userDao.add(user2);
 
+        // when
         user1.setName("고유식");
         user1.setPassword("studyhard");
         user1.setLevel(Level.GOLD);
         user1.setLogin(1000);
         user1.setRecommend(999);
-
-        // when
         userDao.update(user1);
 
         // then
         User userGet1 = userDao.get(user1.getId());
         checkSameUser(userGet1, user1);
+        User userGet2 = userDao.get(user2.getId());
+        checkSameUser(userGet2, user2);
 
     }
 
