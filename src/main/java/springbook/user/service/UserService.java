@@ -4,8 +4,6 @@ import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
-import java.util.List;
-
 public class UserService {
 
     private final UserDao userDao;
@@ -15,21 +13,18 @@ public class UserService {
     }
 
     public void upgradeLevels() {
-        final List<User> users = userDao.getAll();
-        for (User user : users) {
-            boolean changed = false;
-            if (user.getLevel() == Level.BASIC && user.getLogin() >= 50) {
-                user.setLevel(Level.SILVER);
-                changed = true;
-            } else if (user.getLevel() == Level.SILVER && user.getRecommend() >= 30) {
-                user.setLevel(Level.GOLD);
-                changed = true;
-            }
-
-            if (changed) {
-                userDao.update(user);
+        for (User user : userDao.getAll()) {
+            if (canUpgradeLevel(user)) {
+                upgradeLevel(user);
             }
         }
+    }
+
+    private boolean canUpgradeLevel(User user) {
+        return false;
+    }
+
+    private void upgradeLevel(User user) {
     }
 
     public void add(User user) {
