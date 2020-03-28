@@ -14,6 +14,8 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.pplenty.studytoby.UserService.MIN_LOGIN_COUNT_FOR_SILVER;
+import static com.pplenty.studytoby.UserService.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -38,11 +40,11 @@ public class UserServiceTest {
 
         // given fixture
         users = Arrays.asList(
-                new User("pplenty", "yusik", "1234", Level.BASIC, 49, 0),
-                new User("kohyusik", "usik", "4321", Level.BASIC, 50, 0),
-                new User("kohyusik1", "고유식", "test", Level.SILVER, 60, 29),
-                new User("kohyusik2", "권세희", "test", Level.SILVER, 60, 30),
-                new User("kohyusik3", "유식", "test", Level.GOLD, 100, 100)
+                new User("pplenty", "yusik", "1234", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER - 1, 0),
+                new User("kohyusik", "usik", "4321", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER, 0),
+                new User("kohyusik1", "고유식", "test", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
+                new User("kohyusik2", "권세희", "test", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+                new User("kohyusik3", "유식", "test", Level.GOLD, 100, Integer.MAX_VALUE)
         );
     }
 
