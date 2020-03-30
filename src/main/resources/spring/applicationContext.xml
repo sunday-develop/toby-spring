@@ -7,11 +7,11 @@
         <property name="transactionManager" ref="transactionManager"/>
         <property name="userDao" ref="userDao"/>
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
-    </bean>
+        <property name="mailSender" ref="mailSender"/>
+     </bean>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
     <bean id="userDao" class="com.study.spring.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
@@ -20,5 +20,9 @@
         <property name="url" value="jdbc:mysql://localhost/spring?useSSL=false"/>
         <property name="username" value="root"/>
         <property name="password" value="root"/>
+    </bean>
+    <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="mail.server.com"/>
     </bean>
 </beans>
