@@ -37,16 +37,20 @@ public class UserService {
     public void upgrades() {
         TransactionStatus transactionStatus = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
-            List<User> users = userDao.getAll();
-            for (User user : users) {
-                if (userUpgradePolicy.canUpgrade(user)) {
-                    upgrade(user);
-                }
-            }
+            upgradeLevelsInternal();
             this.transactionManager.commit(transactionStatus);
         } catch (RuntimeException e) {
             this.transactionManager.rollback(transactionStatus);
             throw e;
+        }
+    }
+
+    private void upgradeLevelsInternal() {
+        List<User> users = userDao.getAll();
+        for (User user : users) {
+            if (userUpgradePolicy.canUpgrade(user)) {
+                upgrade(user);
+            }
         }
     }
 
@@ -58,7 +62,7 @@ public class UserService {
 
     private void sendUpgradeEmail(User user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setText(user.getEmail());
+        mailMessage.setTo(user.getEmail());
         mailMessage.setFrom("dahye@dahye.com");
         mailMessage.setSubject("upgrade 안내");
         mailMessage.setText("사용자님의 등급이 " + user.getGrade().name());
