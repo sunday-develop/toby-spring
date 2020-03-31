@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -75,31 +74,78 @@ class UserServiceTest {
         }
     }
 
-    @Autowired
-    UserServiceImpl userServiceImpl;
+    static class MockUserDao implements UserDao {
+
+        private List<User> users;
+        private List<User> updated = new ArrayList<>();
+
+        public MockUserDao(List<User> users) {
+            this.users = users;
+        }
+
+        private List<User> getUpdated() {
+            return this.updated;
+        }
+
+        @Override
+        public List<User> getAll() {
+            return this.users;
+        }
+
+        @Override
+        public void update(User user) {
+            this.updated.add(user);
+        }
+
+        @Override
+        public void add(User user) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public User get(String id) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void deleteAll() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getCount() {
+            throw new UnsupportedOperationException();
+        }
+    }
 
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @DisplayName("사용자 레벨 업그레이드 테스트")
     public void upgrades() {
-        userDao.deleteAll();
-        for (User user : users) userDao.add(user);
+        UserServiceImpl userService = new UserServiceImpl();
+        userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
+
+        MockUserDao mockUserDao = new MockUserDao(users);
+        userService.setUserDao(mockUserDao);
 
         MockMailSender mockMailSender = new MockMailSender();
-        userServiceImpl.setMailSender(mockMailSender);
+        userService.setMailSender(mockMailSender);
 
-        userServiceImpl.upgrades();
+        userService.upgrades();
 
-        checkGrade(users.get(0), false);
-        checkGrade(users.get(1), true);
-        checkGrade(users.get(2), false);
-        checkGrade(users.get(3), true);
-        checkGrade(users.get(4), false);
+        List<User> updated = mockUserDao.getUpdated();
+        assertEquals(2, updated.size());
+        checkUserAndGrade(updated.get(0), users.get(1).getId(), Grade.SILVER);
+        checkUserAndGrade(updated.get(1), users.get(3).getId(), Grade.GOLD);
 
         List<String> request = mockMailSender.getRequests();
         assertEquals(2, request.size());
         assertEquals(users.get(1).getEmail(), request.get(0));
         assertEquals(users.get(3).getEmail(), request.get(1));
+    }
+
+    private void checkUserAndGrade(User updated, String expectedId, Grade expectedGrade) {
+        assertEquals(expectedId, updated.getId());
+        assertEquals(expectedGrade, updated.getGrade());
     }
 
     private void checkGrade(User user, boolean upgraded) {
