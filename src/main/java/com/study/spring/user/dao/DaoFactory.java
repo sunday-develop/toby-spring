@@ -13,6 +13,7 @@ public class DaoFactory {
     public UserDaoJdbc userDao() {
         UserDaoJdbc userDaoJdbc = new UserDaoJdbc();
         userDaoJdbc.setDataSource(dataSource());
+
         return userDaoJdbc;
     }
 

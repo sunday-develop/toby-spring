@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
+@ContextConfiguration(locations = "./applicationContext-test.xml")
 public class UserDaoJdbcTest {
 
     @Autowired
@@ -171,5 +171,9 @@ public class UserDaoJdbcTest {
         checkSameUser(user1, user1Update);
         User user2Same = userDao.get(user2.getId());
         checkSameUser(user2, user2Same);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("test");
     }
 }

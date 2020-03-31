@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "../../../../../../resources/spring/applicationContext-test.xml")
+@ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
 public class UserServiceTest {
 
     @Autowired
@@ -148,6 +148,7 @@ public class UserServiceTest {
             if (user.getId().equals(this.id)) {
                 throw new TestUserServiceException();
             }
+            System.out.println();
 
             user.upgradeLevel();
         }
