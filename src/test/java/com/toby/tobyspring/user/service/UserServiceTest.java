@@ -7,19 +7,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
@@ -56,91 +56,32 @@ class UserServiceTest {
         assertNotNull(this.userService);
     }
 
-    static class MockMailSender implements MailSender {
-        private List<String> requests = new ArrayList<>();
-
-        public List<String> getRequests() {
-            return requests;
-        }
-
-        @Override
-        public void send(SimpleMailMessage simpleMessage) throws MailException {
-            requests.add(simpleMessage.getTo()[0]);
-        }
-
-        @Override
-        public void send(SimpleMailMessage... simpleMessages) throws MailException {
-
-        }
-    }
-
-    static class MockUserDao implements UserDao {
-
-        private List<User> users;
-        private List<User> updated = new ArrayList<>();
-
-        public MockUserDao(List<User> users) {
-            this.users = users;
-        }
-
-        private List<User> getUpdated() {
-            return this.updated;
-        }
-
-        @Override
-        public List<User> getAll() {
-            return this.users;
-        }
-
-        @Override
-        public void update(User user) {
-            this.updated.add(user);
-        }
-
-        @Override
-        public void add(User user) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public User get(String id) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void deleteAll() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int getCount() {
-            throw new UnsupportedOperationException();
-        }
-    }
-
     @Test
     @DisplayName("사용자 레벨 업그레이드 테스트")
     public void upgrades() {
         UserServiceImpl userService = new UserServiceImpl();
         userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
 
-        MockUserDao mockUserDao = new MockUserDao(users);
+        UserDao mockUserDao = mock(UserDao.class);
+        when(mockUserDao.getAll()).thenReturn(this.users);
         userService.setUserDao(mockUserDao);
 
-        MockMailSender mockMailSender = new MockMailSender();
+        MailSender mockMailSender = mock(MailSender.class);
         userService.setMailSender(mockMailSender);
 
         userService.upgrades();
 
-        List<User> updated = mockUserDao.getUpdated();
-        assertEquals(2, updated.size());
-        checkUserAndGrade(updated.get(0), users.get(1).getId(), Grade.SILVER);
-        checkUserAndGrade(updated.get(1), users.get(3).getId(), Grade.GOLD);
+        verify(mockUserDao, times(2)).update(any(User.class));
+        verify(mockUserDao).update(this.users.get(1));
+        assertEquals(users.get(1).getGrade(), Grade.SILVER);
+        verify(mockUserDao).update(this.users.get(3));
+        assertEquals(users.get(3).getGrade(), Grade.GOLD);
 
-        List<String> request = mockMailSender.getRequests();
-        assertEquals(2, request.size());
-        assertEquals(users.get(1).getEmail(), request.get(0));
-        assertEquals(users.get(3).getEmail(), request.get(1));
+        ArgumentCaptor<SimpleMailMessage> mailMessageArgumentCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(mockMailSender, times(2)).send(mailMessageArgumentCaptor.capture());
+        List<SimpleMailMessage> mailMessages = mailMessageArgumentCaptor.getAllValues();
+        assertEquals(users.get(1).getEmail(), mailMessages.get(0).getTo()[0]);
+        assertEquals(users.get(3).getEmail(), mailMessages.get(1).getTo()[0]);
     }
 
     private void checkUserAndGrade(User updated, String expectedId, Grade expectedGrade) {
