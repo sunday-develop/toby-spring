@@ -7,28 +7,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "/applicationContext.xml")
 @DisplayName("userService test")
 class UserServiceTest {
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @Autowired
     UserDao userDao;
@@ -58,46 +56,37 @@ class UserServiceTest {
         assertNotNull(this.userService);
     }
 
-    static class MockMailSender implements MailSender {
-        private List<String> requests = new ArrayList<>();
-
-        public List<String> getRequests() {
-            return requests;
-        }
-
-        @Override
-        public void send(SimpleMailMessage simpleMessage) throws MailException {
-            requests.add(simpleMessage.getTo()[0]);
-        }
-
-        @Override
-        public void send(SimpleMailMessage... simpleMessages) throws MailException {
-
-        }
-    }
-
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @DisplayName("사용자 레벨 업그레이드 테스트")
-    public void upgrades() throws SQLException {
-        userDao.deleteAll();
-        for (User user : users) userDao.add(user);
+    public void upgrades() {
+        UserServiceImpl userService = new UserServiceImpl();
+        userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
 
-        MockMailSender mockMailSender = new MockMailSender();
+        UserDao mockUserDao = mock(UserDao.class);
+        when(mockUserDao.getAll()).thenReturn(this.users);
+        userService.setUserDao(mockUserDao);
+
+        MailSender mockMailSender = mock(MailSender.class);
         userService.setMailSender(mockMailSender);
 
         userService.upgrades();
 
-        checkGrade(users.get(0), false);
-        checkGrade(users.get(1), true);
-        checkGrade(users.get(2), false);
-        checkGrade(users.get(3), true);
-        checkGrade(users.get(4), false);
+        verify(mockUserDao, times(2)).update(any(User.class));
+        verify(mockUserDao).update(this.users.get(1));
+        assertEquals(users.get(1).getGrade(), Grade.SILVER);
+        verify(mockUserDao).update(this.users.get(3));
+        assertEquals(users.get(3).getGrade(), Grade.GOLD);
 
-        List<String> request = mockMailSender.getRequests();
-        assertEquals(2, request.size());
-        assertEquals(users.get(1).getEmail(), request.get(0));
-        assertEquals(users.get(3).getEmail(), request.get(1));
+        ArgumentCaptor<SimpleMailMessage> mailMessageArgumentCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(mockMailSender, times(2)).send(mailMessageArgumentCaptor.capture());
+        List<SimpleMailMessage> mailMessages = mailMessageArgumentCaptor.getAllValues();
+        assertEquals(users.get(1).getEmail(), mailMessages.get(0).getTo()[0]);
+        assertEquals(users.get(3).getEmail(), mailMessages.get(1).getTo()[0]);
+    }
+
+    private void checkUserAndGrade(User updated, String expectedId, Grade expectedGrade) {
+        assertEquals(expectedId, updated.getId());
+        assertEquals(expectedGrade, updated.getGrade());
     }
 
     private void checkGrade(User user, boolean upgraded) {
@@ -128,7 +117,7 @@ class UserServiceTest {
         assertEquals(Grade.BASIC, userWithoutGradeRead.getGrade());
     }
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;
 
         private TestUserService(String id) {
@@ -148,17 +137,20 @@ class UserServiceTest {
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
     @Test
     public void upgradeAllOrNothing() {
-        UserService userService = new TestUserService(users.get(3).getId());
+        TestUserService userService = new TestUserService(users.get(3).getId());
         userService.setUserDao(this.userDao);
         userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
-        userService.setTransactionManager(transactionManager);
         userService.setMailSender(mailSender);
+
+        UserServiceTx txUserService = new UserServiceTx();
+        txUserService.setTransactionManager(transactionManager);
+        txUserService.setUserService(userService);
 
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
         try {
-            userService.upgrades();
+            txUserService.upgrades();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
         }
