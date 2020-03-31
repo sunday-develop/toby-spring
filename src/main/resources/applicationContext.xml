@@ -10,10 +10,13 @@
         <property name="password" value="test"/>
     </bean>
 
-    <bean id="userService" class="com.toby.tobyspring.user.service.UserService">
+    <bean id="userService" class="com.toby.tobyspring.user.service.UserServiceTx">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="userServiceImpl" class="com.toby.tobyspring.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="userUpgradePolicy" ref="defaultUserUpgradePolicy"/>
-        <property name="transactionManager" ref="transactionManager"/>
         <property name="mailSender" ref="mailSender"/>
     </bean>
 

@@ -16,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("userService test")
 class UserServiceTest {
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @Autowired
     UserDao userDao;
@@ -76,17 +75,20 @@ class UserServiceTest {
         }
     }
 
+    @Autowired
+    UserServiceImpl userServiceImpl;
+
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @DisplayName("사용자 레벨 업그레이드 테스트")
-    public void upgrades() throws SQLException {
+    public void upgrades() {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
 
-        userService.upgrades();
+        userServiceImpl.upgrades();
 
         checkGrade(users.get(0), false);
         checkGrade(users.get(1), true);
@@ -128,7 +130,7 @@ class UserServiceTest {
         assertEquals(Grade.BASIC, userWithoutGradeRead.getGrade());
     }
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;
 
         private TestUserService(String id) {
@@ -148,17 +150,20 @@ class UserServiceTest {
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
     @Test
     public void upgradeAllOrNothing() {
-        UserService userService = new TestUserService(users.get(3).getId());
+        TestUserService userService = new TestUserService(users.get(3).getId());
         userService.setUserDao(this.userDao);
         userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
-        userService.setTransactionManager(transactionManager);
         userService.setMailSender(mailSender);
+
+        UserServiceTx txUserService = new UserServiceTx();
+        txUserService.setTransactionManager(transactionManager);
+        txUserService.setUserService(userService);
 
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
         try {
-            userService.upgrades();
+            txUserService.upgrades();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
         }
