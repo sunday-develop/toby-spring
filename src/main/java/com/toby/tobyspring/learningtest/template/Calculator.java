@@ -1,4 +1,4 @@
-package com.toby.tobyspring.learnigtest.template;
+package com.toby.tobyspring.learningtest.template;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
