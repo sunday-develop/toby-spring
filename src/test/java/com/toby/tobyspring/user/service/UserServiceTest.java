@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -142,9 +143,13 @@ class UserServiceTest {
         userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
         userService.setMailSender(mailSender);
 
-        UserServiceTx txUserService = new UserServiceTx();
-        txUserService.setTransactionManager(transactionManager);
-        txUserService.setUserService(userService);
+        TransactionHandler txHandler = new TransactionHandler();
+        txHandler.setTarget(userService);
+        txHandler.setPlatformTransactionManager(transactionManager);
+        txHandler.setPattern("upgrades");
+
+        UserService txUserService = (UserService) Proxy.newProxyInstance(
+                getClass().getClassLoader(), new Class[]{UserService.class}, txHandler);
 
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
