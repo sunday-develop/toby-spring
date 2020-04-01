@@ -10,8 +10,11 @@
         <property name="password" value="test"/>
     </bean>
 
-    <bean id="userService" class="com.toby.tobyspring.user.service.UserServiceTx">
+    <bean id="userService" class="com.toby.tobyspring.user.service.TxProxyFactoryBean">
+        <property name="target" ref="userServiceImpl" />
         <property name="transactionManager" ref="transactionManager"/>
+        <property name="pattern" value="upgrades" />
+        <property name="serviceInterface" value="com.toby.tobyspring.user.service.UserService" />
     </bean>
 
     <bean id="userServiceImpl" class="com.toby.tobyspring.user.service.UserServiceImpl">
