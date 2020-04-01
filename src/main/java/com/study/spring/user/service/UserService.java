@@ -39,19 +39,23 @@ public class UserService {
 
         try {
 
-            List<User> userList = userDao.getAll();
-            for (User user : userList) {
-                if (userLevelUpgradePolicy.canUpgradeLevel(user)) {
-                    userLevelUpgradePolicy.upgradeLevel(user);
-                    userDao.update(user);
-                    sendUpgradeEmail(user);
-                }
-            }
+            upgradeLevelsInternal();
 
             transactionManager.commit(status);
         } catch (Exception e) {
             transactionManager.rollback(status);
             throw e;
+        }
+    }
+
+    private void upgradeLevelsInternal() {
+        List<User> userList = userDao.getAll();
+        for (User user : userList) {
+            if (userLevelUpgradePolicy.canUpgradeLevel(user)) {
+                userLevelUpgradePolicy.upgradeLevel(user);
+                userDao.update(user);
+                sendUpgradeEmail(user);
+            }
         }
     }
 
