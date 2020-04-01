@@ -31,16 +31,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserServiceTest {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
     private UserDao userDao;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
-
-    @Autowired
-    private MailSender mailSender;
 
     private List<User> userList;
 
@@ -57,7 +54,7 @@ public class UserServiceTest {
 
     @Test
     public void bean() {
-        assertNotNull(this.userService);
+        assertNotNull(this.userServiceImpl);
     }
 
     @DisplayName("레벨 업그레이드 하는 부분")
@@ -70,9 +67,9 @@ public class UserServiceTest {
         }
 
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
 
-        userService.upgradeLevels();
+        userServiceImpl.upgradeLevels();
 
         checkLevelUpgraded(userList.get(0), false);
         checkLevelUpgraded(userList.get(1), true);
@@ -95,8 +92,8 @@ public class UserServiceTest {
         User userWithoutLevel = userList.get(0);
         userWithLevel.setLevel(null);
 
-        userService.add(userWithLevel);
-        userService.add(userWithoutLevel);
+        userServiceImpl.add(userWithLevel);
+        userServiceImpl.add(userWithoutLevel);
 
         User userWithLevelRead = userDao.get(userWithLevel.getId());
         User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
@@ -110,19 +107,22 @@ public class UserServiceTest {
     public void upgradeAllOrNothingWithException() {
 
         UserLevelUpgradePolicy userLevelUpgradePolicy = new TestUserLevelUpgradePolicy(userList.get(3).getId());
-        UserService userService = new UserService();
 
-        userService.setUserDao(this.userDao);
-        userService.setTransactionManager(this.transactionManager);
-        userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
-        userService.setMailSender(this.mailSender);
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+        userServiceImpl.setUserDao(this.userDao);
+        userServiceImpl.setMailSender(new MockMailSender());
+        userServiceImpl.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
+
+        UserServiceTx userServiceTx = new UserServiceTx();
+        userServiceTx.setTransactionManager(this.transactionManager);
+        userServiceTx.setUserService(userServiceImpl);
 
         userDao.deleteAll();
         for (User user : userList) {
             userDao.add(user);
         }
 
-        assertThrows(TestUserServiceException.class, userService::upgradeLevels);
+        assertThrows(TestUserServiceException.class, userServiceTx::upgradeLevels);
         checkLevelUpgraded(userList.get(1), false);
     }
 
@@ -154,7 +154,7 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserServiceException extends RuntimeException {
+    private static class TestUserServiceException extends RuntimeException {
     }
 
     static class MockMailSender implements MailSender {

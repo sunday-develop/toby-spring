@@ -3,12 +3,17 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="userService" class="com.study.spring.user.service.UserService">
+    <bean id="userService" class="com.study.spring.user.service.UserServiceTx">
         <property name="transactionManager" ref="transactionManager"/>
+        <property name="userService" ref="userServiceImpl"/>
+    </bean>
+
+    <bean id="userServiceImpl" class="com.study.spring.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
-        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
         <property name="mailSender" ref="mailSender"/>
-     </bean>
+        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
+    </bean>
+
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>

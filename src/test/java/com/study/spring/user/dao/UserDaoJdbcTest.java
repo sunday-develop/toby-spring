@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "./applicationContext-test.xml")
+@ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
 public class UserDaoJdbcTest {
 
     @Autowired
