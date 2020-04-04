@@ -34,10 +34,10 @@ public class TransactionAdvice implements MethodInterceptor {
             transactionManager.commit(status);
             return ret;
 
-        } catch (InvocationTargetException e) {
+        } catch (RuntimeException e) {
             // 롤백
             transactionManager.rollback(status);
-            throw e.getTargetException();
+            throw e;
         }
     }
 }

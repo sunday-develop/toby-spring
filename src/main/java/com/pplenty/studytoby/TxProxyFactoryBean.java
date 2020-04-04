@@ -8,6 +8,7 @@ import java.lang.reflect.Proxy;
 /**
  * Created by yusik on 2020/04/05.
  */
+@Deprecated
 public class TxProxyFactoryBean implements FactoryBean<Object> {
 
     Object target;

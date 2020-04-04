@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 /**
  * Created by yusik on 2020/04/05.
  */
+@Deprecated
 public class TransactionHandler implements InvocationHandler {
 
     private Object target;
