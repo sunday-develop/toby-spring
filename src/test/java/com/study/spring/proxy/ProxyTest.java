@@ -2,6 +2,8 @@ package com.study.spring.proxy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 
 import java.lang.reflect.Proxy;
 
@@ -43,5 +45,21 @@ class ProxyTest {
         assertEquals(proxiedHello.sayHello("Toby"), "HELLO TOBY");
         assertEquals(proxiedHello.sayHi("Toby"), "HI TOBY");
         assertEquals(proxiedHello.sayThankYou("Toby"), "THANK YOU TOBY");
+    }
+
+    @Test
+    void proxyTest_5() {
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(new HelloTarget());
+
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("sayH*");
+
+        proxyFactoryBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+
+        Hello proxiedHello = (Hello) proxyFactoryBean.getObject();
+        assertEquals(proxiedHello.sayHello("Toby"), "HELLO TOBY");
+        assertEquals(proxiedHello.sayHi("Toby"), "HI TOBY");
+        assertEquals(proxiedHello.sayThankYou("Toby"), "Thank You Toby");
     }
 }
