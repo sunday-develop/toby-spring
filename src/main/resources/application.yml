@@ -1,6 +1,0 @@
-toby-spring:
-  study:
-    datasource:
-      jdbcUrl: jdbc:mysql://127.0.0.1:3306/springbook?connectTimeout=1000&socketTimeout=60000
-      username: root
-      password: test

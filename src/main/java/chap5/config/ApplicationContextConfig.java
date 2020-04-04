@@ -6,17 +6,20 @@ import chap5.infra.UserDaoJdbc;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import javax.sql.DataSource;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class ApplicationContextConfig {
 
     @Bean
-    public DataSource dataSource(@Value("${toby-spring.study.url}") String url,
-                                 @Value("${toby-spring.study.username}") String username,
-                                 @Value("${toby-spring.study.password}") String password) {
+    public DataSource dataSource(@Value("${toby-spring.study.datasource.jdbcUrl}") String url,
+                                 @Value("${toby-spring.study.datasource.username}") String username,
+                                 @Value("${toby-spring.study.datasource.password}") String password) {
+
         return new SingleConnectionDataSource(url, username, password, true);
     }
 
