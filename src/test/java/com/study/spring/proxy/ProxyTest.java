@@ -2,12 +2,14 @@ package com.study.spring.proxy;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ProxyTest {
+class ProxyTest {
 
     @Test
-    public void simpleProxy() {
+    void proxyTest_1() {
         Hello hello = new HelloTarget();
         assertEquals(hello.sayHello("Toby"), "Hello Toby");
         assertEquals(hello.sayHi("Toby"), "Hi Toby");
@@ -15,10 +17,18 @@ public class ProxyTest {
     }
 
     @Test
-    public void proxyTest() {
+    void proxyTest_2() {
         Hello hello = new HelloUppercase(new HelloTarget());
         assertEquals(hello.sayHello("Toby"), "HELLO TOBY");
         assertEquals(hello.sayHi("Toby"), "HI TOBY");
         assertEquals(hello.sayThankYou("Toby"), "THANK YOU TOBY");
+    }
+
+    @Test
+    void proxyTest_3() {
+        Hello proxiedHello = (Hello) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { Hello.class }, new UppercaseHandler(new HelloTarget()));
+        assertEquals(proxiedHello.sayHello("Toby"), "HELLO TOBY");
+        assertEquals(proxiedHello.sayHi("Toby"), "HI TOBY");
+        assertEquals(proxiedHello.sayThankYou("Toby"), "THANK YOU TOBY");
     }
 }
