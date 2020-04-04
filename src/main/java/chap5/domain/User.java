@@ -1,4 +1,4 @@
-package chap5;
+package chap5.domain;
 
 public class User {
     private String id;

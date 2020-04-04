@@ -1,5 +1,8 @@
-package chap5;
+package chap5.config;
 
+import chap5.domain.UserDao;
+import chap5.infra.UserDaoJdbc;
+import chap5.application.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;

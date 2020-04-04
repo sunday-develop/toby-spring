@@ -1,4 +1,6 @@
-package chap5;
+package chap5.application;
+
+import chap5.domain.UserDao;
 
 public class UserService {
     private UserDao userDao;

@@ -1,4 +1,4 @@
-package chap5;
+package chap5.domain;
 
 public enum Level {
     BASIC(1), SILVER(2), GOLD(3);

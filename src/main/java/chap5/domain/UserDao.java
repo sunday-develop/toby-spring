@@ -1,4 +1,6 @@
-package chap5;
+package chap5.domain;
+
+import chap5.domain.User;
 
 public interface UserDao {
     void add(User user);

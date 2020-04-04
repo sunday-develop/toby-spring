@@ -1,5 +1,9 @@
 package chap5;
 
+import chap5.config.TestApplicationContextConfig;
+import chap5.domain.Level;
+import chap5.domain.User;
+import chap5.domain.UserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

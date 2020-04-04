@@ -1,5 +1,8 @@
-package chap5;
+package chap5.infra;
 
+import chap5.domain.Level;
+import chap5.domain.User;
+import chap5.domain.UserDao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 

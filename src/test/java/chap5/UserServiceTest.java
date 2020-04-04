@@ -1,5 +1,7 @@
 package chap5;
 
+import chap5.application.UserService;
+import chap5.config.TestApplicationContextConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
