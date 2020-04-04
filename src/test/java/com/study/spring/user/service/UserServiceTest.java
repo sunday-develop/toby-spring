@@ -1,6 +1,5 @@
 package com.study.spring.user.service;
 
-import com.study.spring.user.dao.MockUserDao;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
