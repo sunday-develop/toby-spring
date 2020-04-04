@@ -7,7 +7,7 @@ import java.lang.reflect.Proxy;
 
 public class TxProxyFactoryBean implements FactoryBean<Object> {
 
-    private final Object target;
+    private Object target;
     private final PlatformTransactionManager transactionManager;
     private final String pattern;
     private final Class<?> serviceInterface;
@@ -41,6 +41,10 @@ public class TxProxyFactoryBean implements FactoryBean<Object> {
     @Override
     public boolean isSingleton() {
         return false;
+    }
+
+    public void setTarget(Object target) {
+        this.target = target;
     }
 
 }

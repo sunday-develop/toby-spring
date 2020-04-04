@@ -5,9 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -16,7 +18,6 @@ import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,9 @@ class UserServiceTest {
 
     @Autowired
     private MailSender mailSender;
+
+    @Autowired
+    private ApplicationContext context;
 
     private final List<User> users = List.of(
             User.of("bumjin", "박범진", "p1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0, "email1@email.com"),
@@ -111,19 +115,17 @@ class UserServiceTest {
         assertThat(mailMessages.get(1).getTo()[0]).isEqualTo(users.get(3).getEmail());
     }
 
+    @DirtiesContext
     @Test
     void upgradeAllOrNothing() throws Exception {
         users.forEach(userDao::add);
 
         final TestUserService testUserService = new TestUserService(userDao, mailSender, users.get(3).getId());
 
-        final String pattern = "upgradeLevels";
-        final TransactionHandler txHandler = new TransactionHandler(testUserService, transactionManager, pattern);
-        final UserService txUserService = (UserService) Proxy.newProxyInstance(
-                getClass().getClassLoader(),
-                new Class[] { UserService.class },
-                txHandler
-            );
+        final TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+        txProxyFactoryBean.setTarget(testUserService);
+
+        final UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
         try {
             txUserService.upgradeLevels();
