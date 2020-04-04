@@ -1,7 +1,10 @@
 package com.pplenty.studytoby.chapter06.proxy;
 
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.framework.ProxyFactoryBean;
 
 import java.lang.reflect.Proxy;
 
@@ -25,9 +28,9 @@ class JdkProxyLearningTest {
         assertThat(hello.sayThankYou(myName)).isEqualTo("Thank you " + myName);
     }
 
-    @DisplayName("대문자 변경 프록시")
+    @DisplayName("직접 프록시 패턴 구현")
     @Test
-    void sayHi() {
+    void proxyPattern() {
 
         final String myName = "yusik";
         final String myNameUppercase = "YUSIK";
@@ -38,18 +41,56 @@ class JdkProxyLearningTest {
         assertThat(hello.sayThankYou(myName)).isEqualTo("THANK YOU " + myNameUppercase);
     }
 
-    @DisplayName("테스트 이름")
+    @DisplayName("JDK 다이내믹 프록시 생성")
     @Test
-    void sayThankYou() {
+    void jdkDynamicProxy() {
 
+        // given
+        final String myName = "yusik";
+        final String myNameUppercase = "YUSIK";
+
+        // when
         Hello proxiedHello = (Hello) Proxy.newProxyInstance(
                 getClass().getClassLoader(),
                 new Class[]{Hello.class},
                 new UppercaseHandler(new HelloTarget()));
 
-        String r = proxiedHello.sayHello("zzz");
-        System.out.println(proxiedHello.toString());
-        System.out.println(r);
+        // then
+        assertThat(proxiedHello.sayHello(myName)).isEqualTo("HELLO " + myNameUppercase);
+        assertThat(proxiedHello.sayHi(myName)).isEqualTo("HI " + myNameUppercase);
+        assertThat(proxiedHello.sayThankYou(myName)).isEqualTo("THANK YOU " + myNameUppercase);
 
+    }
+
+    @DisplayName("스프링 프록시 팩토리 빈 사용")
+    @Test
+    void proxyFactoryBean() {
+
+        // given
+        final String myName = "yusik";
+        final String myNameUppercase = "YUSIK";
+
+        // when
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(new HelloTarget());
+        proxyFactoryBean.addAdvice(new UppercaseAdvice());
+//        proxyFactoryBean.setProxyTargetClass(true);
+
+        Hello proxiedHello = (Hello) proxyFactoryBean.getObject();
+        System.out.println(proxiedHello.getClass());
+
+        // then
+        assertThat(proxiedHello.sayHello(myName)).isEqualTo("HELLO " + myNameUppercase);
+        assertThat(proxiedHello.sayHi(myName)).isEqualTo("HI " + myNameUppercase);
+        assertThat(proxiedHello.sayThankYou(myName)).isEqualTo("THANK YOU " + myNameUppercase);
+
+    }
+
+    static class UppercaseAdvice implements MethodInterceptor {
+        @Override
+        public Object invoke(MethodInvocation invocation) throws Throwable {
+            String ret = (String) invocation.proceed();
+            return ret.toUpperCase();
+        }
     }
 }
