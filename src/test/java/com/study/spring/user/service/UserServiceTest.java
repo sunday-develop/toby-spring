@@ -10,9 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -37,6 +39,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
 public class UserServiceTest {
+
+    @Autowired
+    private ApplicationContext context;
 
     @Autowired
     private UserServiceImpl userServiceImpl;
@@ -118,8 +123,9 @@ public class UserServiceTest {
     }
 
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
+    @DirtiesContext
     @Test
-    public void upgradeAllOrNothingWithException() {
+    public void upgradeAllOrNothingWithException() throws Exception {
 
         UserServiceImpl userServiceImpl = new UserServiceImpl();
         userServiceImpl.setUserDao(this.userDao);
@@ -128,19 +134,17 @@ public class UserServiceTest {
         UserLevelUpgradePolicy userLevelUpgradePolicy = new TestUserLevelUpgradePolicy(userList.get(3).getId());
         userServiceImpl.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
 
-        TransactionHandler txHandler = new TransactionHandler();
-        txHandler.setTarget(userServiceImpl);
-        txHandler.setTransactionManager(transactionManager);
-        txHandler.setPattern("upgradeLevels");
+        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+        txProxyFactoryBean.setTarget(userServiceImpl);
 
-        UserService userServiceTx = (UserService) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { UserService.class }, txHandler);
+        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
         userDao.deleteAll();
         for (User user : userList) {
             userDao.add(user);
         }
 
-        assertThrows(TestUserServiceException.class, userServiceTx::upgradeLevels);
+        assertThrows(TestUserServiceException.class, txUserService::upgradeLevels);
         checkLevelUpgraded(userList.get(1), false);
     }
 
