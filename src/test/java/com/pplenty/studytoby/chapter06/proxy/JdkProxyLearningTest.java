@@ -5,6 +5,8 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 
 import java.lang.reflect.Proxy;
 
@@ -83,6 +85,35 @@ class JdkProxyLearningTest {
         assertThat(proxiedHello.sayHello(myName)).isEqualTo("HELLO " + myNameUppercase);
         assertThat(proxiedHello.sayHi(myName)).isEqualTo("HI " + myNameUppercase);
         assertThat(proxiedHello.sayThankYou(myName)).isEqualTo("THANK YOU " + myNameUppercase);
+
+    }
+
+    @DisplayName("스프링 프록시 팩토리 빈 사용(pointcut 적용")
+    @Test
+    void proxyFactoryBeanWithPointcut() {
+
+        // given
+        final String myName = "yusik";
+        final String myNameUppercase = "YUSIK";
+
+        // when
+        // 포인트컷 설정
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("sayH*");
+
+        // 프록시 팩토리 빈
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(new HelloTarget());
+        proxyFactoryBean.addAdvisor((new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice())));
+//        proxyFactoryBean.setProxyTargetClass(true);
+
+        Hello proxiedHello = (Hello) proxyFactoryBean.getObject();
+        System.out.println(proxiedHello.getClass());
+
+        // then
+        assertThat(proxiedHello.sayHello(myName)).isEqualTo("HELLO " + myNameUppercase);
+        assertThat(proxiedHello.sayHi(myName)).isEqualTo("HI " + myNameUppercase);
+        assertThat(proxiedHello.sayThankYou(myName)).isEqualTo("Thank you " + myName);
 
     }
 
