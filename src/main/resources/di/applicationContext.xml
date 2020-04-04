@@ -24,10 +24,15 @@
         <property name="host" value="alt1.gmail-smtp-in.l.google.com"/>
     </bean>
 
-    <bean id="userService" class="com.pplenty.studytoby.UserService">
+    <bean id="userService" class="com.pplenty.studytoby.UserServiceImpl">
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
-        <constructor-arg name="transactionManager" ref="transactionManager"/>
+        <constructor-arg name="mailSender" ref="mailSender"/>
+    </bean>
+
+    <bean id="userService" class="com.pplenty.studytoby.UserServiceImpl">
+        <constructor-arg name="userDao" ref="userDao"/>
+        <constructor-arg name="policy" ref="policy"/>
         <constructor-arg name="mailSender" ref="mailSender"/>
     </bean>
 

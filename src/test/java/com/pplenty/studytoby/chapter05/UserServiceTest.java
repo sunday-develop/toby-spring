@@ -3,7 +3,7 @@ package com.pplenty.studytoby.chapter05;
 import com.pplenty.studytoby.Level;
 import com.pplenty.studytoby.User;
 import com.pplenty.studytoby.UserDao;
-import com.pplenty.studytoby.UserService;
+import com.pplenty.studytoby.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ public class UserServiceTest {
     private TestUserService testUserService;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Autowired
     private UserDao userDao;
