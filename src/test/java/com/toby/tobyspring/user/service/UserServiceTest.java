@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailSender;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("userService test")
 class UserServiceTest {
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
 
     @Autowired
     UserDao userDao;
@@ -146,7 +147,7 @@ class UserServiceTest {
         userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
         userService.setMailSender(mailSender);
 
-        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
         txProxyFactoryBean.setTarget(userService);
 
         UserService txUserService = (UserService) txProxyFactoryBean.getObject();
