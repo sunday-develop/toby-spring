@@ -51,4 +51,24 @@ class UserDaoTest {
         assertThat(user1.getLogin()).isEqualTo(user2.getLogin());
         assertThat(user1.getRecommend()).isEqualTo(user2.getRecommend());
     }
+
+    @Test
+    public void update() {
+        this.userDao.deleteAll();
+
+        this.userDao.add(this.user1);
+        this.userDao.add(this.user2);
+
+        this.user1.setName("종완");
+        this.user1.setPassword("test2");
+        this.user1.setLevel(Level.GOLD);
+        this.user1.setLogin(1000);
+        this.user1.setRecommend(999);
+        this.userDao.update(this.user1);
+
+        User updatedUser1 = this.userDao.get(this.user1.getId());
+        this.checkSameUser(this.user1, updatedUser1);
+        User savedUser = this.userDao.get(this.user2.getId());
+        this.checkSameUser(this.user2, savedUser);
+    }
 }
