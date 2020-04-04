@@ -9,6 +9,31 @@ public class User {
     private int login;
     private int recommend;
 
+    private User(String id,
+                String name,
+                String password,
+                Level level,
+                int login,
+                int recommend) {
+
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.level = level;
+        this.login = login;
+        this.recommend = recommend;
+    }
+
+    public static User of (String id,
+                           String name,
+                           String password,
+                           Level level,
+                           int login,
+                           int recommend) {
+
+        return new User(id, name, password, level, login, recommend);
+    }
+
     public String getId() {
         return id;
     }
