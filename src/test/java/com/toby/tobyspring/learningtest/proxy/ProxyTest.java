@@ -1,7 +1,12 @@
 package com.toby.tobyspring.learningtest.proxy;
 
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 
 import java.lang.reflect.Proxy;
 
@@ -39,4 +44,28 @@ class ProxyTest {
         assertEquals("THANK YOU DAHYE", proxiedHello.sayThankYou("Dahye"));
     }
 
+    @Test
+    @DisplayName("스프링 ProxyFactoryBean을 이용한 다이내믹 프록시 테스트")
+    public void proxyFactoryBean() {
+        ProxyFactoryBean pfBean = new ProxyFactoryBean();
+        pfBean.setTarget(new HelloTarget());
+
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("sayH*");
+
+        pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+
+        Hello proxiedHello = (Hello) pfBean.getObject();
+        assertEquals("HELLO DAHYE", proxiedHello.sayHello("Dahye"));
+        assertEquals("HI DAHYE", proxiedHello.sayHi("Dahye"));
+        assertEquals("Thank You Dahye", proxiedHello.sayThankYou("Dahye"));
+    }
+
+    static class UppercaseAdvice implements MethodInterceptor {
+        @Override
+        public Object invoke(MethodInvocation invocation) throws Throwable {
+            String ret = (String) invocation.proceed();
+            return ret.toUpperCase();
+        }
+    }
 }
