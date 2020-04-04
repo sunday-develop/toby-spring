@@ -11,7 +11,9 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.PlatformTransactionManager;
 
+import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +43,12 @@ public class UserServiceTest {
 
     @Autowired
     private MockMailSender mailSender;
+
+    @Autowired
+    private UserService testUserServiceImpl;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
     private List<User> users;
 
@@ -120,6 +128,36 @@ public class UserServiceTest {
         // when
         try {
             testUserService.upgradeLevels();
+        } catch (TestUserServiceException ignore) {
+        }
+
+        // then
+        checkLevelUpgraded(users.get(1), false);
+    }
+
+    @DisplayName("예외 발생 시 작업 취소 여부(프록시 사용)")
+    @Test
+    void upgradeAllOrNothingByProxy() {
+
+        // given
+        for (User user : users) {
+            userDao.add(user);
+        }
+
+        TransactionHandler txHandler = new TransactionHandler();
+        txHandler.setTarget(testUserServiceImpl);
+        txHandler.setTransactionManager(transactionManager);
+        txHandler.setPattern("upgradeLevels");
+
+        UserService txUserService = (UserService) Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class[]{UserService.class},
+                txHandler);
+
+
+        // when
+        try {
+            txUserService.upgradeLevels();
         } catch (TestUserServiceException ignore) {
         }
 
