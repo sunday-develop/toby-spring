@@ -10,7 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DataSourceConfig.class)
+@ContextConfiguration(classes = TestApplicationContextConfig.class)
 class UserDaoTest {
     @Autowired
     private UserDao userDao;

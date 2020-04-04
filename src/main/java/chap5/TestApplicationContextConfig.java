@@ -7,7 +7,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-public class DataSourceConfig {
+public class TestApplicationContextConfig {
 
     @Bean
     public DataSource dataSource() {
@@ -15,7 +15,13 @@ public class DataSourceConfig {
     }
 
     @Bean
+    public UserService userService() {
+        return new UserService(userDao());
+    }
+
+    @Bean
     public UserDao userDao() {
         return new UserDaoJdbc(dataSource());
     }
+
 }
