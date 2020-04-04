@@ -1,9 +1,6 @@
 package com.pplenty.studytoby.chapter05;
 
-import com.pplenty.studytoby.Level;
-import com.pplenty.studytoby.User;
-import com.pplenty.studytoby.UserDao;
-import com.pplenty.studytoby.UserServiceImpl;
+import com.pplenty.studytoby.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,10 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserServiceTest {
 
     @Autowired
-    private TestUserService testUserService;
+    private UserService testUserService;
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
     private UserDao userDao;
@@ -119,7 +116,6 @@ public class UserServiceTest {
         for (User user : users) {
             userDao.add(user);
         }
-        testUserService.setId(users.get(3).getId());
 
         // when
         try {

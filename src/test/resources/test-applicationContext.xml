@@ -22,17 +22,27 @@
 
     <bean id="mailSender" class="com.pplenty.studytoby.chapter05.UserServiceTest$MockMailSender"/>
 
-    <bean id="userService" class="com.pplenty.studytoby.UserServiceImpl">
+    <bean id="userService" class="com.pplenty.studytoby.UserServiceTx">
+        <constructor-arg name="userService" ref="userServiceImpl"/>
+        <constructor-arg name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="userServiceImpl" class="com.pplenty.studytoby.UserServiceImpl">
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
         <constructor-arg name="mailSender" ref="mailSender"/>
     </bean>
 
-    <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserService">
+    <bean id="testUserService" class="com.pplenty.studytoby.UserServiceTx">
+        <constructor-arg name="userService" ref="testUserServiceImpl"/>
+        <constructor-arg name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="testUserServiceImpl" class="com.pplenty.studytoby.chapter05.TestUserService">
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
-        <constructor-arg name="transactionManager" ref="transactionManager"/>
         <constructor-arg name="mailSender" ref="mailSender"/>
+        <property name="id" value="kohyusik2"/>
     </bean>
 
 </beans>

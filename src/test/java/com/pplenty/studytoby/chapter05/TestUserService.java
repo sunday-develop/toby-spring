@@ -5,7 +5,6 @@ import com.pplenty.studytoby.UserDao;
 import com.pplenty.studytoby.UserLevelUpgradePolicy;
 import com.pplenty.studytoby.UserServiceImpl;
 import org.springframework.mail.MailSender;
-import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * Created by yusik on 2020/03/28.
@@ -16,7 +15,6 @@ public class TestUserService extends UserServiceImpl {
 
     public TestUserService(UserDao userDao,
                            UserLevelUpgradePolicy policy,
-                           PlatformTransactionManager transactionManager,
                            MailSender mailSender) {
         super(userDao, policy, mailSender);
     }
