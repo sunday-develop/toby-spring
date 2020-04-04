@@ -1,4 +1,4 @@
-package com.toby.tobyspring.learnigtest.template;
+package com.toby.tobyspring.learningtest.template;
 
 public interface LineCallback<T> {
     T doSomethingWithLine(String line, T value);

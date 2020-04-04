@@ -10,10 +10,31 @@
         <property name="password" value="test"/>
     </bean>
 
-    <bean id="userService" class="com.toby.tobyspring.user.service.UserService">
+    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="userServiceImpl"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionAdvisor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="transactionAdvice" class="com.toby.tobyspring.learningtest.proxy.TransactionAdvice">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+        <property name="mappedName" value="upgrade*"/>
+    </bean>
+
+    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="transactionAdvice"/>
+        <property name="pointcut" ref="transactionPointcut"/>
+    </bean>
+
+    <bean id="userServiceImpl" class="com.toby.tobyspring.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="userUpgradePolicy" ref="defaultUserUpgradePolicy"/>
-        <property name="transactionManager" ref="transactionManager"/>
         <property name="mailSender" ref="mailSender"/>
     </bean>
 
