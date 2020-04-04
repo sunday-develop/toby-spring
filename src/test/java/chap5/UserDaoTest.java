@@ -1,10 +1,13 @@
 package chap5;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserDaoTest {
+    private UserDao userDao;
+
     private User user1;
     private User user2;
     private User user3;
@@ -14,6 +17,19 @@ class UserDaoTest {
         this.user1 = Fixture.getUser("serverwizard", "홍종완", "test", Level.BASIC, 1, 0);
         this.user2 = Fixture.getUser("javajigi", "자바지기", "test2", Level.SILVER, 55, 10);
         this.user3 = Fixture.getUser("slipp", "포비", "test3", Level.GOLD, 100, 40);
+    }
+
+    @Test
+    public void addAndGet() {
+        userDao.deleteAll();
+        assertThat(userDao.getCount()).isEqualTo(0);
+
+        userDao.add(user1);
+        userDao.add(user2);
+        assertThat(userDao.getCount()).isEqualTo(2);
+
+        checkSameUser(userDao.get(user1.getId()), user1);
+        checkSameUser(userDao.get(user2.getId()), user2);
     }
 
     private void checkSameUser(User user1,
