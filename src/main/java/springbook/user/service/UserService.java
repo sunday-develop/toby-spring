@@ -30,15 +30,19 @@ public class UserService {
     public void upgradeLevels() {
         final TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
-            for (User user : userDao.getAll()) {
-                if (canUpgradeLevel(user)) {
-                    upgradeLevel(user);
-                }
-            }
+            upgradeLevelsInternal();
             transactionManager.commit(status);
         } catch (Exception e) {
             transactionManager.rollback(status);
             throw e;
+        }
+    }
+
+    private void upgradeLevelsInternal() {
+        for (User user : userDao.getAll()) {
+            if (canUpgradeLevel(user)) {
+                upgradeLevel(user);
+            }
         }
     }
 
