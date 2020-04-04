@@ -9,6 +9,9 @@ public class User {
     private int login;
     private int recommend;
 
+    public User() {
+    }
+
     private User(String id,
                 String name,
                 String password,
