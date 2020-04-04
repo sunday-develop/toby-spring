@@ -1,5 +1,6 @@
 package com.study.spring.user.service;
 
+import com.study.spring.user.dao.MockUserDao;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
@@ -60,27 +61,34 @@ public class UserServiceTest {
     @DisplayName("레벨 업그레이드 하는 부분")
     @Test
     public void upgradeLevels() {
-        userDao.deleteAll();
 
-        for (User user : this.userList) {
-            userDao.add(user);
-        }
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+
+        MockUserDao mockUserDao = new MockUserDao(userList);
+        userServiceImpl.setUserDao(mockUserDao);
 
         MockMailSender mockMailSender = new MockMailSender();
         userServiceImpl.setMailSender(mockMailSender);
 
+        UserLevelUpgradePolicy userLevelUpgradePolicy = new DefaultUserLevelUpgradePolicy();
+        userServiceImpl.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
+
         userServiceImpl.upgradeLevels();
 
-        checkLevelUpgraded(userList.get(0), false);
-        checkLevelUpgraded(userList.get(1), true);
-        checkLevelUpgraded(userList.get(2), false);
-        checkLevelUpgraded(userList.get(3), true);
-        checkLevelUpgraded(userList.get(4), false);
+        List<User> updatedList = mockUserDao.getUpdatedList();
+        assertEquals(updatedList.size(), 2);
+        checkUserAndLevel(updatedList.get(0), "user2", Level.SILVER);
+        checkUserAndLevel(updatedList.get(1), "user4", Level.GOLD);
 
         List<String> requestList = mockMailSender.getRequestList();
         assertEquals(requestList.size(), 2);
         assertEquals(requestList.get(0), userList.get(1).getEmail());
         assertEquals(requestList.get(1), userList.get(3).getEmail());
+    }
+
+    private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
+        assertEquals(updated.getId(), expectedId);
+        assertEquals(updated.getLevel(), expectedLevel);
     }
 
     @DisplayName("add() 메소드의 테스트")
