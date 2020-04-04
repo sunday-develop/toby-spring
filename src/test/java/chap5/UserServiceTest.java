@@ -61,4 +61,23 @@ class UserServiceTest {
         assertThat(savedUser.getLevel()).isEqualTo(expectedLevel);
     }
 
+    @DisplayName("사용자의 레벨이 이미 설정되어 있다면 그대로 유지하고, 레벨이 없다면 디폴트인 BASIC 으로 설정한다.")
+    @Test
+    public void add() {
+        userDao.deleteAll();
+
+        User userWithLevel = users.get(4);
+        User userWithoutLevel = users.get(0);
+        userWithoutLevel.setLevel(null);
+
+        userService.add(userWithLevel);
+        userService.add(userWithoutLevel);
+
+        User savedUserWithLevel = userDao.get(userWithLevel.getId());
+        User savedUserWithoutLevel = userDao.get(userWithoutLevel.getId());
+
+        assertThat(savedUserWithLevel.getLevel()).isEqualTo(userWithLevel.getLevel());
+        assertThat(savedUserWithoutLevel.getLevel()).isEqualTo(Level.BASIC);
+    }
+
 }
