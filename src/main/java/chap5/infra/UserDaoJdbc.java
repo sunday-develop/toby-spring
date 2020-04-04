@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class UserDaoJdbc implements UserDao {
     private JdbcTemplate jdbcTemplate;
@@ -57,6 +58,11 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public int getCount() {
         return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return this.jdbcTemplate.query("select * from users order by id",this.userMapper);
     }
 
     @Override
