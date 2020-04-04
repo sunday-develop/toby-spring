@@ -1,4 +1,4 @@
-package com.pplenty.studytoby.chapter06;
+package com.pplenty.studytoby.chapter06.proxy;
 
 /**
  * Created by yusik on 2020/04/04.

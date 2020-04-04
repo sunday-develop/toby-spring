@@ -1,4 +1,4 @@
-package com.pplenty.studytoby.chapter06;
+package com.pplenty.studytoby.chapter06.proxy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

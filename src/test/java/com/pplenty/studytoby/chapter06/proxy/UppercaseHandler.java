@@ -1,4 +1,4 @@
-package com.pplenty.studytoby.chapter06;
+package com.pplenty.studytoby.chapter06.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
