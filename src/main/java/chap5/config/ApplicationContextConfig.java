@@ -10,7 +10,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-public class TestApplicationContextConfig {
+public class ApplicationContextConfig {
 
     @Bean
     public DataSource dataSource() {

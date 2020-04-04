@@ -1,7 +1,7 @@
 package chap5;
 
 import chap5.application.UserService;
-import chap5.config.TestApplicationContextConfig;
+import chap5.config.ApplicationContextConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestApplicationContextConfig.class)
+@ContextConfiguration(classes = ApplicationContextConfig.class)
 class UserServiceTest {
     @Autowired
     private UserService userService;

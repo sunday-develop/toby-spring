@@ -1,6 +1,6 @@
 package chap5;
 
-import chap5.config.TestApplicationContextConfig;
+import chap5.config.ApplicationContextConfig;
 import chap5.domain.Level;
 import chap5.domain.User;
 import chap5.domain.UserDao;
@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestApplicationContextConfig.class)
+@ContextConfiguration(classes = ApplicationContextConfig.class)
 class UserDaoTest {
     @Autowired
     private UserDao userDao;
