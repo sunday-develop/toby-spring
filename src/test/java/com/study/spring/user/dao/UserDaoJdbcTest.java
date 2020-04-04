@@ -44,9 +44,9 @@ public class UserDaoJdbcTest {
 
     @BeforeEach
     public void setUp() {
-        user1 = new User("user1", "username1", "username11", Level.BASIC, 1, 0);
-        user2 = new User("user2", "username2", "username22", Level.SILVER, 55, 10);
-        user3 = new User("user3", "username3", "username33", Level.GOLD, 100, 40);
+        user1 = new User("user1", "username1", "username11", Level.BASIC, 1, 0, "user1@naver.com");
+        user2 = new User("user2", "username2", "username22", Level.SILVER, 55, 10, "user2@naver.com");
+        user3 = new User("user3", "username3", "username33", Level.GOLD, 100, 40, "user3@naver.com");
 
         System.out.println(this.context);
         System.out.println(this);
@@ -171,5 +171,9 @@ public class UserDaoJdbcTest {
         checkSameUser(user1, user1Update);
         User user2Same = userDao.get(user2.getId());
         checkSameUser(user2, user2Same);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("test");
     }
 }
