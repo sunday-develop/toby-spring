@@ -64,7 +64,7 @@ class UserServiceTest {
         users.forEach(userDao::add);
 
         final MockMailSender mockMailSender = new MockMailSender();
-        userService = new UserServiceImpl(userDao, transactionManager, mockMailSender);
+        userService = new UserServiceImpl(userDao, mockMailSender);
         userService.upgradeLevels();
 
         checkLevelUpgraded(users.get(0), false);
@@ -81,7 +81,7 @@ class UserServiceTest {
 
     @Test
     void upgradeAllOrNothing() throws Exception {
-        final UserServiceImpl testUserService = new TestUserService(userDao, transactionManager, mailSender, users.get(3).getId()
+        final UserServiceImpl testUserService = new TestUserService(userDao, mailSender, users.get(3).getId()
         );
 
         users.forEach(userDao::add);
@@ -126,11 +126,10 @@ class UserServiceTest {
         private String id;
 
         public TestUserService(UserDao userDao,
-                               PlatformTransactionManager transactionManager,
                                MailSender mailSender,
                                String id) {
 
-            super(userDao, transactionManager, mailSender);
+            super(userDao, mailSender);
             this.id = id;
         }
 

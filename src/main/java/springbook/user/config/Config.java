@@ -20,7 +20,7 @@ public class Config {
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(userDao(), transactionManager(), mailSender());
+        return new UserServiceImpl(userDao(), mailSender());
     }
 
     @Bean

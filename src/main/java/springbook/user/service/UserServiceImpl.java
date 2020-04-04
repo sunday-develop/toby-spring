@@ -2,46 +2,26 @@ package springbook.user.service;
 
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
-@Service
 public class UserServiceImpl implements UserService {
 
     public static final int MIN_LOG_COUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 
     private final UserDao userDao;
-    private final PlatformTransactionManager transactionManager;
     private final MailSender mailSender;
 
-    public UserServiceImpl(UserDao userDao,
-                           PlatformTransactionManager transactionManager,
-                           MailSender mailSender) {
+    public UserServiceImpl(UserDao userDao, MailSender mailSender) {
 
         this.userDao = userDao;
-        this.transactionManager = transactionManager;
         this.mailSender = mailSender;
     }
 
     @Override
     public void upgradeLevels() {
-        final TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        try {
-            upgradeLevelsInternal();
-            transactionManager.commit(status);
-        } catch (Exception e) {
-            transactionManager.rollback(status);
-            throw e;
-        }
-    }
-
-    private void upgradeLevelsInternal() {
         for (User user : userDao.getAll()) {
             if (canUpgradeLevel(user)) {
                 upgradeLevel(user);
