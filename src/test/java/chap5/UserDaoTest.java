@@ -25,9 +25,9 @@ class UserDaoTest {
 
     @BeforeEach
     void setUp() {
-        this.user1 = Fixture.getUser("wizard", "홍종완", "test", Level.BASIC, 1, 0);
-        this.user2 = Fixture.getUser("javajigi", "자바지기", "test2", Level.SILVER, 55, 10);
-        this.user3 = Fixture.getUser("slipp", "포비", "test3", Level.GOLD, 100, 40);
+        this.user1 = Fixture.getServerwizardUser();
+        this.user2 = Fixture.getJavajigiUser();
+        this.user3 = Fixture.getSlippUser();
     }
 
     @Test
