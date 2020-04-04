@@ -21,8 +21,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static springbook.user.service.UserService.MIN_LOG_COUNT_FOR_SILVER;
-import static springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static springbook.user.service.UserServiceImpl.MIN_LOG_COUNT_FOR_SILVER;
+import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -64,7 +64,7 @@ class UserServiceTest {
         users.forEach(userDao::add);
 
         final MockMailSender mockMailSender = new MockMailSender();
-        userService = new UserService(userDao, transactionManager, mockMailSender);
+        userService = new UserServiceImpl(userDao, transactionManager, mockMailSender);
         userService.upgradeLevels();
 
         checkLevelUpgraded(users.get(0), false);
@@ -81,7 +81,7 @@ class UserServiceTest {
 
     @Test
     void upgradeAllOrNothing() throws Exception {
-        final UserService testUserService = new TestUserService(userDao, transactionManager, mailSender, users.get(3).getId()
+        final UserServiceImpl testUserService = new TestUserService(userDao, transactionManager, mailSender, users.get(3).getId()
         );
 
         users.forEach(userDao::add);
@@ -121,7 +121,7 @@ class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel()).isSameAs(Level.BASIC);
     }
 
-    private static class TestUserService extends UserService {
+    private static class TestUserService extends UserServiceImpl {
 
         private String id;
 

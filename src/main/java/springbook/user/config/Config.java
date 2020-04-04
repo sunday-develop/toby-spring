@@ -11,6 +11,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
 import springbook.user.service.UserService;
+import springbook.user.service.UserServiceImpl;
 
 import javax.sql.DataSource;
 
@@ -19,7 +20,7 @@ public class Config {
 
     @Bean
     public UserService userService() {
-        return new UserService(userDao(), transactionManager(), mailSender());
+        return new UserServiceImpl(userDao(), transactionManager(), mailSender());
     }
 
     @Bean
