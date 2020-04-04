@@ -12,6 +12,7 @@ import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
 import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
+import springbook.user.service.UserServiceTx;
 
 import javax.sql.DataSource;
 
@@ -20,6 +21,11 @@ public class Config {
 
     @Bean
     public UserService userService() {
+        return new UserServiceTx(userServiceImpl(), transactionManager());
+    }
+
+    @Bean
+    public UserServiceImpl userServiceImpl() {
         return new UserServiceImpl(userDao(), mailSender());
     }
 

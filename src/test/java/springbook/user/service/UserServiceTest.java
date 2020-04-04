@@ -81,13 +81,13 @@ class UserServiceTest {
 
     @Test
     void upgradeAllOrNothing() throws Exception {
-        final UserServiceImpl testUserService = new TestUserService(userDao, mailSender, users.get(3).getId()
-        );
+        final TestUserService testUserService = new TestUserService(userDao, mailSender, users.get(3).getId());
+        final UserServiceTx txUserService = new UserServiceTx(testUserService, transactionManager);
 
         users.forEach(userDao::add);
 
         try {
-            testUserService.upgradeLevels();
+            txUserService.upgradeLevels();
             fail("TestUSerServiceException expected");
         } catch (TestUserServiceException e) {
 
