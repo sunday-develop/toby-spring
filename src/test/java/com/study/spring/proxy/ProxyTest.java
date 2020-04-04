@@ -1,6 +1,7 @@
 package com.study.spring.proxy;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.framework.ProxyFactoryBean;
 
 import java.lang.reflect.Proxy;
 
@@ -27,6 +28,18 @@ class ProxyTest {
     @Test
     void proxyTest_3() {
         Hello proxiedHello = (Hello) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { Hello.class }, new UppercaseHandler(new HelloTarget()));
+        assertEquals(proxiedHello.sayHello("Toby"), "HELLO TOBY");
+        assertEquals(proxiedHello.sayHi("Toby"), "HI TOBY");
+        assertEquals(proxiedHello.sayThankYou("Toby"), "THANK YOU TOBY");
+    }
+
+    @Test
+    void proxyTest_4() {
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(new HelloTarget());
+        proxyFactoryBean.addAdvice(new UppercaseAdvice());
+
+        Hello proxiedHello = (Hello) proxyFactoryBean.getObject();
         assertEquals(proxiedHello.sayHello("Toby"), "HELLO TOBY");
         assertEquals(proxiedHello.sayHi("Toby"), "HI TOBY");
         assertEquals(proxiedHello.sayThankYou("Toby"), "THANK YOU TOBY");
