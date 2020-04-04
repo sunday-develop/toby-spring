@@ -3,6 +3,7 @@ package com.study.spring.user.service;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
+import com.study.spring.user.handler.TransactionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -119,16 +121,19 @@ public class UserServiceTest {
     @Test
     public void upgradeAllOrNothingWithException() {
 
-        UserLevelUpgradePolicy userLevelUpgradePolicy = new TestUserLevelUpgradePolicy(userList.get(3).getId());
-
         UserServiceImpl userServiceImpl = new UserServiceImpl();
         userServiceImpl.setUserDao(this.userDao);
         userServiceImpl.setMailSender(new MockMailSender());
+
+        UserLevelUpgradePolicy userLevelUpgradePolicy = new TestUserLevelUpgradePolicy(userList.get(3).getId());
         userServiceImpl.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
 
-        UserServiceTx userServiceTx = new UserServiceTx();
-        userServiceTx.setTransactionManager(this.transactionManager);
-        userServiceTx.setUserService(userServiceImpl);
+        TransactionHandler txHandler = new TransactionHandler();
+        txHandler.setTarget(userServiceImpl);
+        txHandler.setTransactionManager(transactionManager);
+        txHandler.setPattern("upgradeLevels");
+
+        UserService userServiceTx = (UserService) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { UserService.class }, txHandler);
 
         userDao.deleteAll();
         for (User user : userList) {
