@@ -24,9 +24,11 @@
         <property name="host" value="alt1.gmail-smtp-in.l.google.com"/>
     </bean>
 
-    <bean id="userService" class="com.pplenty.studytoby.UserServiceTx">
-        <constructor-arg name="userService" ref="userServiceImpl"/>
-        <constructor-arg name="transactionManager" ref="transactionManager"/>
+    <bean id="userService" class="com.pplenty.studytoby.TxProxyFactoryBean">
+        <property name="target" ref="userServiceImpl"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="pattern" value="upgradeLevels"/>
+        <property name="serviceInterface" value="com.pplenty.studytoby.UserService"/>
     </bean>
 
     <bean id="userServiceImpl" class="com.pplenty.studytoby.UserServiceImpl">

@@ -22,9 +22,11 @@
 
     <bean id="mailSender" class="com.pplenty.studytoby.chapter05.UserServiceTest$MockMailSender"/>
 
-    <bean id="userService" class="com.pplenty.studytoby.UserServiceTx">
-        <constructor-arg name="userService" ref="userServiceImpl"/>
-        <constructor-arg name="transactionManager" ref="transactionManager"/>
+    <bean id="userService" class="com.pplenty.studytoby.TxProxyFactoryBean">
+        <property name="target" ref="userServiceImpl"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="pattern" value="upgradeLevels"/>
+        <property name="serviceInterface" value="com.pplenty.studytoby.UserService"/>
     </bean>
 
     <bean id="userServiceImpl" class="com.pplenty.studytoby.UserServiceImpl">
@@ -33,9 +35,11 @@
         <constructor-arg name="mailSender" ref="mailSender"/>
     </bean>
 
-    <bean id="testUserService" class="com.pplenty.studytoby.UserServiceTx">
-        <constructor-arg name="userService" ref="testUserServiceImpl"/>
-        <constructor-arg name="transactionManager" ref="transactionManager"/>
+    <bean id="testUserService" class="com.pplenty.studytoby.TxProxyFactoryBean">
+        <property name="target" ref="testUserServiceImpl"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="pattern" value="upgradeLevels"/>
+        <property name="serviceInterface" value="com.pplenty.studytoby.UserService"/>
     </bean>
 
     <bean id="testUserServiceImpl" class="com.pplenty.studytoby.chapter05.TestUserService">
