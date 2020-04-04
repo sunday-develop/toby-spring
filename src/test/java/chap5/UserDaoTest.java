@@ -2,10 +2,17 @@ package chap5;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = DataSourceConfig.class)
 class UserDaoTest {
+    @Autowired
     private UserDao userDao;
 
     private User user1;
@@ -14,7 +21,7 @@ class UserDaoTest {
 
     @BeforeEach
     void setUp() {
-        this.user1 = Fixture.getUser("serverwizard", "홍종완", "test", Level.BASIC, 1, 0);
+        this.user1 = Fixture.getUser("wizard", "홍종완", "test", Level.BASIC, 1, 0);
         this.user2 = Fixture.getUser("javajigi", "자바지기", "test2", Level.SILVER, 55, 10);
         this.user3 = Fixture.getUser("slipp", "포비", "test3", Level.GOLD, 100, 40);
     }
@@ -26,10 +33,12 @@ class UserDaoTest {
 
         userDao.add(user1);
         userDao.add(user2);
-        assertThat(userDao.getCount()).isEqualTo(2);
+        userDao.add(user3);
+        assertThat(userDao.getCount()).isEqualTo(3);
 
         checkSameUser(userDao.get(user1.getId()), user1);
         checkSameUser(userDao.get(user2.getId()), user2);
+        checkSameUser(userDao.get(user3.getId()), user3);
     }
 
     private void checkSameUser(User user1,
