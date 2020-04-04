@@ -10,9 +10,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
+import springbook.user.service.TxProxyFactoryBean;
 import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
-import springbook.user.service.UserServiceTx;
 
 import javax.sql.DataSource;
 
@@ -20,8 +20,9 @@ import javax.sql.DataSource;
 public class Config {
 
     @Bean
-    public UserService userService() {
-        return new UserServiceTx(userServiceImpl(), transactionManager());
+    public TxProxyFactoryBean userService() {
+        final String pattern = "upgradeLevels";
+        return new TxProxyFactoryBean(userServiceImpl(), transactionManager(), pattern, UserService.class);
     }
 
     @Bean
