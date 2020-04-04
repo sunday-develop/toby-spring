@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id "org.flywaydb.flyway" version "5.1.4"
+}
+
+group 'org.serverwizard'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile('org.springframework:spring-core:5.2.5.RELEASE')
+    compile('org.springframework:spring-context:5.2.5.RELEASE')
+    compile('org.springframework:spring-jdbc:5.2.5.RELEASE')
+
+    testCompile('org.springframework:spring-test:5.2.5.RELEASE')
+
+    compile('mysql:mysql-connector-java:8.0.19')
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.1")
+    testCompile('org.assertj:assertj-core:3.15.0')
+}
+
+flyway {
+    url = "jdbc:mysql://127.0.0.1:3306/springbook"
+    user = "root"
+    password = "test"
+    locations = ["filesystem:${file('src/migration/toby-spring-mysql').absolutePath}"]
+    encoding = 'UTF-8'
+    outOfOrder = true // 여러브랜치에서 서로 다른 날짜로 만들어도 작동하도록 한다.
+    validateOnMigrate = true
+}
