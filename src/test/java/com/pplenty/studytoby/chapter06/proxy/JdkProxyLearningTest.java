@@ -88,6 +88,29 @@ class JdkProxyLearningTest {
 
     }
 
+    @DisplayName("스프링 프록시 팩토리 빈 사용(인터페이스 없는 경우)")
+    @Test
+    void proxyFactoryBeanWithoutInterface() {
+
+        // given
+        final String myName = "yusik";
+        final String myNameUppercase = "YUSIK";
+
+        // when
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(new HelloTargetWithoutInterface());
+        proxyFactoryBean.addAdvice(new UppercaseAdvice());
+
+        HelloTargetWithoutInterface proxiedHello = (HelloTargetWithoutInterface) proxyFactoryBean.getObject();
+        System.out.println(proxiedHello.getClass());
+
+        // then
+        assertThat(proxiedHello.sayHello(myName)).isEqualTo("HELLO " + myNameUppercase);
+        assertThat(proxiedHello.sayHi(myName)).isEqualTo("HI " + myNameUppercase);
+        assertThat(proxiedHello.sayThankYou(myName)).isEqualTo("THANK YOU " + myNameUppercase);
+
+    }
+
     @DisplayName("스프링 프록시 팩토리 빈 사용(pointcut 적용")
     @Test
     void proxyFactoryBeanWithPointcut() {
@@ -105,7 +128,7 @@ class JdkProxyLearningTest {
         ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
         proxyFactoryBean.setTarget(new HelloTarget());
         proxyFactoryBean.addAdvisor((new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice())));
-//        proxyFactoryBean.setProxyTargetClass(true);
+//        proxyFactoryBean.setProxyTargetClass(true); // 강제로 클래스 프록시로 만들도록 설정
 
         Hello proxiedHello = (Hello) proxyFactoryBean.getObject();
         System.out.println(proxiedHello.getClass());
