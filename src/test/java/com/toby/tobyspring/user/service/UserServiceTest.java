@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailSender;
@@ -29,6 +28,9 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserService testUserService;
 
     @Autowired
     UserDao userDao;
@@ -122,12 +124,8 @@ class UserServiceTest {
         assertEquals(Grade.BASIC, userWithoutGradeRead.getGrade());
     }
 
-    static class TestUserService extends UserServiceImpl {
-        private String id;
-
-        private TestUserService(String id) {
-            this.id = id;
-        }
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "dblack";
 
         @Override
         public void upgrade(User user) {
@@ -141,22 +139,12 @@ class UserServiceTest {
 
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
     @Test
-    public void upgradeAllOrNothing() throws Exception {
-        TestUserService userService = new TestUserService(users.get(3).getId());
-        userService.setUserDao(this.userDao);
-        userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
-        userService.setMailSender(mailSender);
-
-        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(userService);
-
-        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-
+    public void upgradeAllOrNothing() {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
         try {
-            txUserService.upgrades();
+            testUserService.upgrades();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
         }
