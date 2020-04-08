@@ -10,20 +10,14 @@
         <property name="password" value="test"/>
     </bean>
 
-    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="target" ref="userServiceImpl"/>
-        <property name="interceptorNames">
-            <list>
-                <value>transactionAdvisor</value>
-            </list>
-        </property>
-    </bean>
-
     <bean id="transactionAdvice" class="com.toby.tobyspring.learningtest.proxy.TransactionAdvice">
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
-    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+    <bean id="transactionPointcut" class="com.toby.tobyspring.learningtest.proxy.NameMatchClassMethodPointcut">
+        <property name="mappedClassName" value="*ServiceImpl"/>
         <property name="mappedName" value="upgrade*"/>
     </bean>
 
@@ -32,7 +26,7 @@
         <property name="pointcut" ref="transactionPointcut"/>
     </bean>
 
-    <bean id="userServiceImpl" class="com.toby.tobyspring.user.service.UserServiceImpl">
+    <bean id="userService" class="com.toby.tobyspring.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="userUpgradePolicy" ref="defaultUserUpgradePolicy"/>
         <property name="mailSender" ref="mailSender"/>
@@ -49,4 +43,8 @@
     <bean id="userDao" class="com.toby.tobyspring.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+
+    <bean id="testUserService"
+          class="com.toby.tobyspring.user.service.UserServiceTest$TestUserServiceImpl"
+          parent="userService"/>
 </beans>
