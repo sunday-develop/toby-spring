@@ -28,6 +28,9 @@ dependencies {
     compile 'javax.activation:activation:1.1.1'
     compile 'javax.mail:mail:1.4.7'
     compile 'org.springframework:spring-context-support'
+    compile 'org.springframework:spring-context-support'
+    compile 'org.aspectj:aspectjweaver'
+
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
