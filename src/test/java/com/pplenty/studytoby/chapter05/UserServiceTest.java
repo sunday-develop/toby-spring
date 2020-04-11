@@ -14,9 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.lang.reflect.Proxy;
 import java.sql.SQLException;
@@ -36,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("서비스 추상화")
 @SpringBootTest
 @ContextConfiguration(locations = "classpath:test-applicationContext.xml")
+@Transactional
 public class UserServiceTest {
 
     @Autowired
@@ -215,7 +214,7 @@ public class UserServiceTest {
     @DisplayName("트랜잭션 동기화 테스트")
     @Test
     @Transactional(readOnly = true)
-    @Rollback(false)
+    @Rollback
     void transactionSync() {
 
         userService.deleteAll();
