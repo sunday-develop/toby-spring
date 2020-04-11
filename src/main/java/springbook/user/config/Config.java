@@ -14,13 +14,14 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
-import springbook.user.service.TransactionAdvice;
 import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
 public class Config {
@@ -47,7 +48,15 @@ public class Config {
 
     @Bean
     public Advice transactionAdvice() {
-        return new TransactionAdvice(transactionManager());
+        final Properties transactionAttributes = new Properties();
+        transactionAttributes.setProperty("get*", "PROPAGATION_REQUIRED,readOnly,timeout_30");
+        transactionAttributes.setProperty("upgrade*", "PROPAGATION_REQUIRES_NEW,ISOLATION_SERIALIZABLE");
+        transactionAttributes.setProperty("*", "PROPAGATION_REQUIRED");
+
+        final TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
+        transactionInterceptor.setTransactionAttributes(transactionAttributes);
+        transactionInterceptor.setTransactionManager(transactionManager());
+        return transactionInterceptor;
     }
 
     @Bean
