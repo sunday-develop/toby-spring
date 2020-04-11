@@ -223,7 +223,9 @@ public class UserServiceTest {
         userService.add(users.get(0));
         userService.add(users.get(1));
 
-        transactionManager.commit(txStatus);
+        transactionManager.rollback(txStatus);
+
+        assertThat(userDao.getCount()).isEqualTo(0);
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
