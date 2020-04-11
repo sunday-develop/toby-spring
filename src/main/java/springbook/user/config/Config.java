@@ -4,6 +4,7 @@ import com.mysql.cj.jdbc.Driver;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +16,6 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
-import springbook.user.proxy.NameMatchClassMethodPointcut;
 import springbook.user.service.TransactionAdvice;
 import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
@@ -37,9 +37,8 @@ public class Config {
 
     @Bean
     public Pointcut tractionPointcut() {
-        final NameMatchClassMethodPointcut pointcut = new NameMatchClassMethodPointcut();
-        pointcut.setMappedName("upgrade*");
-        pointcut.setMappedClassName("*ServiceImpl");
+        final AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        pointcut.setExpression("execution(* *..*ServiceImpl.upgrade*(..))");
         return pointcut;
     }
 
