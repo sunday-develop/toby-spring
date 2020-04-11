@@ -16,7 +16,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Arrays;
 import java.util.List;
@@ -169,5 +170,22 @@ class UserServiceTest {
         assertThrows(TransientDataAccessResourceException.class, () -> {
             testUserService.getAll();
         });
+    }
+
+    @DisplayName("트랜잭션 메니저를 이용한 트랜잭션 제어")
+    @Test
+    public void transactionSync() {
+        userService.deleteAll();
+        assertEquals(0, userDao.getCount());
+
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
+        userService.add(users.get(0));
+        userService.add(users.get(1));
+        assertEquals(2, userDao.getCount());
+
+        transactionManager.rollback(txStatus);
+        assertEquals(0, userDao.getCount());
     }
 }
