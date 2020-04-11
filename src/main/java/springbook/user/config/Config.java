@@ -3,10 +3,8 @@ package springbook.user.config;
 import com.mysql.cj.jdbc.Driver;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
-import org.springframework.aop.Pointcut;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.aop.support.DefaultBeanFactoryPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -35,17 +33,10 @@ public class Config {
 
     @Bean
     public Advisor transactionAdvisor() {
-        final DefaultBeanFactoryPointcutAdvisor defaultBeanFactoryPointcutAdvisor = new DefaultBeanFactoryPointcutAdvisor();
-        defaultBeanFactoryPointcutAdvisor.setPointcut(tractionPointcut());
-        defaultBeanFactoryPointcutAdvisor.setAdvice(transactionAdvice());
-        return defaultBeanFactoryPointcutAdvisor;
-    }
-
-    @Bean
-    public Pointcut tractionPointcut() {
-        final AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression("execution(* *..*ServiceImpl.upgrade*(..))");
-        return pointcut;
+        final AspectJExpressionPointcutAdvisor pointcutAdvisor = new AspectJExpressionPointcutAdvisor();
+        pointcutAdvisor.setAdvice(transactionAdvice());
+        pointcutAdvisor.setExpression("bean(*Service)");
+        return pointcutAdvisor;
     }
 
     @Bean
