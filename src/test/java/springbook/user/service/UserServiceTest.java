@@ -160,11 +160,9 @@ public class UserServiceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(readOnly = true)
     void transactionSync() throws Exception {
         userService.deleteAll();
-        userService.add(users.get(0));
-        userService.add(users.get(1));
     }
 
     /////////////////////////////////////////////
