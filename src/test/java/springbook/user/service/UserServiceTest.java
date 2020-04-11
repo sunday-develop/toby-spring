@@ -40,6 +40,9 @@ public class UserServiceTest {
     private UserService testUserService;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private PlatformTransactionManager transactionManager;
 
     private final List<User> users = List.of(
@@ -168,7 +171,7 @@ public class UserServiceTest {
         txDefinition.setReadOnly(true);
 
         final TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-        userService.deleteAll();
+        userDao.deleteAll();
 
         userService.add(users.get(0));
         userService.add(users.get(1));
