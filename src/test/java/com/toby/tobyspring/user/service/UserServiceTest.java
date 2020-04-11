@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Arrays;
@@ -187,5 +188,14 @@ class UserServiceTest {
 
         transactionManager.rollback(txStatus);
         assertEquals(0, userDao.getCount());
+    }
+
+    @DisplayName("테스트 코드에서의 @Transactional 어노테이션")
+    @Test
+    @Transactional
+    public void transactionAnnotationInTestCode() {
+        userService.deleteAll();
+        userService.add(users.get(0));
+        userService.add(users.get(1));
     }
 }
