@@ -13,7 +13,10 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
+import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
+import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
@@ -21,7 +24,6 @@ import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
 
 import javax.sql.DataSource;
-import java.util.Properties;
 
 @Configuration
 public class Config {
@@ -48,19 +50,23 @@ public class Config {
 
     @Bean
     public Advice transactionAdvice() {
-        final Properties transactionAttributes = new Properties();
-        transactionAttributes.setProperty("get*", "PROPAGATION_REQUIRED,readOnly,timeout_30");
-        transactionAttributes.setProperty("upgrade*", "PROPAGATION_REQUIRES_NEW,ISOLATION_SERIALIZABLE");
-        transactionAttributes.setProperty("*", "PROPAGATION_REQUIRED");
+        final DefaultTransactionAttribute getMethodAttribute = new DefaultTransactionAttribute(TransactionAttribute.PROPAGATION_REQUIRED);
+        getMethodAttribute.setReadOnly(true);
+        getMethodAttribute.setTimeout(30);
 
-        final TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
-        transactionInterceptor.setTransactionAttributes(transactionAttributes);
-        transactionInterceptor.setTransactionManager(transactionManager());
-        return transactionInterceptor;
+        final DefaultTransactionAttribute upgradeMethodAttribute = new DefaultTransactionAttribute(TransactionAttribute.PROPAGATION_REQUIRES_NEW);
+        upgradeMethodAttribute.setIsolationLevel(TransactionAttribute.ISOLATION_SERIALIZABLE);
+
+        final NameMatchTransactionAttributeSource attributeSource = new NameMatchTransactionAttributeSource();
+        attributeSource.addTransactionalMethod("get*", getMethodAttribute);
+        attributeSource.addTransactionalMethod("upgrade*", upgradeMethodAttribute);
+        attributeSource.addTransactionalMethod("*", new DefaultTransactionAttribute());
+
+        return new TransactionInterceptor(transactionManager(), attributeSource);
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
+    public TransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
 
