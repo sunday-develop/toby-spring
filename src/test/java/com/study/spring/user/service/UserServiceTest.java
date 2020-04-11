@@ -15,6 +15,7 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = { "classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-config.xml" })
+@ContextConfiguration(locations = { "classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-transaction.xml" })
 public class UserServiceTest {
 
     @Autowired
