@@ -46,6 +46,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void update(User user) {
+        userDao.update(user);
+    }
+
+    @Override
     public void upgradeLevels() {
 
         // 비지니스 로직

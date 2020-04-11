@@ -6,6 +6,8 @@ import com.pplenty.studytoby.UserLevelUpgradePolicy;
 import com.pplenty.studytoby.UserServiceImpl;
 import org.springframework.mail.MailSender;
 
+import java.util.List;
+
 /**
  * Created by yusik on 2020/03/28.
  */
@@ -29,5 +31,13 @@ public class TestUserService extends UserServiceImpl {
             throw new TestUserServiceException();
         }
         super.upgradeLevel(user);
+    }
+
+    @Override
+    public List<User> getAll() {
+        for (User user : super.getAll()) {
+            super.update(user);
+        }
+        return null;
     }
 }

@@ -10,5 +10,6 @@ public interface UserService {
     User get(String id);
     List<User> getAll();
     void deleteAll();
+    void update(User user);
     void upgradeLevels();
 }

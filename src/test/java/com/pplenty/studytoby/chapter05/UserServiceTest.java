@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -23,6 +24,8 @@ import java.util.Objects;
 import static com.pplenty.studytoby.UserLevelUpgradeEventPolicy.MIN_LOGIN_COUNT_FOR_SILVER;
 import static com.pplenty.studytoby.UserLevelUpgradeEventPolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Created by yusik on 2020/03/28.
@@ -193,6 +196,17 @@ public class UserServiceTest {
     @Test
     void autoProxyCreator() {
         assertThat(testUserService).isInstanceOf(Proxy.class);
+    }
+
+    @DisplayName("읽기 전용 속성 테스트")
+    @Test
+    void readOnlyTransactionAttribute() {
+        // given
+        for (User user : users) {
+            userDao.add(user);
+        }
+
+        assertThrows(TransientDataAccessResourceException.class, () -> testUserService.getAll());
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
