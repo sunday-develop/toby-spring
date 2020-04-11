@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.lang.reflect.Proxy;
@@ -212,18 +213,12 @@ public class UserServiceTest {
 
     @DisplayName("트랜잭션 동기화 테스트")
     @Test
+    @Transactional(readOnly = true)
     void transactionSync() {
 
-        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-        txDefinition.setReadOnly(true);
-        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-
         userService.deleteAll();
-
         userService.add(users.get(0));
         userService.add(users.get(1));
-
-        transactionManager.rollback(txStatus);
 
         assertThat(userDao.getCount()).isEqualTo(0);
     }
