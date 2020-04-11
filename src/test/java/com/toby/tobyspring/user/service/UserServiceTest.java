@@ -8,14 +8,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +32,9 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserService testUserService;
 
     @Autowired
     UserDao userDao;
@@ -122,17 +128,22 @@ class UserServiceTest {
         assertEquals(Grade.BASIC, userWithoutGradeRead.getGrade());
     }
 
-    static class TestUserService extends UserServiceImpl {
-        private String id;
-
-        private TestUserService(String id) {
-            this.id = id;
-        }
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "dblack";
 
         @Override
         public void upgrade(User user) {
             if (user.getId().equals(this.id)) throw new TestUserServiceException();
             super.upgrade(user);
+        }
+
+        @Override
+        public List<User> getAll() {
+            for (User user : super.getAll()) {
+                super.upgrade(user);
+            }
+
+            return super.getAll();
         }
     }
 
@@ -141,26 +152,50 @@ class UserServiceTest {
 
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
     @Test
-    public void upgradeAllOrNothing() throws Exception {
-        TestUserService userService = new TestUserService(users.get(3).getId());
-        userService.setUserDao(this.userDao);
-        userService.setUserUpgradePolicy(new DefaultUserUpgradePolicy());
-        userService.setMailSender(mailSender);
-
-        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(userService);
-
-        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-
+    public void upgradeAllOrNothing() {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
 
         try {
-            txUserService.upgrades();
+            testUserService.upgrades();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
         }
 
         checkGrade(users.get(1), false);
+    }
+
+    @DisplayName("읽기 전용 속성 테스트")
+    @Test
+    public void readOnlyTransactionAttribute() {
+        assertThrows(TransientDataAccessResourceException.class, () -> {
+            testUserService.getAll();
+        });
+    }
+
+    @DisplayName("트랜잭션 메니저를 이용한 트랜잭션 제어")
+    @Test
+    public void transactionSync() {
+        userService.deleteAll();
+        assertEquals(0, userDao.getCount());
+
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
+        userService.add(users.get(0));
+        userService.add(users.get(1));
+        assertEquals(2, userDao.getCount());
+
+        transactionManager.rollback(txStatus);
+        assertEquals(0, userDao.getCount());
+    }
+
+    @DisplayName("테스트 코드에서의 @Transactional 어노테이션")
+    @Test
+    @Transactional
+    public void transactionAnnotationInTestCode() {
+        userService.deleteAll();
+        userService.add(users.get(0));
+        userService.add(users.get(1));
     }
 }
