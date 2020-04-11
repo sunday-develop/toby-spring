@@ -4,13 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -31,10 +29,13 @@ import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
-class UserServiceTest {
+public class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserService testUserService;
 
     @Autowired
     private UserDao userDao;
@@ -116,22 +117,14 @@ class UserServiceTest {
         assertThat(mailMessages.get(1).getTo()[0]).isEqualTo(users.get(3).getEmail());
     }
 
-    @DirtiesContext
     @Test
     void upgradeAllOrNothing() throws Exception {
         users.forEach(userDao::add);
 
-        final TestUserService testUserService = new TestUserService(userDao, mailSender, users.get(3).getId());
-
-        final ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
-
-        final UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-
         try {
-            txUserService.upgradeLevels();
+            testUserService.upgradeLevels();
             fail("TestUSerServiceException expected");
-        } catch (TestUserServiceException e) {
+        } catch (RuntimeException e) {
 
         }
 
@@ -163,16 +156,12 @@ class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel()).isSameAs(Level.BASIC);
     }
 
-    private static class TestUserService extends UserServiceImpl {
+    public static class TestUserServiceImpl extends UserServiceImpl {
 
-        private String id;
+        private final String id = "madnite1";
 
-        public TestUserService(UserDao userDao,
-                               MailSender mailSender,
-                               String id) {
-
+        public TestUserServiceImpl(UserDao userDao, MailSender mailSender) {
             super(userDao, mailSender);
-            this.id = id;
         }
 
         @Override

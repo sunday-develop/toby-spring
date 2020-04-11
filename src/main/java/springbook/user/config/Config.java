@@ -4,10 +4,8 @@ import com.mysql.cj.jdbc.Driver;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.aop.support.NameMatchMethodPointcut;
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -17,7 +15,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
+import springbook.user.proxy.NameMatchClassMethodPointcut;
 import springbook.user.service.TransactionAdvice;
+import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
 
 import javax.sql.DataSource;
@@ -26,10 +26,8 @@ import javax.sql.DataSource;
 public class Config {
 
     @Bean
-    public FactoryBean userService() {
-        final ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-        proxyFactoryBean.addAdvisor(transactionAdvisor());
-        return proxyFactoryBean;
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        return new DefaultAdvisorAutoProxyCreator();
     }
 
     @Bean
@@ -39,8 +37,9 @@ public class Config {
 
     @Bean
     public Pointcut tractionPointcut() {
-        final NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        final NameMatchClassMethodPointcut pointcut = new NameMatchClassMethodPointcut();
         pointcut.setMappedName("upgrade*");
+        pointcut.setMappedClassName("*ServiceImpl");
         return pointcut;
     }
 
@@ -50,7 +49,12 @@ public class Config {
     }
 
     @Bean
-    public UserServiceImpl userServiceImpl() {
+    public PlatformTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(dataSource());
+    }
+
+    @Bean
+    public UserService userService() {
         return new UserServiceImpl(userDao(), mailSender());
     }
 
@@ -59,10 +63,6 @@ public class Config {
         return new UserDaoJdbc(dataSource());
     }
 
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dataSource());
-    }
 
     @Bean
     public DataSource dataSource() {

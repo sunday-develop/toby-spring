@@ -8,13 +8,27 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
 import springbook.user.config.Config;
+import springbook.user.dao.UserDao;
 import springbook.user.service.DummyMailSender;
+import springbook.user.service.UserService;
+import springbook.user.service.UserServiceTest;
 
 import javax.sql.DataSource;
 
 @Import(Config.class)
 @Configuration
 public class TestConfig {
+
+    @Bean
+    public UserService testUserService(UserDao userDao) {
+        return new UserServiceTest.TestUserServiceImpl(userDao, mailSender());
+    }
+
+    @Bean
+    @Primary
+    public MailSender mailSender() {
+        return new DummyMailSender();
+    }
 
     @Bean
     @Primary
@@ -25,12 +39,6 @@ public class TestConfig {
         dataSource.setUsername("spring");
         dataSource.setPassword("book");
         return dataSource;
-    }
-
-    @Bean
-    @Primary
-    public MailSender mailSender() {
-        return new DummyMailSender();
     }
 
 }

@@ -23,6 +23,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void upgradeLevels() {
         for (User user : userDao.getAll()) {
+            if (user.getId().equals("madnite1")) {
+                throw new IllegalStateException();
+            }
             if (canUpgradeLevel(user)) {
                 upgradeLevel(user);
             }
