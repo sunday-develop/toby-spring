@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -23,7 +24,6 @@ import java.util.Objects;
 import static com.study.spring.user.service.DefaultUserLevelUpgradePolicy.MIN_LOG_COUNT_FOR_SILVER;
 import static com.study.spring.user.service.DefaultUserLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = {"classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-config.xml"})
+@ContextConfiguration(locations = { "classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-config.xml" })
 public class UserServiceTest {
 
     @Autowired
@@ -44,7 +44,7 @@ public class UserServiceTest {
     private List<User> userList;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         userList = Arrays.asList(
                 new User("user1", "username1", "password1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0, "vvshinevv@naver.com"),
                 new User("user2", "username2", "password2", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER, 0, "vvshinevv@naver.com"),
@@ -56,7 +56,7 @@ public class UserServiceTest {
 
     @DisplayName("레벨 업그레이드 하는 부분")
     @Test
-    public void upgradeLevels() {
+    void upgradeLevels() {
 
         UserServiceImpl userServiceImpl = new UserServiceImpl();
 
@@ -89,7 +89,7 @@ public class UserServiceTest {
 
     @DisplayName("add() 메소드의 테스트")
     @Test
-    public void add() {
+    void add() {
         userDao.deleteAll();
 
         User userWithLevel = userList.get(4);
@@ -108,7 +108,7 @@ public class UserServiceTest {
 
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
     @Test
-    public void upgradeAllOrNothingWithException() {
+    void upgradeAllOrNothingWithException() {
         userDao.deleteAll();
         for (User user : userList) {
             userDao.add(user);
@@ -116,6 +116,11 @@ public class UserServiceTest {
 
         assertThrows(TestUserServiceException.class, testUserService::upgradeLevels);
         checkLevelUpgraded(userList.get(1), false);
+    }
+
+    @Test
+    void readOnlyTransactionAttribute() {
+        assertThrows(TransientDataAccessResourceException.class, testUserService::getAll);
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
@@ -127,8 +132,16 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    static class TestUserService extends UserServiceImpl {
 
+        @Override
+        public List<User> getAll() {
+            for (User user : super.getAll()) {
+                super.update(user);
+            }
+
+            return null;
+        }
     }
 
     static class TestUserLevelUpgradePolicy extends DefaultUserLevelUpgradePolicy {
