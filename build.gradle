@@ -26,10 +26,12 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-jdbc', version: "${springVersion}"
     compile group: 'org.springframework', name: 'spring-context-support', version: "${springVersion}"
 
-    testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
-
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile group: 'com.sun.mail', name: 'jakarta.mail', version: '1.6.5'
+    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.5'
+
+
+    testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
 
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.15.0'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
