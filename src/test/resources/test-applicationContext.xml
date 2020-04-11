@@ -44,8 +44,8 @@
     </bean>
 
     <aop:config>
-        <aop:pointcut id="transactionPointcut" expression="execution(* *..*ServiceImpl.upgradeLevels*(..))"/>
-        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut"/>
+        <aop:advisor advice-ref="transactionAdvice"
+                     pointcut="execution(* *..*ServiceImpl.upgradeLevels*(..))"/>
     </aop:config>
 
 </beans>
