@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -21,8 +22,7 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static springbook.user.service.UserServiceImpl.MIN_LOG_COUNT_FOR_SILVER;
@@ -120,7 +120,7 @@ public class UserServiceTest {
 
     @Test
     void upgradeAllOrNothing() throws Exception {
-        users.forEach(userDao::add);
+        users.forEach(userService::add);
 
         try {
             testUserService.upgradeLevels();
@@ -162,11 +162,20 @@ public class UserServiceTest {
         assertThat(testUserService).isInstanceOf(Proxy.class);
     }
 
-    public static class TestUserServiceImpl extends UserServiceImpl {
+    @Test
+    void readOnlyTransactionAttribute() throws Exception {
+        users.forEach(userService::add);
+
+        assertThatThrownBy(() -> testUserService.getAll())
+                .isInstanceOf(TransientDataAccessResourceException.class);
+    }
+
+
+    public static class TestUserService extends UserServiceImpl {
 
         private final String id = "madnite1";
 
-        public TestUserServiceImpl(UserDao userDao, MailSender mailSender) {
+        public TestUserService(UserDao userDao, MailSender mailSender) {
             super(userDao, mailSender);
         }
 
@@ -176,6 +185,14 @@ public class UserServiceTest {
                 throw new TestUserServiceException();
             }
             super.upgradeLevel(user);
+        }
+
+        @Override
+        public List<User> getAll() {
+            for (User user : super.getAll()) {
+                super.update(user);
+            }
+            return null;
         }
 
     }

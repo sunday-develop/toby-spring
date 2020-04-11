@@ -21,7 +21,7 @@ public class TestConfig {
 
     @Bean
     public UserService testUserService(UserDao userDao) {
-        return new UserServiceTest.TestUserServiceImpl(userDao, mailSender());
+        return new UserServiceTest.TestUserService(userDao, mailSender());
     }
 
     @Bean
