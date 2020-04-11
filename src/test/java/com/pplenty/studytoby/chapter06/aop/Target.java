@@ -23,4 +23,8 @@ public class Target  implements TargetInterface {
     public int plus(int a, int b) {
         return 0;
     }
+
+    public void method() {
+    }
+
 }
