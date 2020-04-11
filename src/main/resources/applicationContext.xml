@@ -15,18 +15,9 @@
         <property name="password" value="test"/>
     </bean>
 
-    <tx:advice id="transactionAdvice">
-        <tx:attributes>
-            <tx:method name="get*" read-only="true"/>
-            <tx:method name="*"/>
-        </tx:attributes>
-    </tx:advice>
+    <tx:annotation-driven />
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
-
-    <aop:config>
-        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
-    </aop:config>
 
     <bean id="userService" class="com.toby.tobyspring.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
