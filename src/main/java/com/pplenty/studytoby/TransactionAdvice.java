@@ -9,6 +9,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 /**
  * Created by yusik on 2020/04/05.
  */
+@Deprecated
 public class TransactionAdvice implements MethodInterceptor {
 
     PlatformTransactionManager transactionManager;
