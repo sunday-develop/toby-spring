@@ -6,8 +6,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * Created by yusik on 2020/04/05.
  */
