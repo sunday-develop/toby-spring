@@ -6,6 +6,8 @@ import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
+import java.util.List;
+
 public class UserServiceImpl implements UserService {
 
     public static final int MIN_LOG_COUNT_FOR_SILVER = 50;
@@ -66,6 +68,26 @@ public class UserServiceImpl implements UserService {
         }
 
         userDao.add(user);
+    }
+
+    @Override
+    public User get(String id) {
+        return userDao.get(id);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userDao.getAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        userDao.deleteAll();
+    }
+
+    @Override
+    public void update(User user) {
+        userDao.update(user);
     }
 
 }
