@@ -131,19 +131,19 @@ public class UserServiceTest {
 
     @Test
     void transactionSync() {
-        testUserService.deleteAll();
-        assertEquals(userDao.getCount(), 0);
 
         DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
         TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 
+        try {
 
-        testUserService.add(userList.get(0));
-        testUserService.add(userList.get(1));
-        assertEquals(userDao.getCount(), 2);
+            testUserService.deleteAll();
+            testUserService.add(userList.get(0));
+            testUserService.add(userList.get(1));
 
-        transactionManager.rollback(txStatus);
-        assertEquals(userDao.getCount(), 0);
+        } finally {
+            transactionManager.rollback(txStatus);
+        }
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
