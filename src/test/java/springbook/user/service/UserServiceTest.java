@@ -165,6 +165,8 @@ public class UserServiceTest {
     @Test
     void transactionSync() throws Exception {
         final DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        txDefinition.setReadOnly(true);
+
         final TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
         userService.deleteAll();
 
