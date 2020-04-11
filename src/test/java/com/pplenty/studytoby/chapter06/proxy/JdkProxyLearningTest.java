@@ -4,6 +4,8 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.ClassFilter;
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
@@ -138,6 +140,51 @@ class JdkProxyLearningTest {
         assertThat(proxiedHello.sayHi(myName)).isEqualTo("HI " + myNameUppercase);
         assertThat(proxiedHello.sayThankYou(myName)).isEqualTo("Thank you " + myName);
 
+    }
+
+    @DisplayName("확장 포인트컷 테스트")
+    @Test
+    void name() {
+
+        // given
+        NameMatchMethodPointcut classMethodPointcut = new NameMatchMethodPointcut() {
+            @Override
+            public ClassFilter getClassFilter() {
+                return clazz -> clazz.getSimpleName().startsWith("HelloT");
+            }
+        };
+        classMethodPointcut.setMappedName("sayH*");
+
+        // when then
+        checkAdviced(new HelloTarget(), classMethodPointcut, true);
+
+        class HelloWorld extends HelloTarget {
+        }
+        checkAdviced(new HelloWorld(), classMethodPointcut, false);
+
+        class HelloToby extends HelloTarget {
+        }
+        checkAdviced(new HelloToby(), classMethodPointcut, true);
+    }
+
+    private void checkAdviced(Object target, Pointcut pointcut, boolean adviced) {
+
+        final String myName = "yusik";
+        final String myNameUppercase = "YUSIK";
+
+        ProxyFactoryBean pfBean = new ProxyFactoryBean();
+        pfBean.setTarget(target);
+        pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+        Hello proxiedHello = (Hello) pfBean.getObject();
+
+        if (adviced) {
+            assertThat(proxiedHello.sayHello(myName)).isEqualTo("HELLO " + myNameUppercase);
+            assertThat(proxiedHello.sayHi(myName)).isEqualTo("HI " + myNameUppercase);
+        } else {
+            assertThat(proxiedHello.sayHello(myName)).isEqualTo("Hello " + myName);
+            assertThat(proxiedHello.sayHi(myName)).isEqualTo("Hi " + myName);
+        }
+        assertThat(proxiedHello.sayThankYou(myName)).isEqualTo("Thank you " + myName);
     }
 
     static class UppercaseAdvice implements MethodInterceptor {
