@@ -12,6 +12,7 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionAttribute;
@@ -24,6 +25,7 @@ import springbook.user.service.UserServiceImpl;
 import javax.sql.DataSource;
 
 @Configuration
+@EnableTransactionManagement
 public class Config {
 
     @Bean
