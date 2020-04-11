@@ -40,7 +40,7 @@
 
     <aop:config>
         <aop:advisor advice-ref="transactionAdvice"
-                     pointcut="execution(* *..*ServiceImpl.upgradeLevels*(..))"/>
+                     pointcut="bean(*Service)"/>
     </aop:config>
 
     <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserService">
