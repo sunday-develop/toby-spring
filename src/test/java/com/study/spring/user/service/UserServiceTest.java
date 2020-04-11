@@ -13,6 +13,7 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -38,6 +39,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = { "classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-transaction.xml" })
+@Transactional
+@Commit
 public class UserServiceTest {
 
     @Autowired
@@ -132,7 +135,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @Transactional
     @Rollback(false)
     void transactionSync() {
 
