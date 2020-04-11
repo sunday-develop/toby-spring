@@ -24,7 +24,6 @@ import java.util.Objects;
 import static com.pplenty.studytoby.UserLevelUpgradeEventPolicy.MIN_LOGIN_COUNT_FOR_SILVER;
 import static com.pplenty.studytoby.UserLevelUpgradeEventPolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -207,6 +206,14 @@ public class UserServiceTest {
         }
 
         assertThrows(TransientDataAccessResourceException.class, () -> testUserService.getAll());
+    }
+
+    @DisplayName("트랜잭션 동기화 테스트")
+    @Test
+    void transactionSync() {
+        userService.deleteAll();
+        userService.add(users.get(0));
+        userService.add(users.get(1));
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
