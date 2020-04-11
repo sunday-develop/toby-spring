@@ -5,14 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
 import springbook.config.TestConfig;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
@@ -39,16 +38,7 @@ public class UserServiceTest {
     private UserService testUserService;
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-
-    @Autowired
-    private MailSender mailSender;
-
-    @Autowired
-    private ApplicationContext context;
+    private TransactionManager transactionManager;
 
     private final List<User> users = List.of(
             User.of("bumjin", "박범진", "p1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0, "email1@email.com"),
@@ -60,7 +50,7 @@ public class UserServiceTest {
 
     @BeforeEach
     void setup() {
-        userDao.deleteAll();
+        userService.deleteAll();
     }
 
     @Test
@@ -133,7 +123,7 @@ public class UserServiceTest {
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
-        final User userUpdate = userDao.get(user.getId());
+        final User userUpdate = userService.get(user.getId());
         if (upgraded) {
             assertThat(userUpdate.getLevel()).isSameAs(user.getLevel().nextLevel().get());
         } else {
@@ -150,8 +140,8 @@ public class UserServiceTest {
         userService.add(userWithLevel);
         userService.add(userWithoutLevel);
 
-        final User userWithLevelRead = userDao.get(userWithLevel.getId());
-        final User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
+        final User userWithLevelRead = userService.get(userWithLevel.getId());
+        final User userWithoutLevelRead = userService.get(userWithoutLevel.getId());
 
         assertThat(userWithLevelRead.getLevel()).isSameAs(userWithLevel.getLevel());
         assertThat(userWithoutLevelRead.getLevel()).isSameAs(Level.BASIC);
@@ -170,7 +160,13 @@ public class UserServiceTest {
                 .isInstanceOf(TransientDataAccessResourceException.class);
     }
 
+    @Test
+    void transactionSync() throws Exception {
+        userService.add(users.get(0));
+        userService.add(users.get(1));
+    }
 
+    /////////////////////////////////////////////
     public static class TestUserService extends UserServiceImpl {
 
         private final String id = "madnite1";
