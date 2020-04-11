@@ -15,7 +15,9 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +37,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = { "classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-transaction.xml" })
 public class UserServiceTest {
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
     @Autowired
     private UserService testUserService;
@@ -122,6 +127,19 @@ public class UserServiceTest {
     @Test
     void readOnlyTransactionAttribute() {
         assertThrows(TransientDataAccessResourceException.class, testUserService::getAll);
+    }
+
+    @Test
+    void transactionSync() {
+
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
+        testUserService.deleteAll();
+        testUserService.add(userList.get(0));
+        testUserService.add(userList.get(1));
+
+        transactionManager.commit(txStatus);
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
