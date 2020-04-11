@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
@@ -130,6 +131,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @Transactional
     void transactionSync() {
 
         DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
