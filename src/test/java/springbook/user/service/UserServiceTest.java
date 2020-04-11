@@ -17,6 +17,7 @@ import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,6 +155,11 @@ public class UserServiceTest {
 
         assertThat(userWithLevelRead.getLevel()).isSameAs(userWithLevel.getLevel());
         assertThat(userWithoutLevelRead.getLevel()).isSameAs(Level.BASIC);
+    }
+
+    @Test
+    void advisorAutoProxyCreator() throws Exception {
+        assertThat(testUserService).isInstanceOf(Proxy.class);
     }
 
     public static class TestUserServiceImpl extends UserServiceImpl {
