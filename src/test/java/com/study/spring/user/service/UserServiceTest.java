@@ -3,24 +3,18 @@ package com.study.spring.user.service;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
-import com.study.spring.user.handler.TransactionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.PlatformTransactionManager;
 
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
+@ContextConfiguration(locations = {"classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-config.xml"})
 public class UserServiceTest {
 
     @Autowired
@@ -58,11 +52,6 @@ public class UserServiceTest {
                 new User("user4", "username4", "password4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD, "vvshinevv@naver.com"),
                 new User("user5", "username5", "password5", Level.GOLD, 100, Integer.MAX_VALUE, "vvshinevv@naver.com")
         );
-    }
-
-    @Test
-    void advisorAutoProxyCreator() {
-        assertEquals(testUserService.getClass().getName(), "com.sun.proxy.$Proxy18");
     }
 
     @DisplayName("레벨 업그레이드 하는 부분")
