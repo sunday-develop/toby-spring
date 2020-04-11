@@ -13,6 +13,7 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -132,6 +133,7 @@ public class UserServiceTest {
 
     @Test
     @Transactional
+    @Rollback(false)
     void transactionSync() {
 
         DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
