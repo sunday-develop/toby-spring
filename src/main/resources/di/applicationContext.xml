@@ -28,7 +28,8 @@
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
-    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+    <bean id="transactionPointcut" class="com.pplenty.studytoby.NameMatchClassMethodPointcut">
+        <property name="mappedClassName" value="*NotServiceImpl"/>
         <property name="mappedName" value="upgradeLevels*"/>
     </bean>
 
