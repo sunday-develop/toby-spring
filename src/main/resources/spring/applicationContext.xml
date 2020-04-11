@@ -7,9 +7,8 @@
     <bean id="transactionAdvice" class="com.study.spring.user.service.TransactionAdvice">
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
-    <bean id="transactionPointcut" class="com.study.spring.user.service.NameMatchClassMethodPointcut">
-        <property name="mappedName" value="upgrade*"/>
-        <property name="mappedClassName" value="*ServiceImpl"/>
+    <bean id="transactionPointcut" class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+        <property name="expression" value="* *..*ServiceImpl.upgrade*(..))"/>
     </bean>
     <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
         <property name="advice" ref="transactionAdvice"/>
