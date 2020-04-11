@@ -13,6 +13,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.lang.reflect.Proxy;
 import java.sql.SQLException;
@@ -211,9 +213,16 @@ public class UserServiceTest {
     @DisplayName("트랜잭션 동기화 테스트")
     @Test
     void transactionSync() {
+
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
         userService.deleteAll();
+
         userService.add(users.get(0));
         userService.add(users.get(1));
+
+        transactionManager.commit(txStatus);
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
