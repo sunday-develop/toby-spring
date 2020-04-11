@@ -132,10 +132,14 @@ public class UserServiceTest {
     @Test
     void transactionSync() {
 
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
         testUserService.deleteAll();
         testUserService.add(userList.get(0));
         testUserService.add(userList.get(1));
 
+        transactionManager.commit(txStatus);
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
