@@ -33,8 +33,7 @@
 
     <tx:advice id="transactionAdvice">
         <tx:attributes>
-            <tx:method name="get*" read-only="true" timeout="30"/>
-            <tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE"/>
+            <tx:method name="get*" read-only="true"/>
             <tx:method name="*"/>
         </tx:attributes>
     </tx:advice>
