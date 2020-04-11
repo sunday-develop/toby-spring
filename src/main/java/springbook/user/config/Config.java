@@ -50,16 +50,11 @@ public class Config {
 
     @Bean
     public Advice transactionAdvice() {
-        final DefaultTransactionAttribute getMethodAttribute = new DefaultTransactionAttribute(TransactionAttribute.PROPAGATION_REQUIRED);
-        getMethodAttribute.setReadOnly(true);
-        getMethodAttribute.setTimeout(30);
-
-        final DefaultTransactionAttribute upgradeMethodAttribute = new DefaultTransactionAttribute(TransactionAttribute.PROPAGATION_REQUIRES_NEW);
-        upgradeMethodAttribute.setIsolationLevel(TransactionAttribute.ISOLATION_SERIALIZABLE);
+        final DefaultTransactionAttribute readOnlyAttribute = new DefaultTransactionAttribute(TransactionAttribute.PROPAGATION_REQUIRED);
+        readOnlyAttribute.setReadOnly(true);
 
         final NameMatchTransactionAttributeSource attributeSource = new NameMatchTransactionAttributeSource();
-        attributeSource.addTransactionalMethod("get*", getMethodAttribute);
-        attributeSource.addTransactionalMethod("upgrade*", upgradeMethodAttribute);
+        attributeSource.addTransactionalMethod("get*", readOnlyAttribute);
         attributeSource.addTransactionalMethod("*", new DefaultTransactionAttribute());
 
         return new TransactionInterceptor(transactionManager(), attributeSource);
