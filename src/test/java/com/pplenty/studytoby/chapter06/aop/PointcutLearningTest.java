@@ -37,4 +37,16 @@ class PointcutLearningTest {
 
         // then
     }
+
+    public void pointcutMatches(String expression, Boolean expected, Class<?> clazz, String methodName, Class<?>... args) throws NoSuchMethodException {
+        // given
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        pointcut.setExpression(expression);
+
+        // when then
+        assertThat(
+                pointcut.getClassFilter().matches(clazz)
+                        && pointcut.getMethodMatcher().matches(clazz.getMethod(methodName, args), null))
+                .isEqualTo(expected);
+    }
 }
