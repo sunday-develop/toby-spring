@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -37,7 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
+@ContextConfiguration(locations = "classpath:spring/applicationContext.xml")
 public class UserServiceTest {
 
     @Autowired
@@ -48,9 +49,6 @@ public class UserServiceTest {
 
     @Autowired
     private UserDao userDao;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
 
     private List<User> userList;
 
@@ -125,7 +123,7 @@ public class UserServiceTest {
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
     @DirtiesContext
     @Test
-    public void upgradeAllOrNothingWithException() throws Exception {
+    public void upgradeAllOrNothingWithException() {
 
         UserServiceImpl userServiceImpl = new UserServiceImpl();
         userServiceImpl.setUserDao(this.userDao);
@@ -134,7 +132,7 @@ public class UserServiceTest {
         UserLevelUpgradePolicy userLevelUpgradePolicy = new TestUserLevelUpgradePolicy(userList.get(3).getId());
         userServiceImpl.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
 
-        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
         txProxyFactoryBean.setTarget(userServiceImpl);
 
         UserService txUserService = (UserService) txProxyFactoryBean.getObject();
