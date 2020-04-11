@@ -38,14 +38,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:spring/applicationContext.xml")
+@ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
 public class UserServiceTest {
 
     @Autowired
-    private ApplicationContext context;
-
-    @Autowired
-    private UserServiceImpl userServiceImpl;
+    private UserService testUserService;
 
     @Autowired
     private UserDao userDao;
@@ -64,8 +61,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void bean() {
-        assertNotNull(this.userServiceImpl);
+    void advisorAutoProxyCreator() {
+        assertEquals(testUserService.getClass().getName(), "com.sun.proxy.$Proxy18");
     }
 
     @DisplayName("레벨 업그레이드 하는 부분")
@@ -110,8 +107,8 @@ public class UserServiceTest {
         User userWithoutLevel = userList.get(0);
         userWithLevel.setLevel(null);
 
-        userServiceImpl.add(userWithLevel);
-        userServiceImpl.add(userWithoutLevel);
+        testUserService.add(userWithLevel);
+        testUserService.add(userWithoutLevel);
 
         User userWithLevelRead = userDao.get(userWithLevel.getId());
         User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
@@ -121,28 +118,14 @@ public class UserServiceTest {
     }
 
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
-    @DirtiesContext
     @Test
     public void upgradeAllOrNothingWithException() {
-
-        UserServiceImpl userServiceImpl = new UserServiceImpl();
-        userServiceImpl.setUserDao(this.userDao);
-        userServiceImpl.setMailSender(new MockMailSender());
-
-        UserLevelUpgradePolicy userLevelUpgradePolicy = new TestUserLevelUpgradePolicy(userList.get(3).getId());
-        userServiceImpl.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
-
-        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(userServiceImpl);
-
-        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-
         userDao.deleteAll();
         for (User user : userList) {
             userDao.add(user);
         }
 
-        assertThrows(TestUserServiceException.class, txUserService::upgradeLevels);
+        assertThrows(TestUserServiceException.class, testUserService::upgradeLevels);
         checkLevelUpgraded(userList.get(1), false);
     }
 
@@ -153,6 +136,10 @@ public class UserServiceTest {
         } else {
             assertEquals(userUpdate.getLevel(), user.getLevel());
         }
+    }
+
+    static class TestUserServiceImpl extends UserServiceImpl {
+
     }
 
     static class TestUserLevelUpgradePolicy extends DefaultUserLevelUpgradePolicy {
@@ -168,8 +155,6 @@ public class UserServiceTest {
             if (user.getId().equals(this.id)) {
                 throw new TestUserServiceException();
             }
-            System.out.println();
-
             user.upgradeLevel();
         }
     }

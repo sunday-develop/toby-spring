@@ -101,7 +101,7 @@ class ProxyTest {
             assert proxiedHello != null;
             assertEquals(proxiedHello.sayHello("Toby"), "HELLO TOBY");
             assertEquals(proxiedHello.sayHi("Toby"), "HI TOBY");
-            assertEquals(proxiedHello.sayThankYou("Toby"), "Thank You toby");
+            assertEquals(proxiedHello.sayThankYou("Toby"), "Thank You Toby");
         } else {
             assert proxiedHello != null;
             assertEquals(proxiedHello.sayHello("Toby"), "Hello Toby");
