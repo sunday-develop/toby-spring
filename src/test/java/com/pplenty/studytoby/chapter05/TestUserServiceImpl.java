@@ -9,13 +9,13 @@ import org.springframework.mail.MailSender;
 /**
  * Created by yusik on 2020/03/28.
  */
-public class TestUserService extends UserServiceImpl {
+public class TestUserServiceImpl extends UserServiceImpl {
 
     private String id;
 
-    public TestUserService(UserDao userDao,
-                           UserLevelUpgradePolicy policy,
-                           MailSender mailSender) {
+    public TestUserServiceImpl(UserDao userDao,
+                               UserLevelUpgradePolicy policy,
+                               MailSender mailSender) {
         super(userDao, policy, mailSender);
     }
 

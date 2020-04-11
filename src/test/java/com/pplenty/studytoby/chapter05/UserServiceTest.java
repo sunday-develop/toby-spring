@@ -45,9 +45,6 @@ public class UserServiceTest {
     private MockMailSender mailSender;
 
     @Autowired
-    private UserService testUserServiceImpl;
-
-    @Autowired
     private PlatformTransactionManager transactionManager;
 
     private List<User> users;
@@ -145,7 +142,7 @@ public class UserServiceTest {
         }
 
         TransactionHandler txHandler = new TransactionHandler();
-        txHandler.setTarget(testUserServiceImpl);
+        txHandler.setTarget(testUserService);
         txHandler.setTransactionManager(transactionManager);
         txHandler.setPattern("upgradeLevels");
 

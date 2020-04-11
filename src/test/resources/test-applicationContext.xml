@@ -50,16 +50,7 @@
         <constructor-arg name="mailSender" ref="mailSender"/>
     </bean>
 
-    <bean id="testUserService" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="target" ref="testUserServiceImpl"/>
-        <property name="interceptorNames">
-            <list>
-                <value>transactionAdvisor</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="testUserServiceImpl" class="com.pplenty.studytoby.chapter05.TestUserService">
+    <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserServiceImpl">
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
         <constructor-arg name="mailSender" ref="mailSender"/>
