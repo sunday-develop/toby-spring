@@ -11,6 +11,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -214,6 +215,7 @@ public class UserServiceTest {
     @DisplayName("트랜잭션 동기화 테스트")
     @Test
     @Transactional(readOnly = true)
+    @Rollback(false)
     void transactionSync() {
 
         userService.deleteAll();
