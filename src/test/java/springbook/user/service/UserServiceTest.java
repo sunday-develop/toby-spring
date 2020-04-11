@@ -11,7 +11,9 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import springbook.config.TestConfig;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
@@ -38,7 +40,7 @@ public class UserServiceTest {
     private UserService testUserService;
 
     @Autowired
-    private TransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;
 
     private final List<User> users = List.of(
             User.of("bumjin", "박범진", "p1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0, "email1@email.com"),
@@ -162,8 +164,14 @@ public class UserServiceTest {
 
     @Test
     void transactionSync() throws Exception {
+        final DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        final TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+        userService.deleteAll();
+
         userService.add(users.get(0));
         userService.add(users.get(1));
+
+        transactionManager.commit(txStatus);
     }
 
     /////////////////////////////////////////////
