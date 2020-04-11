@@ -189,6 +189,12 @@ public class UserServiceTest {
 
     }
 
+    @DisplayName("자동 생성된 프록시 확인")
+    @Test
+    void autoProxyCreator() {
+        assertThat(testUserService).isInstanceOf(Proxy.class);
+    }
+
     private void checkLevelUpgraded(User user, boolean upgraded) {
         User userUpdate = userDao.get(user.getId());
         if (upgraded) {

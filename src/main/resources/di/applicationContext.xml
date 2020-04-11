@@ -44,4 +44,6 @@
         <constructor-arg name="mailSender" ref="mailSender"/>
     </bean>
 
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
 </beans>
