@@ -43,4 +43,6 @@
                      pointcut="bean(*Service)"/>
     </aop:config>
 
+    <tx:annotation-driven/>
+
 </beans>

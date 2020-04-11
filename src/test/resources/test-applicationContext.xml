@@ -30,17 +30,17 @@
         <constructor-arg name="dataSource" ref="myDataSource"/>
     </bean>
 
-    <tx:advice id="transactionAdvice">
-        <tx:attributes>
-            <tx:method name="get*" read-only="true"/>
-            <tx:method name="*"/>
-        </tx:attributes>
-    </tx:advice>
+<!--    <tx:advice id="transactionAdvice">-->
+<!--        <tx:attributes>-->
+<!--            <tx:method name="get*" read-only="true"/>-->
+<!--            <tx:method name="*"/>-->
+<!--        </tx:attributes>-->
+<!--    </tx:advice>-->
 
-    <aop:config>
-        <aop:advisor advice-ref="transactionAdvice"
-                     pointcut="bean(*Service)"/>
-    </aop:config>
+<!--    <aop:config>-->
+<!--        <aop:advisor advice-ref="transactionAdvice"-->
+<!--                     pointcut="bean(*Service)"/>-->
+<!--    </aop:config>-->
 
     <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserService">
         <constructor-arg name="userDao" ref="userDao"/>
@@ -48,5 +48,7 @@
         <constructor-arg name="mailSender" ref="mailSender"/>
         <property name="id" value="kohyusik2"/>
     </bean>
+
+    <tx:annotation-driven/>
 
 </beans>
