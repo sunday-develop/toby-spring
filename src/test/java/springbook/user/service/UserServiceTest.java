@@ -167,16 +167,18 @@ public class UserServiceTest {
 
     @Test
     void transactionSync() throws Exception {
-        final DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-        txDefinition.setReadOnly(true);
+        assertThat(userDao.getCount()).isZero();
 
+        final DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
         final TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-        userDao.deleteAll();
 
         userService.add(users.get(0));
         userService.add(users.get(1));
+        assertThat(userDao.getCount()).isEqualTo(2);
 
-        transactionManager.commit(txStatus);
+        transactionManager.rollback(txStatus);
+
+        assertThat(userDao.getCount()).isZero();
     }
 
     /////////////////////////////////////////////
