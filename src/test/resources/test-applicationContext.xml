@@ -26,9 +26,8 @@
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
-    <bean id="transactionPointcut" class="com.pplenty.studytoby.NameMatchClassMethodPointcut">
-        <property name="mappedClassName" value="*ServiceImpl"/>
-        <property name="mappedName" value="upgradeLevels*"/>
+    <bean id="transactionPointcut" class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+        <property name="expression" value="execution(* *..*ServiceImpl.upgradeLevels*(..))"/>
     </bean>
 
     <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
@@ -42,7 +41,7 @@
         <constructor-arg name="mailSender" ref="mailSender"/>
     </bean>
 
-    <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserServiceImpl">
+    <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserService">
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
         <constructor-arg name="mailSender" ref="mailSender"/>
