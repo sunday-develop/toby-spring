@@ -54,4 +54,24 @@ public class UserServiceImpl implements UserService {
         if (user.getGrade() == null) user.setGrade(Grade.BASIC);
         userDao.add(user);
     }
+
+    @Override
+    public User get(String id) {
+        return this.userDao.get(id);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return this.userDao.getAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        this.userDao.deleteAll();
+    }
+
+    @Override
+    public void update(User user) {
+        this.userDao.update(user);
+    }
 }
