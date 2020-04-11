@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,6 +24,6 @@ class ReflectionTest {
         assertEquals(name.charAt(0), 'S');
 
         Method charMethod = String.class.getMethod("charAt", int.class);
-        assertEquals((Character) charMethod.invoke(name), 'S');
+        assertEquals((Character) charMethod.invoke(name, 0), 'S');
     }
 }

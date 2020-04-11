@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="userService" class="com.study.spring.user.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="mailSender" ref="mailSender"/>
+        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
+    </bean>
+    <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.UserServiceTest$TestUserLevelUpgradePolicy">
+        <constructor-arg name="id" value="user4"/>
+    </bean>
+    <bean id="mailSender" class="com.study.spring.user.service.UserServiceTest$MockMailSender"/>
+    <bean id="message" class="com.study.spring.factorybean.MessageFactoryBean">
+        <property name="text" value="Factory Bean"/>
+    </bean>
+    <bean id="testUserService" class="com.study.spring.user.service.UserServiceTest$TestUserService" parent="userService"/>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="userDao" class="com.study.spring.user.dao.UserDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost/test?useSSL=false"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+</beans>
