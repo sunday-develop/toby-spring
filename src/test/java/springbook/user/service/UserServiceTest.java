@@ -9,6 +9,7 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -160,9 +161,12 @@ public class UserServiceTest {
     }
 
     @Test
-    @Transactional(readOnly = true)
+    @Commit
+    @Transactional
     void transactionSync() throws Exception {
         userService.deleteAll();
+        userService.add(users.get(0));
+        userService.add(users.get(1));
     }
 
     /////////////////////////////////////////////
