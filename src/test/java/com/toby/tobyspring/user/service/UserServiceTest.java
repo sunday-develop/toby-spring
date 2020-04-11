@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
@@ -132,6 +133,15 @@ class UserServiceTest {
             if (user.getId().equals(this.id)) throw new TestUserServiceException();
             super.upgrade(user);
         }
+
+        @Override
+        public List<User> getAll() {
+            for (User user : super.getAll()) {
+                super.upgrade(user);
+            }
+
+            return super.getAll();
+        }
     }
 
     static class TestUserServiceException extends RuntimeException {
@@ -150,5 +160,13 @@ class UserServiceTest {
         }
 
         checkGrade(users.get(1), false);
+    }
+
+    @DisplayName("읽기 전용 속성 테스트")
+    @Test
+    public void readOnlyTransactionAttribute() {
+        assertThrows(TransientDataAccessResourceException.class, () -> {
+            testUserService.getAll();
+        });
     }
 }
