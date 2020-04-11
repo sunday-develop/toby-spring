@@ -10,7 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
+@ContextConfiguration(locations = "classpath:spring/applicationTestContext-bean.xml")
 public class FactoryBeanTest {
 
     @Autowired

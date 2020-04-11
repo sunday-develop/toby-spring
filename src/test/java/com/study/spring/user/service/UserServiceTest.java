@@ -3,23 +3,22 @@ package com.study.spring.user.service;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
-import com.study.spring.user.handler.TransactionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +27,6 @@ import java.util.Objects;
 import static com.study.spring.user.service.DefaultUserLevelUpgradePolicy.MIN_LOG_COUNT_FOR_SILVER;
 import static com.study.spring.user.service.DefaultUserLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -37,25 +35,22 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:spring/applicationContext-test.xml")
+@ContextConfiguration(locations = { "classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-transaction.xml" })
 public class UserServiceTest {
-
-    @Autowired
-    private ApplicationContext context;
-
-    @Autowired
-    private UserServiceImpl userServiceImpl;
-
-    @Autowired
-    private UserDao userDao;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
 
+    @Autowired
+    private UserService testUserService;
+
+    @Autowired
+    private UserDao userDao;
+
     private List<User> userList;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         userList = Arrays.asList(
                 new User("user1", "username1", "password1", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER - 1, 0, "vvshinevv@naver.com"),
                 new User("user2", "username2", "password2", Level.BASIC, MIN_LOG_COUNT_FOR_SILVER, 0, "vvshinevv@naver.com"),
@@ -65,14 +60,9 @@ public class UserServiceTest {
         );
     }
 
-    @Test
-    public void bean() {
-        assertNotNull(this.userServiceImpl);
-    }
-
     @DisplayName("레벨 업그레이드 하는 부분")
     @Test
-    public void upgradeLevels() {
+    void upgradeLevels() {
 
         UserServiceImpl userServiceImpl = new UserServiceImpl();
 
@@ -105,15 +95,15 @@ public class UserServiceTest {
 
     @DisplayName("add() 메소드의 테스트")
     @Test
-    public void add() {
+    void add() {
         userDao.deleteAll();
 
         User userWithLevel = userList.get(4);
         User userWithoutLevel = userList.get(0);
         userWithLevel.setLevel(null);
 
-        userServiceImpl.add(userWithLevel);
-        userServiceImpl.add(userWithoutLevel);
+        testUserService.add(userWithLevel);
+        testUserService.add(userWithoutLevel);
 
         User userWithLevelRead = userDao.get(userWithLevel.getId());
         User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
@@ -123,29 +113,37 @@ public class UserServiceTest {
     }
 
     @DisplayName("예외 발생 시 작업 취소 여부 테스트")
-    @DirtiesContext
     @Test
-    public void upgradeAllOrNothingWithException() throws Exception {
-
-        UserServiceImpl userServiceImpl = new UserServiceImpl();
-        userServiceImpl.setUserDao(this.userDao);
-        userServiceImpl.setMailSender(new MockMailSender());
-
-        UserLevelUpgradePolicy userLevelUpgradePolicy = new TestUserLevelUpgradePolicy(userList.get(3).getId());
-        userServiceImpl.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
-
-        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(userServiceImpl);
-
-        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-
+    void upgradeAllOrNothingWithException() {
         userDao.deleteAll();
         for (User user : userList) {
             userDao.add(user);
         }
 
-        assertThrows(TestUserServiceException.class, txUserService::upgradeLevels);
+        assertThrows(TestUserServiceException.class, testUserService::upgradeLevels);
         checkLevelUpgraded(userList.get(1), false);
+    }
+
+    @Test
+    void readOnlyTransactionAttribute() {
+        assertThrows(TransientDataAccessResourceException.class, testUserService::getAll);
+    }
+
+    @Test
+    void transactionSync() {
+
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
+        try {
+
+            testUserService.deleteAll();
+            testUserService.add(userList.get(0));
+            testUserService.add(userList.get(1));
+
+        } finally {
+            transactionManager.rollback(txStatus);
+        }
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
@@ -154,6 +152,18 @@ public class UserServiceTest {
             assertEquals(userUpdate.getLevel(), user.getLevel().nextLevel());
         } else {
             assertEquals(userUpdate.getLevel(), user.getLevel());
+        }
+    }
+
+    static class TestUserService extends UserServiceImpl {
+
+        @Override
+        public List<User> getAll() {
+            for (User user : super.getAll()) {
+                super.update(user);
+            }
+
+            return null;
         }
     }
 
@@ -170,8 +180,6 @@ public class UserServiceTest {
             if (user.getId().equals(this.id)) {
                 throw new TestUserServiceException();
             }
-            System.out.println();
-
             user.upgradeLevel();
         }
     }
