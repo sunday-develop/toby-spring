@@ -9,48 +9,24 @@ import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
 
 public class UserDaoJdbc implements UserDao {
     private JdbcTemplate jdbcTemplate;
-    private String sqlAdd;
-    private String sqlGet;
-    private String sqlGetAll;
-    private String sqlGetCount;
-    private String sqlDeleteAll;
-    private String sqlUpdate;
+    private Map<String, String> sqlMap;
 
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void setSqlAdd(String sqlAdd) {
-        this.sqlAdd = sqlAdd;
-    }
-
-    public void setSqlGet(String sqlGet) {
-        this.sqlGet = sqlGet;
-    }
-
-    public void setSqlGetAll(String sqlGetAll) {
-        this.sqlGetAll = sqlGetAll;
-    }
-
-    public void setSqlGetCount(String sqlGetCount) {
-        this.sqlGetCount = sqlGetCount;
-    }
-
-    public void setSqlDeleteAll(String sqlDeleteAll) {
-        this.sqlDeleteAll = sqlDeleteAll;
-    }
-
-    public void setSqlUpdate(String sqlUpdate) {
-        this.sqlUpdate = sqlUpdate;
+    public void setSqlMap(Map<String, String> sqlMap) {
+        this.sqlMap = sqlMap;
     }
 
     public void add(final User user) {
         try {
             this.jdbcTemplate.update(
-                    this.sqlAdd,
+                    this.sqlMap.get("add"),
                     user.getId(), user.getName(), user.getPassword(), user.getGrade().intValue(),
                     user.getLogin(), user.getRecommend(), user.getEmail());
         } catch (DuplicateKeyException e) {
@@ -71,26 +47,26 @@ public class UserDaoJdbc implements UserDao {
     };
 
     public User get(String id) {
-        return this.jdbcTemplate.queryForObject(this.sqlGet,
+        return this.jdbcTemplate.queryForObject(this.sqlMap.get("get"),
                 new Object[]{id}, this.userRowMapper);
     }
 
     public List<User> getAll() {
-        return this.jdbcTemplate.query(this.sqlGetAll, this.userRowMapper);
+        return this.jdbcTemplate.query(this.sqlMap.get("getAll"), this.userRowMapper);
     }
 
     public int getCount() {
-        return this.jdbcTemplate.queryForObject(this.sqlGetCount, Integer.class);
+        return this.jdbcTemplate.queryForObject(this.sqlMap.get("getCount"), Integer.class);
     }
 
     public void deleteAll() {
-        this.jdbcTemplate.update(this.sqlDeleteAll);
+        this.jdbcTemplate.update(this.sqlMap.get("deleteAll"));
     }
 
     @Override
     public void update(User user) {
         this.jdbcTemplate.update(
-                this.sqlUpdate,
+                this.sqlMap.get("update"),
                 user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(),
                 user.getRecommend(), user.getEmail(), user.getId());
     }
