@@ -37,20 +37,7 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
 
-    <bean id="sqlService" class="com.toby.tobyspring.user.sqlservice.SimpleSqlService">
-        <property name="sqlMap">
-            <map>
-                <entry key="userAdd"
-                       value="insert into users(id, name, password, grade, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)"/>
-                <entry key="userGet" value="select * from users where id = ?"/>
-                <entry key="userGetAll" value="select * from users order by id"/>
-                <entry key="userGetCount" value="select count(*) from users"/>
-                <entry key="userUpdate"
-                       value="update users set name = ?, password = ?, grade = ?, login = ?, recommend = ?, email = ? where id = ?"/>
-                <entry key="userDeleteAll" value="delete from users"/>
-            </map>
-        </property>
-    </bean>
+    <bean id="sqlService" class="com.toby.tobyspring.user.sqlservice.XmlSqlService" />
 
     <bean id="testUserService"
           class="com.toby.tobyspring.user.service.UserServiceTest$TestUserServiceImpl"
