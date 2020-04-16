@@ -140,7 +140,7 @@ class UserServiceTest {
         @Override
         public List<User> getAll() {
             for (User user : super.getAll()) {
-                super.upgrade(user);
+                super.update(user);
             }
 
             return super.getAll();
