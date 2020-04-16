@@ -34,16 +34,20 @@
 
     <bean id="userDao" class="com.toby.tobyspring.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
+        <property name="sqlService" ref="sqlService"/>
+    </bean>
+
+    <bean id="sqlService" class="com.toby.tobyspring.user.sqlservice.SimpleSqlService">
         <property name="sqlMap">
             <map>
-                <entry key="add"
+                <entry key="userAdd"
                        value="insert into users(id, name, password, grade, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)"/>
-                <entry key="get" value="select * from users where id = ?"/>
-                <entry key="getAll" value="select * from users order by id"/>
-                <entry key="getCount" value="select count(*) from users"/>
-                <entry key="update"
+                <entry key="userGet" value="select * from users where id = ?"/>
+                <entry key="userGetAll" value="select * from users order by id"/>
+                <entry key="userGetCount" value="select count(*) from users"/>
+                <entry key="userUpdate"
                        value="update users set name = ?, password = ?, grade = ?, login = ?, recommend = ?, email = ? where id = ?"/>
-                <entry key="deleteAll" value="delete from users"/>
+                <entry key="userDeleteAll" value="delete from users"/>
             </map>
         </property>
     </bean>
