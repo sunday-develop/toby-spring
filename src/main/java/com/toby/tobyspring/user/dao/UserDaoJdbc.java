@@ -12,16 +12,47 @@ import java.util.List;
 
 public class UserDaoJdbc implements UserDao {
     private JdbcTemplate jdbcTemplate;
+    private String sqlAdd;
+    private String sqlGet;
+    private String sqlGetAll;
+    private String sqlGetCount;
+    private String sqlDeleteAll;
+    private String sqlUpdate;
 
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public void setSqlAdd(String sqlAdd) {
+        this.sqlAdd = sqlAdd;
+    }
+
+    public void setSqlGet(String sqlGet) {
+        this.sqlGet = sqlGet;
+    }
+
+    public void setSqlGetAll(String sqlGetAll) {
+        this.sqlGetAll = sqlGetAll;
+    }
+
+    public void setSqlGetCount(String sqlGetCount) {
+        this.sqlGetCount = sqlGetCount;
+    }
+
+    public void setSqlDeleteAll(String sqlDeleteAll) {
+        this.sqlDeleteAll = sqlDeleteAll;
+    }
+
+    public void setSqlUpdate(String sqlUpdate) {
+        this.sqlUpdate = sqlUpdate;
+    }
+
     public void add(final User user) {
         try {
-            this.jdbcTemplate.update("insert into users(id, name, password, grade, login, recommend, email) " +
-                            "values(?, ?, ?, ?, ?, ?, ?)",
-                    user.getId(), user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend(), user.getEmail());
+            this.jdbcTemplate.update(
+                    this.sqlAdd,
+                    user.getId(), user.getName(), user.getPassword(), user.getGrade().intValue(),
+                    user.getLogin(), user.getRecommend(), user.getEmail());
         } catch (DuplicateKeyException e) {
             throw new DuplicateUserIdException(e);
         }
@@ -40,25 +71,27 @@ public class UserDaoJdbc implements UserDao {
     };
 
     public User get(String id) {
-        return this.jdbcTemplate.queryForObject("select * from users where id = ?",
+        return this.jdbcTemplate.queryForObject(this.sqlGet,
                 new Object[]{id}, this.userRowMapper);
     }
 
     public List<User> getAll() {
-        return this.jdbcTemplate.query("select * from users order by id", this.userRowMapper);
+        return this.jdbcTemplate.query(this.sqlGetAll, this.userRowMapper);
     }
 
     public int getCount() {
-        return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+        return this.jdbcTemplate.queryForObject(this.sqlGetCount, Integer.class);
     }
 
     public void deleteAll() {
-        this.jdbcTemplate.update("delete from users");
+        this.jdbcTemplate.update(this.sqlDeleteAll);
     }
 
     @Override
     public void update(User user) {
-        this.jdbcTemplate.update("update users set name = ?, password = ?, grade = ?, login = ?, recommend = ?, email = ? where id = ?",
-                user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
+        this.jdbcTemplate.update(
+                this.sqlUpdate,
+                user.getName(), user.getPassword(), user.getGrade().intValue(), user.getLogin(),
+                user.getRecommend(), user.getEmail(), user.getId());
     }
 }
