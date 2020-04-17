@@ -18,7 +18,6 @@
         <property name="password" value="test"/>
     </bean>
 
-
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
     <bean id="userService" class="com.toby.tobyspring.user.service.UserServiceImpl">
@@ -42,6 +41,8 @@
 
     <bean id="sqlService" class="com.toby.tobyspring.user.sqlservice.XmlSqlService">
         <property name="sqlmapFile" value="/sql.xml"/>
+        <property name="sqlReader" ref="sqlService"/>
+        <property name="sqlRegistry" ref="sqlService"/>
     </bean>
 
     <bean id="testUserService"
