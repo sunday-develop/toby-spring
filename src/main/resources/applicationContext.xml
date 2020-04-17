@@ -39,16 +39,7 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
 
-    <bean id="sqlService" class="com.toby.tobyspring.user.sqlservice.BaseSqlService">
-        <property name="sqlReader" ref="sqlReader"/>
-        <property name="sqlRegistry" ref="sqlRegistry"/>
-    </bean>
-
-    <bean id="sqlReader" class="com.toby.tobyspring.user.sqlservice.JaxbXmlReader">
-        <property name="sqlmapFile" value="/sql.xml"/>
-    </bean>
-
-    <bean id="sqlRegistry" class="com.toby.tobyspring.user.sqlservice.HashMapSqlRegistry" />
+    <bean id="sqlService" class="com.toby.tobyspring.user.sqlservice.DefaultSqlService"/>
 
     <bean id="testUserService"
           class="com.toby.tobyspring.user.service.UserServiceTest$TestUserServiceImpl"
