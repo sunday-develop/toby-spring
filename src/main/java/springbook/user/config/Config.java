@@ -65,7 +65,10 @@ public class Config {
 
     @Bean
     public UserDao userDao() {
-        return new UserDaoJdbc(dataSource());
+        final String sqlAdd = "insert into users(id, name, password, level, login, recommend, email) " +
+                "values(:id, :name, :password, :level, :login, :recommend, :email)";
+
+        return new UserDaoJdbc(dataSource(), sqlAdd);
     }
 
 

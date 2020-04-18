@@ -22,9 +22,6 @@ public class UserDaoJdbc implements UserDao {
             .email(rs.getString("email"))
             .build();
 
-    private static final String USER_ADD = "insert into users(id, name, password, level, login, recommend, email) " +
-            "values(:id, :name, :password, :level, :login, :recommend, :email)";
-
     private static final String USER_GET = "select * from users where id = :id";
     private static final String USER_DELETE_ALL = "delete from users";
     private static final String USER_GET_COUNT = "select count(*) from users";
@@ -44,14 +41,16 @@ public class UserDaoJdbc implements UserDao {
     );
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final String sqlAdd;
 
-    public UserDaoJdbc(DataSource dataSource) {
+    public UserDaoJdbc(DataSource dataSource, String sqlAdd) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        this.sqlAdd = sqlAdd;
     }
 
     @Override
     public void add(User user) {
-        jdbcTemplate.update(USER_ADD, USER_PARAM_CREATOR.apply(user));
+        jdbcTemplate.update(sqlAdd, USER_PARAM_CREATOR.apply(user));
     }
 
     @Override

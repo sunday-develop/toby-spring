@@ -2,11 +2,15 @@ package springbook.user.dao;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import springbook.config.TestConfig;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
@@ -17,9 +21,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfig.class)
 class UserDaoTest {
 
+    @Autowired
     private UserDao userDao;
+    @Autowired
     private DataSource dataSource;
 
     private final User user1 = User.of("gyumee", "박성철", "springno1", Level.BASIC, 1, 0, "email1@email.com");
@@ -28,11 +36,6 @@ class UserDaoTest {
 
     @BeforeEach
     void setup() {
-        dataSource = new SingleConnectionDataSource(
-                "jdbc:mysql://localhost:3306/springbook", "spring", "book", true
-        );
-
-        userDao = new UserDaoJdbc(dataSource);
         userDao.deleteAll();
     }
 
