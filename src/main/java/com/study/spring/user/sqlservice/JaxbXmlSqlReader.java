@@ -8,7 +8,10 @@ import java.util.Objects;
 
 public class JaxbXmlSqlReader implements SqlReader {
 
-    private String sqlMapFilePath;
+
+    private static final String DEFAULT_SQLMAP_FILE_PATH = "sqlmap/sqlmap.xml";
+
+    private String sqlMapFilePath = DEFAULT_SQLMAP_FILE_PATH;
 
     public void setSqlMapFilePath(String sqlMapFilePath) {
         this.sqlMapFilePath = sqlMapFilePath;
