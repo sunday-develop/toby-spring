@@ -79,7 +79,8 @@ public class Config {
 
     @Bean
     public SqlService sqlService() {
-        return new XmlSqlService();
+        final String sqlmapfile = "sqlmap.xml";
+        return new XmlSqlService(sqlmapfile);
     }
 
     @Bean
