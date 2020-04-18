@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<sqlmap>
+<sqlmap xmlns="http://www.epril.com/sqlmap"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.epril.com/sqlmap ../../../../sqlmap.xsd">
     <sql key="userAdd">insert into toby.users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?, ?)</sql>
     <sql key="userDeleteAll">delete from toby.users</sql>
     <sql key="userUpdate">update toby.users set name = ?, password = ?, email = ?, level = ?, login = ?, recommend = ? where id = ?</sql>

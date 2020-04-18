@@ -12,20 +12,7 @@
         <property name="password" value="qwe123"/>
     </bean>
 
-    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.SimpleSqlService">
-        <property name="sqlMap">
-            <map>
-                <entry key="userAdd"
-                       value="insert into toby.users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?, ?)"/>
-                <entry key="userDeleteAll" value="delete from toby.users"/>
-                <entry key="userUpdate"
-                       value="update toby.users set name = ?, password = ?, email = ?, level = ?, login = ?, recommend = ? where id = ?"/>
-                <entry key="userGetCount" value="select count(*) from toby.users"/>
-                <entry key="userGet" value="select * from toby.users where id = ?"/>
-                <entry key="userGetAll" value="select * from toby.users order by id"/>
-            </map>
-        </property>
-    </bean>
+    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.XmlSqlService"/>
 
     <bean id="userDao" class="com.pplenty.studytoby.UserDaoJdbc">
         <constructor-arg name="dataSource" ref="myDataSource"/>

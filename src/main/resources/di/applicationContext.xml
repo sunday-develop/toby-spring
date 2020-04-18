@@ -11,8 +11,11 @@
         <property name="password" value="qwe123"/>
     </bean>
 
+    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.XmlSqlService"/>
+
     <bean id="userDao" class="com.pplenty.studytoby.UserDaoJdbc">
         <constructor-arg name="dataSource" ref="myDataSource"/>
+        <property name="sqlService" ref="sqlService"/>
     </bean>
 
     <bean id="policy" class="com.pplenty.studytoby.UserLevelUpgradeEventPolicy"/>
