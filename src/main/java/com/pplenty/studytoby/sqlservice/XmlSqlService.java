@@ -3,6 +3,7 @@ package com.pplenty.studytoby.sqlservice;
 import com.pplenty.studytoby.sqlservice.jaxb.SqlType;
 import com.pplenty.studytoby.sqlservice.jaxb.Sqlmap;
 
+import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -22,6 +23,7 @@ public class XmlSqlService implements SqlService {
 
     private String sqlMapFile;
 
+    @PostConstruct
     public void loadSql() {
 
         try {
