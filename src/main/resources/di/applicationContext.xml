@@ -11,11 +11,17 @@
         <property name="password" value="qwe123"/>
     </bean>
 
-    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.XmlSqlService">
-        <property name="sqlReader" ref="sqlService"/>
-        <property name="sqlRegistry" ref="sqlService"/>
+    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.BaseSqlService">
+        <property name="sqlReader" ref="sqlReader"/>
+        <property name="sqlRegistry" ref="sqlRegistry"/>
+    </bean>
+
+    <bean id="sqlReader" class="com.pplenty.studytoby.sqlservice.JaxbXmlSqlReader">
         <property name="sqlMapFile" value="src/main/resources/di/user-sqlmap.xml"/>
     </bean>
+
+    <bean id="sqlRegistry" class="com.pplenty.studytoby.sqlservice.HashMapSqlRegistry"/>
+
 
     <bean id="userDao" class="com.pplenty.studytoby.UserDaoJdbc">
         <constructor-arg name="dataSource" ref="myDataSource"/>

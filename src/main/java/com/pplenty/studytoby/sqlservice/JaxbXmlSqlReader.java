@@ -3,63 +3,23 @@ package com.pplenty.studytoby.sqlservice;
 import com.pplenty.studytoby.sqlservice.jaxb.SqlType;
 import com.pplenty.studytoby.sqlservice.jaxb.Sqlmap;
 
-import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by yusik on 2020/04/18.
+ * Created by yusik on 2020/04/19.
  */
-@Deprecated
-public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
+public class JaxbXmlSqlReader implements SqlReader {
 
-    private final Map<String, String> sqlMap = new HashMap<>();
-
-    private SqlReader sqlReader;
-    private SqlRegistry sqlRegistry;
     private String sqlMapFile;
 
     public void setSqlMapFile(String sqlMapFile) {
         this.sqlMapFile = sqlMapFile;
-    }
-
-    public void setSqlReader(SqlReader sqlReader) {
-        this.sqlReader = sqlReader;
-    }
-
-    public void setSqlRegistry(SqlRegistry sqlRegistry) {
-        this.sqlRegistry = sqlRegistry;
-    }
-
-    @PostConstruct
-    public void loadSql() {
-        sqlReader.read(this.sqlRegistry);
-    }
-
-    @Override
-    public String getSql(String key) throws SqlRetrievalFailureException {
-        try {
-            return sqlRegistry.findSql(key);
-        } catch (SqlNotFoundException e) {
-            throw new SqlRetrievalFailureException(e);
-        }
-    }
-
-    @Override
-    public void registerSql(String key, String sql) {
-        sqlMap.put(key, sql);
-    }
-
-    @Override
-    public String findSql(String key) throws SqlRetrievalFailureException {
-        return sqlMap.get(key);
     }
 
     @Override
@@ -79,5 +39,6 @@ public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
         } catch (JAXBException | FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+
     }
 }
