@@ -1,4 +1,4 @@
-package springbook.learningtest.jdk;
+package springbook.learningtest.jdk.proxy;
 
 import org.junit.jupiter.api.Test;
 

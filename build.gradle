@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id "org.flywaydb.flyway" version "6.3.0"
     id "io.freefair.lombok" version "4.1.6"
+    id "com.github.edeandrea.xjc-generation" version "1.4"
 }
 
 group 'org.example'
@@ -17,6 +18,7 @@ repositories {
 ext {
     springVersion = "5.2.5.RELEASE"
     junitVersion = "5.6.1"
+    jaxbVersion = '2.3.2'
 }
 
 dependencies {
@@ -30,7 +32,7 @@ dependencies {
     compile group: 'com.sun.mail', name: 'jakarta.mail', version: '1.6.5'
     compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.5'
 
-
+    
     testCompile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
 
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.15.0'
@@ -38,6 +40,12 @@ dependencies {
 
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "${junitVersion}"
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: "${junitVersion}"
+
+
+    compile group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: "${jaxbVersion}"
+    xjc "javax.xml.bind:jaxb-api:$jaxbVersion"
+    xjc "org.glassfish.jaxb:jaxb-runtime:$jaxbVersion"
+    xjc "org.glassfish.jaxb:jaxb-xjc:$jaxbVersion"
 }
 
 flyway {
@@ -47,4 +55,14 @@ flyway {
     encoding = 'UTF-8'
     outOfOrder = true
     validateOnMigrate = true
+}
+
+xjcGeneration {
+    schemas {
+        sqlmap {
+            schemaRootDir="src/main/resources"
+            schemaFile='sqlmap.xsd'
+            javaPackageName = 'springbook.user.sqlservice.jaxb'
+        }
+    }
 }
