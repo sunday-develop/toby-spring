@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class XmlSqlService implements SqlService, SqlRegistry {
+public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
 
     private final Map<String, String> sqlMap = new HashMap<>();
     private final String sqlmapFile;
@@ -70,6 +70,23 @@ public class XmlSqlService implements SqlService, SqlRegistry {
     @Override
     public void registerSql(String key, String sql) {
         sqlMap.put(key, sql);
+    }
+
+    @Override
+    public void read(SqlRegistry sqlRegistry) {
+        final String contextPath = Sqlmap.class.getPackageName();
+        try {
+            final JAXBContext context = JAXBContext.newInstance(contextPath);
+            final Unmarshaller unmarshaller = context.createUnmarshaller();
+            final InputStream is = getClass().getClassLoader().getResourceAsStream(sqlmapFile);
+            final Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(is);
+
+            for (SqlType sql : sqlmap.getSql()) {
+                sqlRegistry.registerSql(sql.getKey(), sql.getValue());
+            }
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
