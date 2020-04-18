@@ -1,5 +1,6 @@
 package com.study.spring.user.sqlservice;
 
+import com.study.spring.user.exception.SqlNotFoundException;
 import com.study.spring.user.exception.SqlRetrievalFailureException;
 import org.springframework.util.StringUtils;
 
@@ -12,22 +13,56 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class XmlSqlService implements SqlService {
-
-    private String sqlMapFilePath;
+public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
 
     private Map<String, String> sqlMap = new HashMap<>();
 
-    public XmlSqlService() {
+    private SqlReader sqlReader;
 
+    private SqlRegistry sqlRegistry;
+
+    private String sqlMapFilePath;
+
+    public void setSqlReader(SqlReader sqlReader) {
+        this.sqlReader = sqlReader;
+    }
+
+    public void setSqlRegistry(SqlRegistry sqlRegistry) {
+        this.sqlRegistry = sqlRegistry;
     }
 
     public void setSqlMapFilePath(String sqlMapFilePath) {
         this.sqlMapFilePath = sqlMapFilePath;
     }
 
-    @PostConstruct
-    public void loadSql() {
+    @Override
+    public String getSql(String key) throws SqlRetrievalFailureException {
+        try {
+            return sqlRegistry.findSql(key);
+        } catch (SqlNotFoundException e) {
+            throw new SqlRetrievalFailureException(e);
+        }
+    }
+
+    @Override
+    public void registerSql(String key, String sql) {
+        sqlMap.put(key, sql);
+    }
+
+    @Override
+    public String findSql(String key) throws SqlNotFoundException {
+
+        String sql = sqlMap.get(key);
+
+        if (StringUtils.isEmpty(sql)) {
+            throw new SqlNotFoundException(key + "에 대한 SQL을 찾을 수 없습니다.");
+        }
+
+        return sql;
+    }
+
+    @Override
+    public void read(SqlRegistry sqlRegistry) {
         String contextPath = jaxb.Sqlmap.class.getPackage().getName();
 
         try {
@@ -37,9 +72,9 @@ public class XmlSqlService implements SqlService {
             File sqlMapFile = new File(Objects.requireNonNull(classLoader.getResource(sqlMapFilePath)).getFile());
 
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            jaxb.Sqlmap sqlmap = (jaxb.Sqlmap) unmarshaller.unmarshal(sqlMapFile);
+            jaxb.Sqlmap jaxbSqlMap = (jaxb.Sqlmap) unmarshaller.unmarshal(sqlMapFile);
 
-            for (jaxb.SqlType sqlType : sqlmap.getSql()) {
+            for (jaxb.SqlType sqlType : jaxbSqlMap.getSql()) {
                 sqlMap.put(sqlType.getKey(), sqlType.getValue());
             }
 
@@ -48,13 +83,8 @@ public class XmlSqlService implements SqlService {
         }
     }
 
-    @Override
-    public String getSql(String key) throws SqlRetrievalFailureException {
-        String sql = sqlMap.get(key);
-        if (StringUtils.isEmpty(sql)) {
-            throw new SqlRetrievalFailureException(key + "를 이용해서 SQL을 찾을 수 없습니다.");
-        }
-
-        return sql;
+    @PostConstruct
+    public void loadSql() {
+        sqlReader.read(sqlRegistry);
     }
 }

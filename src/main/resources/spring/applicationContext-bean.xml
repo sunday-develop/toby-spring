@@ -13,6 +13,8 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
     <bean id="sqlService" class="com.study.spring.user.sqlservice.XmlSqlService">
+        <property name="sqlReader" ref="sqlService"/>
+        <property name="sqlRegistry" ref="sqlService"/>
         <property name="sqlMapFilePath" value="sqlmap/sqlmap.xml"/>
     </bean>
     <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
