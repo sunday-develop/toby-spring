@@ -3,6 +3,7 @@ package com.study.spring.user.sqlservice;
 import com.study.spring.user.exception.SqlRetrievalFailureException;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -13,17 +14,27 @@ import java.util.Objects;
 
 public class XmlSqlService implements SqlService {
 
+    private String sqlMapFilePath;
+
     private Map<String, String> sqlMap = new HashMap<>();
 
     public XmlSqlService() {
 
+    }
+
+    public void setSqlMapFilePath(String sqlMapFilePath) {
+        this.sqlMapFilePath = sqlMapFilePath;
+    }
+
+    @PostConstruct
+    public void loadSql() {
         String contextPath = jaxb.Sqlmap.class.getPackage().getName();
 
         try {
             JAXBContext context = JAXBContext.newInstance(contextPath);
 
             ClassLoader classLoader = getClass().getClassLoader();
-            File sqlMapFile = new File(Objects.requireNonNull(classLoader.getResource("sqlmap/sqlmap.xml")).getFile());
+            File sqlMapFile = new File(Objects.requireNonNull(classLoader.getResource(sqlMapFilePath)).getFile());
 
             Unmarshaller unmarshaller = context.createUnmarshaller();
             jaxb.Sqlmap sqlmap = (jaxb.Sqlmap) unmarshaller.unmarshal(sqlMapFile);

@@ -12,7 +12,9 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlService" ref="sqlService"/>
     </bean>
-    <bean id="sqlService" class="com.study.spring.user.sqlservice.XmlSqlService"/>
+    <bean id="sqlService" class="com.study.spring.user.sqlservice.XmlSqlService">
+        <property name="sqlMapFilePath" value="sqlmap/sqlmap.xml"/>
+    </bean>
     <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="mail.server.com"/>
