@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yusik on 2020/03/09.
@@ -12,7 +13,7 @@ import java.util.List;
 public class UserDaoJdbc implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
-    private String sqlAdd;
+    private Map<String, String> sqlMap;
 
     private RowMapper<User> userRowMapper = (rs, rowNum) -> {
         User user = new User();
@@ -37,19 +38,19 @@ public class UserDaoJdbc implements UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void setSqlAdd(String sqlAdd) {
-        this.sqlAdd = sqlAdd;
+    public void setSqlMap(Map<String, String> sqlMap) {
+        this.sqlMap = sqlMap;
     }
 
     @Override
     public void deleteAll() {
-        jdbcTemplate.update("delete from toby.users");
+        jdbcTemplate.update(this.sqlMap.get("deleteAll"));
     }
 
     @Override
     public void add(User user) {
         jdbcTemplate.update(
-                this.sqlAdd,
+                this.sqlMap.get("add"),
                 user.getId(),
                 user.getName(),
                 user.getPassword(),
@@ -63,9 +64,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public void update(User user) {
         jdbcTemplate.update(
-                "update toby.users set name = ?, password = ?, email = ?, " +
-                        "level = ?, login = ?, recommend = ? " +
-                        "where id = ?",
+                this.sqlMap.get("update"),
                 user.getName(),
                 user.getPassword(),
                 user.getEmail(),
@@ -80,7 +79,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public int getCount() {
         Integer count = jdbcTemplate.query(
-                "select count(*) from toby.users",
+                this.sqlMap.get("getCount"),
                 (rs) -> {
                     rs.next();
                     return rs.getInt(1);
@@ -91,7 +90,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public User get(String id) {
         return jdbcTemplate.queryForObject(
-                "select * from toby.users where id = ?",
+                this.sqlMap.get("get"),
                 new Object[]{id},
                 userRowMapper);
     }
@@ -100,7 +99,7 @@ public class UserDaoJdbc implements UserDao {
     public List<User> getAll() {
 
         return jdbcTemplate.query(
-                "select * from toby.users order by id",
+                this.sqlMap.get("getAll"),
                 userRowMapper);
     }
 }
