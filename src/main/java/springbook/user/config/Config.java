@@ -80,7 +80,10 @@ public class Config {
     @Bean
     public SqlService sqlService() {
         final String sqlmapfile = "sqlmap.xml";
-        return new XmlSqlService(sqlmapfile);
+        final XmlSqlService xmlSqlService = new XmlSqlService(sqlmapfile);
+        xmlSqlService.setSqlReader(xmlSqlService);
+        xmlSqlService.setSqlRegistry(xmlSqlService);
+        return xmlSqlService;
     }
 
     @Bean

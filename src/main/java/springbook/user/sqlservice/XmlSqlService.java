@@ -23,11 +23,6 @@ public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
     @Setter
     private SqlRegistry sqlRegistry;
 
-    public XmlSqlService setSqlRegistry(SqlRegistry sqlRegistry) {
-        this.sqlRegistry = sqlRegistry;
-        return this;
-    }
-
     public XmlSqlService(String sqlmapFile) {
         this.sqlmapFile = sqlmapFile;
     }
