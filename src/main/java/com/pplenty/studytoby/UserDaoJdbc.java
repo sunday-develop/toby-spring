@@ -1,11 +1,11 @@
 package com.pplenty.studytoby;
 
+import com.pplenty.studytoby.sqlservice.SqlService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yusik on 2020/03/09.
@@ -13,7 +13,7 @@ import java.util.Map;
 public class UserDaoJdbc implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
-    private Map<String, String> sqlMap;
+    private SqlService sqlService;
 
     private RowMapper<User> userRowMapper = (rs, rowNum) -> {
         User user = new User();
@@ -38,19 +38,19 @@ public class UserDaoJdbc implements UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void setSqlMap(Map<String, String> sqlMap) {
-        this.sqlMap = sqlMap;
+    public void setSqlService(SqlService sqlService) {
+        this.sqlService = sqlService;
     }
 
     @Override
     public void deleteAll() {
-        jdbcTemplate.update(this.sqlMap.get("deleteAll"));
+        jdbcTemplate.update(this.sqlService.getSql("userDeleteAll"));
     }
 
     @Override
     public void add(User user) {
         jdbcTemplate.update(
-                this.sqlMap.get("add"),
+                this.sqlService.getSql("userAdd"),
                 user.getId(),
                 user.getName(),
                 user.getPassword(),
@@ -64,7 +64,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public void update(User user) {
         jdbcTemplate.update(
-                this.sqlMap.get("update"),
+                this.sqlService.getSql("userUpdate"),
                 user.getName(),
                 user.getPassword(),
                 user.getEmail(),
@@ -79,7 +79,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public int getCount() {
         Integer count = jdbcTemplate.query(
-                this.sqlMap.get("getCount"),
+                this.sqlService.getSql("userGetCount"),
                 (rs) -> {
                     rs.next();
                     return rs.getInt(1);
@@ -90,7 +90,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public User get(String id) {
         return jdbcTemplate.queryForObject(
-                this.sqlMap.get("get"),
+                this.sqlService.getSql("userGet"),
                 new Object[]{id},
                 userRowMapper);
     }
@@ -99,7 +99,7 @@ public class UserDaoJdbc implements UserDao {
     public List<User> getAll() {
 
         return jdbcTemplate.query(
-                this.sqlMap.get("getAll"),
+                this.sqlService.getSql("userGetAll"),
                 userRowMapper);
     }
 }
