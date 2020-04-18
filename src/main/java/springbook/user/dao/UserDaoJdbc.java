@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
+import springbook.user.sqlservice.SqlService;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -22,14 +23,6 @@ public class UserDaoJdbc implements UserDao {
             .email(rs.getString("email"))
             .build();
 
-    private static final String USER_GET = "select * from users where id = :id";
-    private static final String USER_DELETE_ALL = "delete from users";
-    private static final String USER_GET_COUNT = "select count(*) from users";
-    private static final String USER_GET_ALL = "select * from users order by id";
-    private static final String USER_UPDATE = "update users \n" +
-            "set name = :name, password = :password, level = :level, login = :login, recommend = :recommend\n" +
-            "where id = :id";
-
     private static final Function<User, Map<String, ?>> USER_PARAM_CREATOR = user -> Map.<String, Object>of(
             "id", user.getId(),
             "name", user.getName(),
@@ -41,41 +34,41 @@ public class UserDaoJdbc implements UserDao {
     );
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final Map<String, String> sqlMap;
+    private final SqlService sqlService;
 
-    public UserDaoJdbc(DataSource dataSource, Map<String, String> sqlMap) {
+    public UserDaoJdbc(DataSource dataSource, SqlService sqlService) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.sqlMap = sqlMap;
+        this.sqlService = sqlService;
     }
 
     @Override
     public void add(User user) {
-        jdbcTemplate.update(sqlMap.get("add"), USER_PARAM_CREATOR.apply(user));
+        jdbcTemplate.update(sqlService.getSql("userAdd"), USER_PARAM_CREATOR.apply(user));
     }
 
     @Override
     public User get(String id) {
-        return jdbcTemplate.queryForObject(USER_GET, Map.<String, Object>of("id", id), USER_MAPPER);
+        return jdbcTemplate.queryForObject(sqlService.getSql("userGet"), Map.<String, Object>of("id", id), USER_MAPPER);
     }
 
     @Override
     public void deleteAll() {
-        jdbcTemplate.update(USER_DELETE_ALL, Map.of());
+        jdbcTemplate.update(sqlService.getSql("userDeleteAll"), Map.of());
     }
 
     @Override
     public int getCount() {
-        return jdbcTemplate.queryForObject(USER_GET_COUNT, Map.of(), Integer.class);
+        return jdbcTemplate.queryForObject(sqlService.getSql("userGetCount"), Map.of(), Integer.class);
     }
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query(USER_GET_ALL, USER_MAPPER);
+        return jdbcTemplate.query(sqlService.getSql("userGetAll"), USER_MAPPER);
     }
 
     @Override
     public void update(User user) {
-        jdbcTemplate.update(USER_UPDATE, USER_PARAM_CREATOR.apply(user));
+        jdbcTemplate.update(sqlService.getSql("userUpdate"), USER_PARAM_CREATOR.apply(user));
     }
 
 }
