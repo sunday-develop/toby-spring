@@ -23,18 +23,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlService" ref="sqlService"/>
     </bean>
-    <bean id="sqlService" class="com.study.spring.user.sqlservice.UserSqlService">
-        <property name="sqlMap">
-            <map>
-                <entry key="userAdd" value="INSERT INTO users(id, name, password, level, login, recommend, email) VALUES (?, ?, ?, ?, ?, ?, ?)"/>
-                <entry key="userGet" value="SELECT * FROM users WHERE id = ?"/>
-                <entry key="userDeleteAll" value="DELETE FROM users"/>
-                <entry key="userGetCount" value="SELECT count(*) FROM users"/>
-                <entry key="userGetAll" value="SELECT * FROM users ORDER by id"/>
-                <entry key="userUpdate" value="UPDATE users SET name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id =  ?"/>
-            </map>
-        </property>
-    </bean>
+    <bean id="sqlService" class="com.study.spring.user.sqlservice.XmlSqlService"/>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost/test?useSSL=false"/>
