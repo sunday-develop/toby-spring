@@ -78,7 +78,7 @@ public class Config {
 
     @Bean
     public SqlService sqlService() {
-        return new BaseSqlService(sqlReader(), sqlRegistry());
+        return new DefaultSqlService();
     }
 
     @Bean

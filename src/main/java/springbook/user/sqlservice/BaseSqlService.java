@@ -8,8 +8,9 @@ import java.util.Map;
 public class BaseSqlService implements SqlService, InitializingBean {
 
     private final Map<String, String> sqlMap = new HashMap<>();
-    private final SqlReader sqlReader;
-    private final SqlRegistry sqlRegistry;
+
+    protected SqlReader sqlReader;
+    protected SqlRegistry sqlRegistry;
 
     public BaseSqlService(SqlReader sqlReader, SqlRegistry sqlRegistry) {
         this.sqlReader = sqlReader;
