@@ -12,6 +12,12 @@ public class UserDaoJdbc implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
 
+    private String sqlAdd;
+
+    public void setSqlAdd(String sqlAdd) {
+        this.sqlAdd = sqlAdd;
+    }
+
     private RowMapper<User> userRowMapper = (resultSet, i) -> {
         User user = new User();
         user.setId(resultSet.getString("id"));
@@ -30,7 +36,7 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public void add(final User user) {
-        this.jdbcTemplate.update("INSERT INTO users(id, name, password, level, login, recommend, email) VALUES (?, ?, ?, ?, ?, ?, ?)", user.getId(), user.getName(),
+        this.jdbcTemplate.update(sqlAdd, user.getId(), user.getName(),
                 user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail());
     }
 
