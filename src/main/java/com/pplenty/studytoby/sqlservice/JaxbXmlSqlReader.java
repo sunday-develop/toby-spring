@@ -16,7 +16,9 @@ import java.util.List;
  */
 public class JaxbXmlSqlReader implements SqlReader {
 
-    private String sqlMapFile;
+    private static final String DEFAULT_SQLMAP_FILE = "src/main/resources/di/user-sqlmap.xml";
+
+    private String sqlMapFile = DEFAULT_SQLMAP_FILE;
 
     public void setSqlMapFile(String sqlMapFile) {
         this.sqlMapFile = sqlMapFile;
