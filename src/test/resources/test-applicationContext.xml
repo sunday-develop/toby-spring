@@ -13,6 +13,8 @@
     </bean>
 
     <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.XmlSqlService">
+        <property name="sqlReader" ref="sqlService"/>
+        <property name="sqlRegistry" ref="sqlService"/>
         <property name="sqlMapFile" value="src/main/resources/di/user-sqlmap.xml"/>
     </bean>
 
@@ -55,6 +57,6 @@
     </bean>
 
     <tx:annotation-driven/>
-    <context:annotation-config />
+    <context:annotation-config/>
 
 </beans>

@@ -5,6 +5,7 @@ import java.util.Map;
 /**
  * Created by yusik on 2020/04/18.
  */
+@Deprecated
 public class SimpleSqlService implements SqlService {
 
     private Map<String, String> sqlMap;
