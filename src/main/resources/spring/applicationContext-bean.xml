@@ -10,7 +10,16 @@
     </bean>
     <bean id="userDao" class="com.study.spring.user.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
-        <property name="sqlAdd" value="INSERT INTO users(id, name, password, level, login, recommend, email) VALUES (?, ?, ?, ?, ?, ?, ?)"/>
+        <property name="sqlMap">
+            <map>
+                <entry key="add" value="INSERT INTO users(id, name, password, level, login, recommend, email) VALUES (?, ?, ?, ?, ?, ?, ?)"/>
+                <entry key="get" value="SELECT * FROM users WHERE id = ?"/>
+                <entry key="delete" value="DELETE FROM users"/>
+                <entry key="getCount" value="SELECT count(*) FROM users"/>
+                <entry key="getAll" value="SELECT * FROM users ORDER by id"/>
+                <entry key="update" value="UPDATE users SET name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id =  ?"/>
+            </map>
+        </property>
     </bean>
     <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">

@@ -7,15 +7,16 @@ import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
 
 public class UserDaoJdbc implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
 
-    private String sqlAdd;
+    private Map<String, String> sqlMap;
 
-    public void setSqlAdd(String sqlAdd) {
-        this.sqlAdd = sqlAdd;
+    public void setSqlMap(Map<String, String> sqlMap) {
+        this.sqlMap = sqlMap;
     }
 
     private RowMapper<User> userRowMapper = (resultSet, i) -> {
@@ -36,34 +37,34 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public void add(final User user) {
-        this.jdbcTemplate.update(sqlAdd, user.getId(), user.getName(),
-                user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail());
+        this.jdbcTemplate
+                .update(sqlMap.get("add"), user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(),
+                        user.getEmail());
     }
 
     @Override
     public User get(String id) {
-        return this.jdbcTemplate.queryForObject("SELECT * FROM users WHERE id = ?", new Object[] { id }, this.userRowMapper);
+        return this.jdbcTemplate.queryForObject(sqlMap.get("get"), new Object[] { id }, this.userRowMapper);
     }
 
     @Override
     public void deleteAll() {
-        this.jdbcTemplate.update("DELETE FROM users");
+        this.jdbcTemplate.update(sqlMap.get("delete"));
     }
 
     @Override
     public Integer getCount() {
-        return this.jdbcTemplate.queryForObject("SELECT count(*) FROM users", Integer.class);
+        return this.jdbcTemplate.queryForObject(sqlMap.get("getCount"), Integer.class);
     }
 
     @Override
     public List<User> getAll() {
-        return this.jdbcTemplate.query("SELECT * FROM users ORDER by id", this.userRowMapper);
+        return this.jdbcTemplate.query(sqlMap.get("getAll"), this.userRowMapper);
     }
 
     @Override
     public void update(User user) {
-        this.jdbcTemplate
-                .update("UPDATE users SET name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id =  ?", user.getName(), user.getPassword(),
-                        user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
+        this.jdbcTemplate.update(sqlMap.get("update"), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(),
+                user.getEmail(), user.getId());
     }
 }
