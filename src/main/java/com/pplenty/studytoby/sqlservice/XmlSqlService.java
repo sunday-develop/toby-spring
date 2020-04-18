@@ -20,7 +20,9 @@ public class XmlSqlService implements SqlService {
 
     private final Map<String, String> sqlMap = new HashMap<>();
 
-    public XmlSqlService() {
+    private String sqlMapFile;
+
+    public void loadSql() {
 
         try {
             String contextPath = Sqlmap.class.getPackage().getName();
@@ -28,7 +30,7 @@ public class XmlSqlService implements SqlService {
             context = JAXBContext.newInstance(contextPath);
 
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(new FileInputStream(new File("src/main/resources/di/user-sqlmap.xml")));
+            Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(new FileInputStream(new File(this.sqlMapFile)));
 
             List<SqlType> sqlList = sqlmap.getSql();
             for (SqlType sqlType : sqlList) {
@@ -38,6 +40,10 @@ public class XmlSqlService implements SqlService {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public void setSqlMapFile(String sqlMapFile) {
+        this.sqlMapFile = sqlMapFile;
     }
 
     @Override
