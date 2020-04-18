@@ -7,6 +7,8 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
@@ -23,6 +25,11 @@ import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
+
+import static java.util.stream.Collectors.toUnmodifiableMap;
 
 @Configuration
 @EnableTransactionManagement
@@ -65,12 +72,19 @@ public class Config {
 
     @Bean
     public UserDao userDao() {
-        final String sqlAdd = "insert into users(id, name, password, level, login, recommend, email) " +
-                "values(:id, :name, :password, :level, :login, :recommend, :email)";
-
-        return new UserDaoJdbc(dataSource(), sqlAdd);
+        return new UserDaoJdbc(dataSource(), sqlMap());
     }
 
+    @Bean
+    public Map<String, String> sqlMap() {
+        try {
+            final Properties sqlProperties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("sql.properties"));
+            return sqlProperties.entrySet().stream()
+                    .collect(toUnmodifiableMap(e -> String.valueOf(e.getKey()), e -> String.valueOf(e.getValue())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Bean
     public DataSource dataSource() {

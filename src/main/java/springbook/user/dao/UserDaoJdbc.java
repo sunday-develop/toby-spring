@@ -41,16 +41,16 @@ public class UserDaoJdbc implements UserDao {
     );
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final String sqlAdd;
+    private final Map<String, String> sqlMap;
 
-    public UserDaoJdbc(DataSource dataSource, String sqlAdd) {
+    public UserDaoJdbc(DataSource dataSource, Map<String, String> sqlMap) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.sqlAdd = sqlAdd;
+        this.sqlMap = sqlMap;
     }
 
     @Override
     public void add(User user) {
-        jdbcTemplate.update(sqlAdd, USER_PARAM_CREATOR.apply(user));
+        jdbcTemplate.update(sqlMap.get("add"), USER_PARAM_CREATOR.apply(user));
     }
 
     @Override
