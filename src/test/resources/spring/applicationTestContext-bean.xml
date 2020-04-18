@@ -3,12 +3,19 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="userService" class="com.study.spring.user.service.UserService">
-        <property name="transactionManager" ref="transactionManager"/>
+    <bean id="userService" class="com.study.spring.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
-        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
         <property name="mailSender" ref="mailSender"/>
+        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
     </bean>
+    <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.UserServiceTest$TestUserLevelUpgradePolicy">
+        <constructor-arg name="id" value="user4"/>
+    </bean>
+    <bean id="mailSender" class="com.study.spring.user.service.UserServiceTest$MockMailSender"/>
+    <bean id="message" class="com.study.spring.factorybean.MessageFactoryBean">
+        <property name="text" value="Factory Bean"/>
+    </bean>
+    <bean id="testUserService" class="com.study.spring.user.service.UserServiceTest$TestUserService" parent="userService"/>
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
@@ -21,6 +28,4 @@
         <property name="username" value="root"/>
         <property name="password" value="root"/>
     </bean>
-    <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
-    <bean id="mailSender" class="com.study.spring.user.service.DummyMailSender"/>
 </beans>

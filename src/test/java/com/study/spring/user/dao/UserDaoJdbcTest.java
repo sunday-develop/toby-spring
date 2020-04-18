@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "./applicationContext-test.xml")
+@ContextConfiguration(locations = "classpath:spring/applicationContext-bean.xml")
 public class UserDaoJdbcTest {
 
     @Autowired
@@ -125,7 +125,7 @@ public class UserDaoJdbcTest {
         }
     }
 
-    @DisplayName("DataAcessException에 대한 테스트")
+    @DisplayName("DataAccessException에 대한 테스트")
     @Test
     public void duplicateKey() {
 

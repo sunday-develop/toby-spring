@@ -3,16 +3,20 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="userService" class="com.study.spring.user.service.UserService">
-        <property name="transactionManager" ref="transactionManager"/>
+    <bean id="userService" class="com.study.spring.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
-        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
         <property name="mailSender" ref="mailSender"/>
-     </bean>
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
     </bean>
     <bean id="userDao" class="com.study.spring.user.dao.UserDaoJdbc">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="mail.server.com"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
@@ -20,9 +24,5 @@
         <property name="url" value="jdbc:mysql://localhost/spring?useSSL=false"/>
         <property name="username" value="root"/>
         <property name="password" value="root"/>
-    </bean>
-    <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
-    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="mail.server.com"/>
     </bean>
 </beans>
