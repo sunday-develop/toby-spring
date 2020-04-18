@@ -39,8 +39,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = { "classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-transaction.xml" })
-@Transactional
-@Commit
 public class UserServiceTest {
 
     @Autowired
@@ -135,7 +133,8 @@ public class UserServiceTest {
     }
 
     @Test
-    @Rollback(false)
+    @Transactional
+    @Rollback
     void transactionSync() {
 
         DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
