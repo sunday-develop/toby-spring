@@ -1,5 +1,6 @@
 package springbook.user.sqlservice;
 
+import lombok.Setter;
 import springbook.user.sqlservice.jaxb.SqlType;
 import springbook.user.sqlservice.jaxb.Sqlmap;
 
@@ -11,10 +12,21 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class XmlSqlService implements SqlService {
+public class XmlSqlService implements SqlService, SqlRegistry {
 
     private final Map<String, String> sqlMap = new HashMap<>();
     private final String sqlmapFile;
+
+    @Setter
+    private SqlReader sqlReader;
+
+    @Setter
+    private SqlRegistry sqlRegistry;
+
+    public XmlSqlService setSqlRegistry(SqlRegistry sqlRegistry) {
+        this.sqlRegistry = sqlRegistry;
+        return this;
+    }
 
     public XmlSqlService(String sqlmapFile) {
         this.sqlmapFile = sqlmapFile;
@@ -44,6 +56,20 @@ public class XmlSqlService implements SqlService {
             throw new SqlRetrievalFailureException(key + "에 대한 SQL을 찾을 수 없습니다.");
         }
         return sql;
+    }
+
+    @Override
+    public String findSql(String key) throws SqlNotFoundException {
+        final String sql = sqlMap.get(key);
+        if (sql == null) {
+            throw new SqlNotFoundException(key + "에 대한 SQL을 찾을 수 없습니다.");
+        }
+        return sql;
+    }
+
+    @Override
+    public void registerSql(String key, String sql) {
+        sqlMap.put(key, sql);
     }
 
 }
