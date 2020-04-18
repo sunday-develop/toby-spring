@@ -23,8 +23,8 @@ import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
 import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
-import springbook.user.sqlservice.SimpleSqlService;
 import springbook.user.sqlservice.SqlService;
+import springbook.user.sqlservice.XmlSqlService;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class Config {
 
     @Bean
     public SqlService sqlService() {
-        return new SimpleSqlService(sqlMap());
+        return new XmlSqlService();
     }
 
     @Bean
