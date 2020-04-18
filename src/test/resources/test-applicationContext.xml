@@ -14,6 +14,8 @@
 
     <bean id="userDao" class="com.pplenty.studytoby.UserDaoJdbc">
         <constructor-arg name="dataSource" ref="myDataSource"/>
+        <property name="sqlAdd"
+                  value="insert into toby.users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?, ?)"/>
     </bean>
 
     <bean id="policy" class="com.pplenty.studytoby.UserLevelUpgradeEventPolicy"/>

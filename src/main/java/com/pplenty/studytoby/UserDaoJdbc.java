@@ -12,6 +12,7 @@ import java.util.List;
 public class UserDaoJdbc implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
+    private String sqlAdd;
 
     private RowMapper<User> userRowMapper = (rs, rowNum) -> {
         User user = new User();
@@ -36,6 +37,10 @@ public class UserDaoJdbc implements UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public void setSqlAdd(String sqlAdd) {
+        this.sqlAdd = sqlAdd;
+    }
+
     @Override
     public void deleteAll() {
         jdbcTemplate.update("delete from toby.users");
@@ -44,8 +49,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public void add(User user) {
         jdbcTemplate.update(
-                "insert into toby.users(id, name, password, email, level, login, recommend) " +
-                        "values(?, ?, ?, ?, ?, ?, ?)",
+                this.sqlAdd,
                 user.getId(),
                 user.getName(),
                 user.getPassword(),
