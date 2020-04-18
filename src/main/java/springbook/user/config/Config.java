@@ -23,8 +23,7 @@ import springbook.user.dao.UserDao;
 import springbook.user.dao.UserDaoJdbc;
 import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
-import springbook.user.sqlservice.SqlService;
-import springbook.user.sqlservice.XmlSqlService;
+import springbook.user.sqlservice.*;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -79,11 +78,18 @@ public class Config {
 
     @Bean
     public SqlService sqlService() {
+        return new BaseSqlService(sqlReader(), sqlRegistry());
+    }
+
+    @Bean
+    public SqlReader sqlReader() {
         final String sqlmapfile = "sqlmap.xml";
-        final XmlSqlService xmlSqlService = new XmlSqlService(sqlmapfile);
-        xmlSqlService.setSqlReader(xmlSqlService);
-        xmlSqlService.setSqlRegistry(xmlSqlService);
-        return xmlSqlService;
+        return new JaxbXmlSqlReader(sqlmapfile);
+    }
+
+    @Bean
+    public SqlRegistry sqlRegistry() {
+        return new HashMapSqlRegistry();
     }
 
     @Bean
