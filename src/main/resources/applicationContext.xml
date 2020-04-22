@@ -39,7 +39,13 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
 
-    <bean id="sqlService" class="com.toby.tobyspring.user.sqlservice.DefaultSqlService"/>
+    <bean id="sqlService" class="com.toby.tobyspring.user.sqlservice.OxmSqlService">
+        <property name="unmarshaller" ref="unmarshaller" />
+    </bean>
+
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="com.toby.tobyspring.user.sqlservice.jaxb" />
+    </bean>
 
     <bean id="testUserService"
           class="com.toby.tobyspring.user.service.UserServiceTest$TestUserServiceImpl"
