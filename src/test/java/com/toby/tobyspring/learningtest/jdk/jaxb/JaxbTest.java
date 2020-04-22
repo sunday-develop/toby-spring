@@ -4,25 +4,33 @@ import com.toby.tobyspring.user.sqlservice.jaxb.SqlType;
 import com.toby.tobyspring.user.sqlservice.jaxb.Sqlmap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations = "/jaxBTestContext.xml")
 @DisplayName("JAXB 학습 테스트")
 public class JaxbTest {
+
+    @Autowired
+    Unmarshaller unmarshaller;
+
     @Test
     @DisplayName("JAXB 학습 테스트")
     public void readSqlmap() throws JAXBException {
-        String contextPath = Sqlmap.class.getPackage().getName();
-        JAXBContext context = JAXBContext.newInstance(contextPath);
+        Source xmlSource = new StreamSource(getClass().getResourceAsStream("/sqlmap.xml"));
 
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-
-        Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(getClass().getResourceAsStream("/sqlmap.xml"));
+        Sqlmap sqlmap = (Sqlmap) this.unmarshaller.unmarshal(xmlSource);
 
         List<SqlType> sqlList = sqlmap.getSql();
 

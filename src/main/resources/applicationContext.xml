@@ -8,6 +8,9 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="com.toby.tobyspring.user.sqlservice.jaxb" />
+    </bean>
 
     <tx:annotation-driven/>
     <context:annotation-config/>

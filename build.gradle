@@ -7,6 +7,7 @@ plugins {
 group = 'com.toby'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+bootJar.enabled = false
 
 repositories {
     mavenCentral()
@@ -29,6 +30,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework/spring-context-support
     compile group: 'org.springframework', name: 'spring-context-support', version: '5.2.4.RELEASE'
     compile group: 'org.springframework', name: 'spring-aspects', version: '5.2.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-oxm', version: '3.0.7.RELEASE'
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testRuntime("org.junit.platform:junit-platform-runner:1.5.2")
