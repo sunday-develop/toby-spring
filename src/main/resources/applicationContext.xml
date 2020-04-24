@@ -40,12 +40,15 @@
     </bean>
 
     <bean id="sqlService" class="com.toby.tobyspring.user.sqlservice.OxmSqlService">
-        <property name="unmarshaller" ref="unmarshaller" />
+        <property name="unmarshaller" ref="unmarshaller"/>
+        <property name="sqlRegistry" ref="sqlRegistry"/>
     </bean>
 
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="com.toby.tobyspring.user.sqlservice.jaxb" />
+        <property name="contextPath" value="com.toby.tobyspring.user.sqlservice.jaxb"/>
     </bean>
+
+    <bean id="sqlRegistry" class="com.toby.tobyspring.issuetracker.sqlservice.ConcurrentHashMapSqlRegistry"/>
 
     <bean id="testUserService"
           class="com.toby.tobyspring.user.service.UserServiceTest$TestUserServiceImpl"
