@@ -14,14 +14,16 @@ import org.springframework.mail.MailSender;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
 /**
  * Created by yusik on 2020/04/26.
  */
-@Configuration
+@EnableTransactionManagement
 @ImportResource("classpath:test-applicationContext.xml")
+@Configuration
 public class TestApplicationContext {
 
     @Bean
