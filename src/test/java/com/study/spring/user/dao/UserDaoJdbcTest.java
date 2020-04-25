@@ -1,5 +1,6 @@
 package com.study.spring.user.dao;
 
+import com.study.spring.config.TestApplicationContext;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
 import com.study.spring.user.exception.DuplicationUserIdException;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath:spring/applicationContext-bean.xml")
+@ContextConfiguration(classes = TestApplicationContext.class)
 public class UserDaoJdbcTest {
 
     @Autowired

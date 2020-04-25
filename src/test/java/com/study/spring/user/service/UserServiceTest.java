@@ -1,5 +1,6 @@
 package com.study.spring.user.service;
 
+import com.study.spring.config.TestApplicationContext;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
@@ -34,7 +35,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = {"classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-transaction.xml"})
+@ContextConfiguration(classes = TestApplicationContext.class)
 public class UserServiceTest {
 
     @Autowired
@@ -156,7 +157,7 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserService extends UserServiceImpl {
+    public static class TestUserService extends UserServiceImpl {
 
         @Override
         public List<User> getAll() {
@@ -168,7 +169,7 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserLevelUpgradePolicy extends DefaultUserLevelUpgradePolicy {
+    public static class TestUserLevelUpgradePolicy extends DefaultUserLevelUpgradePolicy {
 
         private String id;
 
@@ -188,7 +189,7 @@ public class UserServiceTest {
     private static class TestUserServiceException extends RuntimeException {
     }
 
-    static class MockMailSender implements MailSender {
+    public static class MockMailSender implements MailSender {
         private List<String> requestList = new ArrayList<>();
 
         public List<String> getRequestList() {
