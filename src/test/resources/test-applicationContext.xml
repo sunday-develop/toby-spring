@@ -5,20 +5,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="myDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <property name="driverClass" value="org.mariadb.jdbc.Driver"/>
-        <property name="url" value="jdbc:mariadb://localhost:63306/toby"/>
-        <property name="username" value="jason"/>
-        <property name="password" value="qwe123"/>
-    </bean>
-
     <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
         <property name="sqlMap" value="test-sqlmap.xml"/>
     </bean>
 
     <bean id="userDao" class="com.pplenty.studytoby.UserDaoJdbc">
-        <constructor-arg name="dataSource" ref="myDataSource"/>
+        <constructor-arg name="dataSource" ref="dataSource"/>
         <property name="sqlService" ref="sqlService"/>
     </bean>
 
@@ -30,10 +23,6 @@
         <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg name="policy" ref="policy"/>
         <constructor-arg name="mailSender" ref="mailSender"/>
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <constructor-arg name="dataSource" ref="myDataSource"/>
     </bean>
 
     <tx:advice id="transactionAdvice">

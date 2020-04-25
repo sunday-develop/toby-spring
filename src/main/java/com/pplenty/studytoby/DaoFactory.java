@@ -10,7 +10,8 @@ import javax.sql.DataSource;
 /**
  * Created by yusik on 2020/03/13.
  */
-@Configuration
+//@Configuration
+@Deprecated
 public class DaoFactory {
 
     @Bean
