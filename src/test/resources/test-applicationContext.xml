@@ -14,6 +14,7 @@
 
     <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
+        <property name="sqlMap" value="test-sqlmap.xml"/>
     </bean>
 
     <bean id="userDao" class="com.pplenty.studytoby.UserDaoJdbc">

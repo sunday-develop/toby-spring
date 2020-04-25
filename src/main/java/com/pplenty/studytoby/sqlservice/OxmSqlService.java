@@ -2,6 +2,8 @@ package com.pplenty.studytoby.sqlservice;
 
 import com.pplenty.studytoby.sqlservice.jaxb.SqlType;
 import com.pplenty.studytoby.sqlservice.jaxb.Sqlmap;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +18,8 @@ import java.util.List;
  * Created by yusik on 2020/04/25.
  */
 public class OxmSqlService implements SqlService {
+
+    private Resource sqlMap = new ClassPathResource("src/test/resources/test-sqlmap.xml");
 
     private final OxmSqlReader oxmSqlReader = new OxmSqlReader();
 
@@ -33,6 +37,10 @@ public class OxmSqlService implements SqlService {
         } catch (SqlNotFoundException e) {
             throw new SqlRetrievalFailureException(e);
         }
+    }
+
+    public void setSqlMap(Resource sqlMap) {
+        this.sqlMap = sqlMap;
     }
 
     public void setSqlRegistry(SqlRegistry sqlRegistry) {
