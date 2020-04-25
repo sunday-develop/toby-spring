@@ -6,10 +6,10 @@ import com.study.spring.user.service.UserLevelUpgradePolicy;
 import com.study.spring.user.service.UserService;
 import com.study.spring.user.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
@@ -23,20 +23,47 @@ import java.sql.Driver;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.study.spring")
-@Import({SqlServiceContext.class, ProductionAppContext.class})
+@Import({SqlServiceContext.class})
+@PropertySource("/db/database.properties")
 public class AppContext {
 
     @Autowired
+    private Environment env;
+
+    @Autowired
     private UserDao userDao;
+
+    @Value("${db.driverClass")
+    Class<? extends Driver> driverClass;
+
+    @Value("${db.url")
+    String url;
+
+    @Value("${db.username")
+    String username;
+
+    @Value("${db.password")
+    String password;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
     @Bean
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 
-        dataSource.setDriverClass(Driver.class);
-        dataSource.setUrl("jdbc:mysql://localhost/test?useSSL=false");
-        dataSource.setUsername("root");
-        dataSource.setPassword("root");
+        try {
+            dataSource.setDriverClass((Class<? extends java.sql.Driver>) Class.forName(env.getProperty("db.driverClass")));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        dataSource.setDriverClass(driverClass);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
 
         return dataSource;
     }
