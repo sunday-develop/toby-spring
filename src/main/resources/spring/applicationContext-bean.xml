@@ -26,7 +26,7 @@
         <property name="username" value="root"/>
         <property name="password" value="root"/>
     </bean>
-    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="com.study.spring.user.sqlservice.jaxb"/>
+    <bean id="unmarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
+        <property name="mappingLocation" value="com/study/spring/user/learningtest/mapping.xml"/>
     </bean>
 </beans>
