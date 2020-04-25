@@ -31,4 +31,12 @@ public class BaseSqlService implements SqlService, InitializingBean {
         sqlReader.read(sqlRegistry);
     }
 
+    public void setSqlReader(SqlReader sqlReader) {
+        this.sqlReader = sqlReader;
+    }
+
+    public void setSqlRegistry(SqlRegistry sqlRegistry) {
+        this.sqlRegistry = sqlRegistry;
+    }
+
 }

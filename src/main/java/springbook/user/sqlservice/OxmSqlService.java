@@ -32,7 +32,7 @@ public class OxmSqlService implements SqlService, InitializingBean {
     }
 
     public void setSqlRegistry(SqlRegistry sqlRegistry) {
-        this.sqlRegistry = sqlRegistry;
+        baseSqlService.setSqlRegistry(sqlRegistry);
     }
 
     public void setUnmarshaller(Unmarshaller unmarshaller) {
