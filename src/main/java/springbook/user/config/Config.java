@@ -8,6 +8,7 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -32,7 +33,7 @@ import static java.util.stream.Collectors.toUnmodifiableMap;
 @PropertySource("./database.properties")
 @ComponentScan(basePackages = "springbook.user")
 @EnableTransactionManagement
-public class Config {
+public class Config implements SqlMapConfig {
 
     @Bean
     public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
@@ -96,9 +97,9 @@ public class Config {
         return mailSender;
     }
 
-    @Bean
-    public SqlMapConfig sqlMapConfig() {
-        return new UserSqlMapConfig();
+    @Override
+    public Resource getSqlMapResource() {
+        return new ClassPathResource("sqlmap.xml", getClass().getClassLoader());
     }
 
 }
