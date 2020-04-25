@@ -2,7 +2,6 @@ package springbook.user.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.oxm.Unmarshaller;
@@ -18,9 +17,9 @@ import javax.sql.DataSource;
 public class SqlServiceConfig {
 
     @Bean
-    public SqlService sqlService() {
+    public SqlService sqlService(SqlMapConfig sqlMapConfig) {
         final OxmSqlService oxmSqlService = new OxmSqlService(unmarshaller(), sqlRegistry());
-        oxmSqlService.setSqlmap(new ClassPathResource("sqlmap.xml", getClass().getClassLoader()));
+        oxmSqlService.setSqlmap(sqlMapConfig.getSqlMapResource());
         return oxmSqlService;
     }
 

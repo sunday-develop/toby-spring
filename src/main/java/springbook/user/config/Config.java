@@ -96,4 +96,9 @@ public class Config {
         return mailSender;
     }
 
+    @Bean
+    public SqlMapConfig sqlMapConfig() {
+        return new UserSqlMapConfig();
+    }
+
 }
