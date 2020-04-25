@@ -8,23 +8,19 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
-import springbook.user.sqlservice.*;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -33,6 +29,7 @@ import java.util.Properties;
 
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
+@Import(SqlServiceConfig.class)
 @Configuration
 @ComponentScan(basePackages = "springbook.user")
 @EnableTransactionManagement
@@ -66,37 +63,6 @@ public class Config {
     @Bean
     public TransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
-    }
-
-    @Bean
-    public SqlService sqlService() {
-        return new OxmSqlService(unmarshaller(), sqlRegistry());
-    }
-
-    @Bean
-    public Unmarshaller unmarshaller() {
-        final Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-        jaxb2Marshaller.setPackagesToScan("springbook.user.sqlservice.jaxb");
-        return jaxb2Marshaller;
-    }
-
-    @Bean
-    public SqlReader sqlReader() {
-        final String sqlmapfile = "sqlmap.xml";
-        return new JaxbXmlSqlReader(sqlmapfile);
-    }
-
-    @Bean
-    public SqlRegistry sqlRegistry() {
-        return new EmbeddedDbSqlRegistry(embeddedDatabase());
-    }
-
-    @Bean
-    public DataSource embeddedDatabase() {
-        return new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .addScript("classpath:/embeddeddb/sqlRegistrySchema.sql")
-                .build();
     }
 
     @Bean
