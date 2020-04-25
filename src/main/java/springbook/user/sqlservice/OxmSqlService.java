@@ -11,26 +11,24 @@ import java.io.InputStream;
 
 public class OxmSqlService implements SqlService, InitializingBean {
 
+    private final BaseSqlService baseSqlService;
     private final OxmSqlReader oxmSqlReader;
 
     private SqlRegistry sqlRegistry = new HashMapSqlRegistry();
 
     public OxmSqlService(Unmarshaller unmarshaller) {
         oxmSqlReader = new OxmSqlReader(unmarshaller);
+        baseSqlService = new BaseSqlService(oxmSqlReader, sqlRegistry);
     }
 
     @Override
     public String getSql(String key) throws SqlRetrievalFailureException {
-        try {
-            return sqlRegistry.findSql(key);
-        } catch (SqlNotFoundException e) {
-            throw new SqlRetrievalFailureException(e);
-        }
+        return baseSqlService.getSql(key);
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        oxmSqlReader.read(sqlRegistry);
+        baseSqlService.afterPropertiesSet();
     }
 
     public void setSqlRegistry(SqlRegistry sqlRegistry) {
