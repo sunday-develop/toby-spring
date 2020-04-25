@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
+    <import resource="applicationContext-embedded-database.xml"/>
     <bean id="userService" class="com.study.spring.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
@@ -19,7 +19,9 @@
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="com.study.spring.user.sqlservice.jaxb"/>
     </bean>
-    <bean id="sqlRegistry" class="com.study.spring.user.sqlservice.ConcurrentHashMapSqlRegistry"/>
+    <bean id="sqlRegistry" class="com.study.spring.user.sqlservice.updatable.EmbeddedDbSqlRegistry">
+        <property name="dataSource" ref="embeddedDatabase"/>
+    </bean>
     <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="mail.server.com"/>
