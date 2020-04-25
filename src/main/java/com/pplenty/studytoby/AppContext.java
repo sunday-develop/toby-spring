@@ -1,6 +1,8 @@
 package com.pplenty.studytoby;
 
+import com.pplenty.studytoby.sqlservice.SqlMapConfig;
 import com.pplenty.studytoby.sqlservice.SqlServiceContext;
+import com.pplenty.studytoby.sqlservice.UserSqlMapConfig;
 import org.mariadb.jdbc.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,6 +65,11 @@ public class AppContext {
     @Bean
     public UserLevelUpgradePolicy policy() {
         return new UserLevelUpgradeEventPolicy();
+    }
+
+    @Bean
+    public SqlMapConfig sqlMapConfig() {
+        return new UserSqlMapConfig();
     }
 
     @Configuration
