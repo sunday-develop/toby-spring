@@ -25,12 +25,14 @@ import javax.sql.DataSource;
  */
 @ComponentScan(basePackages = "com.pplenty.studytoby")
 @EnableTransactionManagement
-@ImportResource("classpath:test-applicationContext.xml")
 @Configuration
 public class TestApplicationContext {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    UserService userService;
 
     @Bean
     public DataSource dataSource() {
@@ -50,11 +52,6 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public UserService userService() {
-        return new UserServiceImpl(userDao, policy(), mailSender());
-    }
-
-    @Bean
     public UserService testUserService() {
         return new TestUserService(userDao, policy(), mailSender());
     }
@@ -68,7 +65,7 @@ public class TestApplicationContext {
     public SqlService sqlService() {
         OxmSqlService service = new OxmSqlService();
         service.setUnmarshaller(unmarshaller());
-        service.setSqlMapFile("test-applicationContext.xml");
+        service.setSqlMapFile("src/main/resources/di/user-sqlmap.xml");
         return service;
     }
 

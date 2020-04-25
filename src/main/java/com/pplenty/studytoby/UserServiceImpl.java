@@ -2,12 +2,14 @@ package com.pplenty.studytoby;
 
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by yusik on 2020/03/28.
  */
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
