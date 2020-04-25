@@ -1,16 +1,14 @@
 package com.pplenty.studytoby;
 
-import com.pplenty.studytoby.sqlservice.OxmSqlService;
-import com.pplenty.studytoby.sqlservice.SqlService;
+import com.pplenty.studytoby.sqlservice.SqlServiceContext;
 import org.mariadb.jdbc.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -19,6 +17,7 @@ import javax.sql.DataSource;
 /**
  * Created by yusik on 2020/04/26.
  */
+@Import(SqlServiceContext.class)
 @ComponentScan(basePackages = "com.pplenty.studytoby")
 @EnableTransactionManagement
 @Configuration
@@ -48,23 +47,8 @@ public class AppContext {
     }
 
     @Bean
-    public SqlService sqlService() {
-        OxmSqlService service = new OxmSqlService();
-        service.setUnmarshaller(unmarshaller());
-        service.setSqlMapFile("src/main/resources/di/user-sqlmap.xml");
-        return service;
-    }
-
-    @Bean
     public UserLevelUpgradePolicy policy() {
         return new UserLevelUpgradeEventPolicy();
-    }
-
-    @Bean
-    public Unmarshaller unmarshaller() {
-        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setContextPath("com.pplenty.studytoby.sqlservice.jaxb");
-        return marshaller;
     }
 
 }
