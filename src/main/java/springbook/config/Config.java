@@ -1,4 +1,4 @@
-package springbook.user.config;
+package springbook.config;
 
 import com.mysql.cj.jdbc.Driver;
 import org.aopalliance.aop.Advice;
@@ -6,7 +6,10 @@ import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -20,6 +23,7 @@ import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
+import springbook.config.annotation.EnableSqlService;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -28,8 +32,8 @@ import java.util.Properties;
 
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
-@Import(SqlServiceConfig.class)
 @Configuration
+@EnableSqlService
 @PropertySource("./database.properties")
 @ComponentScan(basePackages = "springbook.user")
 @EnableTransactionManagement

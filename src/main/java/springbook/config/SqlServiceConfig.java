@@ -1,4 +1,4 @@
-package springbook.user.config;
+package springbook.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
