@@ -5,26 +5,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.OxmSqlService">
-        <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlMap" value="test-sqlmap.xml"/>
-    </bean>
-
-    <bean id="userDao" class="com.pplenty.studytoby.UserDaoJdbc">
-        <constructor-arg name="dataSource" ref="dataSource"/>
-        <property name="sqlService" ref="sqlService"/>
-    </bean>
-
-    <bean id="policy" class="com.pplenty.studytoby.UserLevelUpgradeEventPolicy"/>
-
-    <bean id="mailSender" class="com.pplenty.studytoby.chapter05.UserServiceTest$MockMailSender"/>
-
-    <bean id="userService" class="com.pplenty.studytoby.UserServiceImpl">
-        <constructor-arg name="userDao" ref="userDao"/>
-        <constructor-arg name="policy" ref="policy"/>
-        <constructor-arg name="mailSender" ref="mailSender"/>
-    </bean>
-
     <tx:advice id="transactionAdvice">
         <tx:attributes>
             <tx:method name="get*" read-only="true"/>
@@ -37,18 +17,6 @@
                      pointcut="bean(*Service)"/>
     </aop:config>
 
-    <bean id="testUserService" class="com.pplenty.studytoby.chapter05.TestUserService">
-        <constructor-arg name="userDao" ref="userDao"/>
-        <constructor-arg name="policy" ref="policy"/>
-        <constructor-arg name="mailSender" ref="mailSender"/>
-        <property name="id" value="kohyusik2"/>
-    </bean>
-
     <tx:annotation-driven/>
-
-    <!-- 7장 -->
-    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="com.pplenty.studytoby.sqlservice.jaxb"/>
-    </bean>
 
 </beans>
