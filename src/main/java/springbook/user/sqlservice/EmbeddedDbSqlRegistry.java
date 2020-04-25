@@ -2,6 +2,8 @@ package springbook.user.sqlservice;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -12,9 +14,11 @@ public class EmbeddedDbSqlRegistry implements UpdatableSqlRegistry {
     private static final String FIND_SQL = "select sql_ from sqlmap where key_ = :key";
 
     private final NamedParameterJdbcTemplate jdbc;
+    private final TransactionTemplate transactionTemplate;
 
     public EmbeddedDbSqlRegistry(DataSource dataSource) {
         jdbc = new NamedParameterJdbcTemplate(dataSource);
+        transactionTemplate = new TransactionTemplate(new DataSourceTransactionManager(dataSource));
     }
 
     @Override
@@ -45,7 +49,7 @@ public class EmbeddedDbSqlRegistry implements UpdatableSqlRegistry {
 
     @Override
     public void updateSql(Map<String, String> sqlmap) throws SqlUpdateFailureException {
-        sqlmap.forEach(this::updateSql);
+        transactionTemplate.executeWithoutResult(transactionStatus -> sqlmap.forEach(this::updateSql));
     }
 
 }

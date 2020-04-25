@@ -11,6 +11,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.oxm.Unmarshaller;
@@ -98,7 +100,15 @@ public class Config {
 
     @Bean
     public SqlRegistry sqlRegistry() {
-        return new ConcurrentHashMapSqlRegistry();
+        return new EmbeddedDbSqlRegistry(embeddedDatabase());
+    }
+
+    @Bean
+    public DataSource embeddedDatabase() {
+        return new EmbeddedDatabaseBuilder()
+                .setType(EmbeddedDatabaseType.H2)
+                .addScript("classpath:/embeddeddb/sqlRegistrySchema.sql")
+                .build();
     }
 
     @Bean
