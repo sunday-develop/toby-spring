@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 /**
  * Created by yusik on 2020/04/26.
  */
+@PropertySource("classpath:database.properties")
 @Import({SqlServiceContext.class, AppContext.ProductionAppContext.class})
 @ComponentScan(basePackages = "com.pplenty.studytoby")
 @EnableTransactionManagement
