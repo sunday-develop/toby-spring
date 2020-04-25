@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by yusik on 2020/03/28.
  */
+@ActiveProfiles("test")
 @DisplayName("서비스 추상화")
 @SpringBootTest
 @ContextConfiguration(classes = {TestAppContext.class, AppContext.class})
