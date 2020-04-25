@@ -54,7 +54,9 @@
         <property name="contextPath" value="com.toby.tobyspring.user.sqlservice.jaxb"/>
     </bean>
 
-    <bean id="sqlRegistry" class="com.toby.tobyspring.issuetracker.sqlservice.ConcurrentHashMapSqlRegistry"/>
+    <bean id="sqlRegistry" class="com.toby.tobyspring.issuetracker.sqlservice.EmbeddedDbSqlRegistry">
+        <property name="dataSource" ref="embeddedDatabase" />
+    </bean>
 
     <bean id="testUserService"
           class="com.toby.tobyspring.user.service.UserServiceTest$TestUserServiceImpl"
