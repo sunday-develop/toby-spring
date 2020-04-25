@@ -11,9 +11,8 @@
         <property name="password" value="qwe123"/>
     </bean>
 
-    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.BaseSqlService">
-        <property name="sqlReader" ref="sqlReader"/>
-        <property name="sqlRegistry" ref="sqlRegistry"/>
+    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.OxmSqlService">
+        <property name="unmarshaller" ref="unmarshaller"/>
     </bean>
 
     <bean id="sqlReader" class="com.pplenty.studytoby.sqlservice.JaxbXmlSqlReader">

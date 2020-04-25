@@ -12,7 +12,9 @@
         <property name="password" value="qwe123"/>
     </bean>
 
-    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.DefaultSqlService"/>
+    <bean id="sqlService" class="com.pplenty.studytoby.sqlservice.OxmSqlService">
+        <property name="unmarshaller" ref="unmarshaller"/>
+    </bean>
 
     <bean id="userDao" class="com.pplenty.studytoby.UserDaoJdbc">
         <constructor-arg name="dataSource" ref="myDataSource"/>
