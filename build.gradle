@@ -30,6 +30,9 @@ dependencies {
     compile 'org.springframework:spring-context-support'
     compile 'org.springframework:spring-context-support'
     compile 'org.aspectj:aspectjweaver'
+    compile 'org.aspectj:aspectjweaver'
+    compile group: 'org.springframework', name: 'spring-oxm'
+
 
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
