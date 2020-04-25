@@ -32,6 +32,8 @@ dependencies {
     compile 'org.aspectj:aspectjweaver'
     compile 'org.aspectj:aspectjweaver'
     compile group: 'org.springframework', name: 'spring-oxm'
+    compile group: 'org.codehaus.castor', name: 'castor'
+
 
 
 

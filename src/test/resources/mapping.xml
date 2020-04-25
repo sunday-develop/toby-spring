@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+        "http://castor.org/mapping.dtd">
+
+<mapping>
+    <class name="com.pplenty.studytoby.sqlservice.jaxb.Sqlmap">
+        <map-to xml="sqlmap"/>
+        <field name="sql"
+               type="com.pplenty.studytoby.sqlservice.jaxb.SqlType">
+            <bind-xml name="reference" node="attribute"/>
+        </field>
+    </class>
+    <class name="com.pplenty.studytoby.sqlservice.jaxb.SqlType">
+        <map-to xml="sql"/>
+        <field name="key" type="java.lang.String" required="true">
+            <bind-xml name="key" node="attribute"/>
+        </field>
+        <field name="value" type="java.lang.String" required="true">
+            <bind-xml node="text"/>
+        </field>
+    </class>
+</mapping>

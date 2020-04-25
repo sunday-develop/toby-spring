@@ -56,7 +56,7 @@
     <context:annotation-config/>
 
     <!-- 7장 -->
-    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+    <bean id="unmarshaller" class="org.springframework.oxm.CastorMarshaller">
         <property name="contextPath" value="com.pplenty.studytoby.sqlservice.jaxb"/>
     </bean>
 
