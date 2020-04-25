@@ -80,7 +80,7 @@ public class Config {
 
     @Bean
     public SqlService sqlService() {
-        return new OxmSqlService(unmarshaller());
+        return new OxmSqlService(unmarshaller(), sqlRegistry());
     }
 
     @Bean
@@ -98,7 +98,7 @@ public class Config {
 
     @Bean
     public SqlRegistry sqlRegistry() {
-        return new HashMapSqlRegistry();
+        return new ConcurrentHashMapSqlRegistry();
     }
 
     @Bean

@@ -23,6 +23,11 @@ public class OxmSqlService implements SqlService, InitializingBean {
         baseSqlService = new BaseSqlService(oxmSqlReader, sqlRegistry);
     }
 
+    public OxmSqlService(Unmarshaller unmarshaller, SqlRegistry sqlRegistry) {
+        oxmSqlReader = new OxmSqlReader(unmarshaller);
+        baseSqlService = new BaseSqlService(oxmSqlReader, sqlRegistry);
+    }
+
     @Override
     public String getSql(String key) throws SqlRetrievalFailureException {
         return baseSqlService.getSql(key);
