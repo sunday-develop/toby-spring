@@ -8,6 +8,6 @@ public interface UpdatableSqlRegistry extends SqlRegistry {
 
     void updateSql(String key, String sql) throws SqlUpdateFailureException;
 
-    void updateql(Map<String, String> sqlmap) throws SqlUpdateFailureException;
+    void updateSql(Map<String, String> sqlmap) throws SqlUpdateFailureException;
 
 }

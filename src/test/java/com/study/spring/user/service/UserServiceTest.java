@@ -13,7 +13,6 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,13 +31,10 @@ import static com.study.spring.user.service.DefaultUserLevelUpgradePolicy.MIN_RE
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = { "classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-transaction.xml" })
+@ContextConfiguration(locations = {"classpath:spring/applicationTestContext-bean.xml", "classpath:spring/applicationTestContext-transaction.xml"})
 public class UserServiceTest {
 
     @Autowired

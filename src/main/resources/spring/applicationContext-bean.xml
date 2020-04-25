@@ -14,11 +14,12 @@
     </bean>
     <bean id="sqlService" class="com.study.spring.user.sqlservice.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlMap" value="classpath:sqlmap/sqlmap.xml"/>
+        <property name="sqlRegistry" ref="sqlRegistry"/>
     </bean>
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="com.study.spring.user.sqlservice.jaxb"/>
     </bean>
+    <bean id="sqlRegistry" class="com.study.spring.user.sqlservice.ConcurrentHashMapSqlRegistry"/>
     <bean id="userLevelUpgradePolicy" class="com.study.spring.user.service.DefaultUserLevelUpgradePolicy"/>
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="mail.server.com"/>
