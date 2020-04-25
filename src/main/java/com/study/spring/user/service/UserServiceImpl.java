@@ -3,15 +3,24 @@ package com.study.spring.user.service;
 import com.study.spring.user.dao.UserDao;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserDao userDao;
+
+    @Autowired
     private UserLevelUpgradePolicy userLevelUpgradePolicy;
+
+    @Autowired
     private MailSender mailSender;
 
     public void setUserDao(UserDao userDao) {
