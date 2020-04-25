@@ -2,6 +2,7 @@ package springbook.user.service;
 
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
@@ -9,6 +10,7 @@ import springbook.user.domain.User;
 
 import java.util.List;
 
+@Service("userService")
 @Transactional
 public class UserServiceImpl implements UserService {
 

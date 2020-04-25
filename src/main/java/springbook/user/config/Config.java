@@ -24,9 +24,6 @@ import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
-import springbook.user.dao.UserDao;
-import springbook.user.service.UserService;
-import springbook.user.service.UserServiceImpl;
 import springbook.user.sqlservice.*;
 
 import javax.sql.DataSource;
@@ -69,11 +66,6 @@ public class Config {
     @Bean
     public TransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
-    }
-
-    @Bean
-    public UserService userService(UserDao userDao) {
-        return new UserServiceImpl(userDao, mailSender());
     }
 
     @Bean
