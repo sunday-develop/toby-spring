@@ -3,8 +3,8 @@ package com.pplenty.studytoby;
 import com.pplenty.studytoby.sqlservice.SqlServiceContext;
 import org.mariadb.jdbc.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
@@ -24,26 +24,32 @@ import javax.sql.DataSource;
 @Configuration
 public class AppContext {
 
+    @Value("${db.driverClass}")
+    Class<? extends Driver> driverClass;
+
+    @Value("${db.url}")
+    String url;
+
+    @Value("${db.username}")
+    String username;
+
+    @Value("${db.password}")
+    String password;
+
     @Autowired
     UserDao userDao;
 
     @Autowired
     UserService userService;
 
-    @Autowired
-    Environment env;
-
     @Bean
     public DataSource dataSource() {
+        // PropertyPlaceholderAutoConfiguration
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-        try {
-            dataSource.setDriverClass((Class<? extends java.sql.Driver>) Class.forName(env.getProperty("db.driverClass")));
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException();
-        }
-        dataSource.setUrl(env.getProperty("db.url"));
-        dataSource.setUsername(env.getProperty("db.username"));
-        dataSource.setPassword(env.getProperty("db.password"));
+        dataSource.setDriverClass(driverClass);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
         return dataSource;
     }
 
