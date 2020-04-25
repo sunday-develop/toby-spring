@@ -1,7 +1,5 @@
 package com.pplenty.studytoby;
 
-import com.pplenty.studytoby.chapter05.TestUserService;
-import com.pplenty.studytoby.chapter05.UserServiceTest;
 import com.pplenty.studytoby.sqlservice.OxmSqlService;
 import com.pplenty.studytoby.sqlservice.SqlService;
 import org.mariadb.jdbc.Driver;
@@ -9,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
@@ -26,7 +23,7 @@ import javax.sql.DataSource;
 @ComponentScan(basePackages = "com.pplenty.studytoby")
 @EnableTransactionManagement
 @Configuration
-public class TestApplicationContext {
+public class AppContext {
 
     @Autowired
     UserDao userDao;
@@ -49,16 +46,6 @@ public class TestApplicationContext {
         DataSourceTransactionManager tm = new DataSourceTransactionManager();
         tm.setDataSource(dataSource());
         return tm;
-    }
-
-    @Bean
-    public UserService testUserService() {
-        return new TestUserService(userDao, policy(), mailSender());
-    }
-
-    @Bean
-    public MailSender mailSender() {
-        return new UserServiceTest.MockMailSender();
     }
 
     @Bean
