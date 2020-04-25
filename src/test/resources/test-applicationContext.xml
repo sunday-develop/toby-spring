@@ -56,7 +56,6 @@
     </bean>
 
     <tx:annotation-driven/>
-    <context:annotation-config/>
 
     <!-- 7장 -->
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
