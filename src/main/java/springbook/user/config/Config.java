@@ -13,6 +13,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.oxm.Unmarshaller;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
@@ -78,7 +80,14 @@ public class Config {
 
     @Bean
     public SqlService sqlService() {
-        return new DefaultSqlService();
+        return new OxmSqlService(unmarshaller());
+    }
+
+    @Bean
+    public Unmarshaller unmarshaller() {
+        final Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+        jaxb2Marshaller.setPackagesToScan("springbook.user.sqlservice.jaxb");
+        return jaxb2Marshaller;
     }
 
     @Bean

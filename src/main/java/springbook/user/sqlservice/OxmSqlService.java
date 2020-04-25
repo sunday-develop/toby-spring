@@ -15,8 +15,8 @@ public class OxmSqlService implements SqlService, InitializingBean {
 
     private SqlRegistry sqlRegistry = new HashMapSqlRegistry();
 
-    public OxmSqlService(Unmarshaller unmarshaller, String sqlmapFile) {
-        oxmSqlReader = new OxmSqlReader(unmarshaller, sqlmapFile);
+    public OxmSqlService(Unmarshaller unmarshaller) {
+        oxmSqlReader = new OxmSqlReader(unmarshaller);
     }
 
     @Override
@@ -52,9 +52,8 @@ public class OxmSqlService implements SqlService, InitializingBean {
         private Unmarshaller unmarshaller;
         private String sqlmapFile = DFAULT_SQLMAP_FILE;
 
-        private OxmSqlReader(Unmarshaller unmarshaller, String sqlmapFile) {
+        private OxmSqlReader(Unmarshaller unmarshaller) {
             this.unmarshaller = unmarshaller;
-            this.sqlmapFile = sqlmapFile;
         }
 
         @Override
