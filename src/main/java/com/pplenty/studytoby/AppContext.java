@@ -1,5 +1,6 @@
 package com.pplenty.studytoby;
 
+import com.pplenty.studytoby.sqlservice.EnableSqlService;
 import com.pplenty.studytoby.sqlservice.SqlMapConfig;
 import com.pplenty.studytoby.sqlservice.SqlServiceContext;
 import com.pplenty.studytoby.sqlservice.UserSqlMapConfig;
@@ -22,8 +23,9 @@ import javax.sql.DataSource;
  * Created by yusik on 2020/04/26.
  */
 @PropertySource("classpath:database.properties")
-@Import({SqlServiceContext.class, AppContext.ProductionAppContext.class})
+@Import({AppContext.ProductionAppContext.class})
 @ComponentScan(basePackages = "com.pplenty.studytoby")
+@EnableSqlService
 @EnableTransactionManagement
 @Configuration
 public class AppContext implements SqlMapConfig {
