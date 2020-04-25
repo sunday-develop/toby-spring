@@ -3,17 +3,22 @@ package com.study.spring.user.dao;
 import com.study.spring.user.domain.Level;
 import com.study.spring.user.domain.User;
 import com.study.spring.user.sqlservice.SqlService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class UserDaoJdbc implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     private SqlService sqlService;
 
     public void setSqlService(SqlService sqlService) {
@@ -32,6 +37,7 @@ public class UserDaoJdbc implements UserDao {
         return user;
     };
 
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }

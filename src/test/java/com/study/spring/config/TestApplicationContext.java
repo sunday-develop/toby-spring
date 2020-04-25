@@ -2,7 +2,6 @@ package com.study.spring.config;
 
 import com.study.spring.factorybean.MessageFactoryBean;
 import com.study.spring.user.dao.UserDao;
-import com.study.spring.user.dao.UserDaoJdbc;
 import com.study.spring.user.service.UserLevelUpgradePolicy;
 import com.study.spring.user.service.UserService;
 import com.study.spring.user.service.UserServiceImpl;
@@ -14,6 +13,7 @@ import com.study.spring.user.sqlservice.updatable.EmbeddedDbSqlRegistry;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -29,10 +29,11 @@ import java.sql.Driver;
 
 @Configuration
 @EnableTransactionManagement
+@ComponentScan(basePackages = "com.study.spring")
 public class TestApplicationContext {
 
     @Autowired
-    private SqlService sqlService;
+    private UserDao userDao;
 
     @Bean
     public DataSource dataSource() {
@@ -54,14 +55,6 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public UserDao userDao() {
-        UserDaoJdbc dao = new UserDaoJdbc();
-        dao.setDataSource(dataSource());
-        dao.setSqlService(sqlService);
-        return dao;
-    }
-
-    @Bean
     public UserLevelUpgradePolicy testUserLevelUpgradePolicy() {
         return new UserServiceTest.TestUserLevelUpgradePolicy("user4");
     }
@@ -69,7 +62,7 @@ public class TestApplicationContext {
     @Bean
     public UserService userService() {
         UserServiceImpl testUserService = new UserServiceImpl();
-        testUserService.setUserDao(userDao());
+        testUserService.setUserDao(userDao);
         testUserService.setUserLevelUpgradePolicy(testUserLevelUpgradePolicy());
         testUserService.setMailSender(mailSender());
         return testUserService;
@@ -79,7 +72,7 @@ public class TestApplicationContext {
     public UserService testUserService() {
         UserServiceTest.TestUserService testUserService = new UserServiceTest.TestUserService();
 
-        testUserService.setUserDao(userDao());
+        testUserService.setUserDao(userDao);
         testUserService.setMailSender(mailSender());
 
         return testUserService;
