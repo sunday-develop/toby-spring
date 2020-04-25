@@ -21,11 +21,11 @@ public class TestAppContext {
     UserDao userDao;
 
     @Autowired
-    UserService userService;
+    UserLevelUpgradePolicy policy;
 
     @Bean
     public UserService testUserService() {
-        return new TestUserService(userDao, policy(), mailSender());
+        return new TestUserService(userDao, policy, mailSender());
     }
 
     @Bean

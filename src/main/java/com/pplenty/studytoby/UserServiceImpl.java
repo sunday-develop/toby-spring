@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by yusik on 2020/03/28.
  */
-@Service
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
