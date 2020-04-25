@@ -5,10 +5,8 @@ import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -31,6 +29,7 @@ import static java.util.stream.Collectors.toUnmodifiableMap;
 
 @Import(SqlServiceConfig.class)
 @Configuration
+@PropertySource("./database.properties")
 @ComponentScan(basePackages = "springbook.user")
 @EnableTransactionManagement
 public class Config {
@@ -57,12 +56,12 @@ public class Config {
         attributeSource.addTransactionalMethod("get*", readOnlyAttribute);
         attributeSource.addTransactionalMethod("*", new DefaultTransactionAttribute());
 
-        return new TransactionInterceptor(transactionManager(), attributeSource);
+        return new TransactionInterceptor(transactionManager(null), attributeSource);
     }
 
     @Bean
-    public TransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dataSource());
+    public TransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean
@@ -77,12 +76,16 @@ public class Config {
     }
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource(@Value("${db.driverClass}") Class<Driver> driverClass,
+                                 @Value("${db.url}") String url,
+                                 @Value("${db.username}") String username,
+                                 @Value("${db.password}") String password) {
+
         final SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-        dataSource.setDriverClass(Driver.class);
-        dataSource.setUrl("jdbc:mysql://localhost:3306/springbook");
-        dataSource.setUsername("spring");
-        dataSource.setPassword("book");
+        dataSource.setDriverClass(driverClass);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
         return dataSource;
     }
 
