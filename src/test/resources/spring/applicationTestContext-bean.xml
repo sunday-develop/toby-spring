@@ -23,11 +23,17 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlService" ref="sqlService"/>
     </bean>
-    <bean id="sqlService" class="com.study.spring.user.sqlservice.DefaultSqlService"/>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost/test?useSSL=false"/>
         <property name="username" value="root"/>
         <property name="password" value="root"/>
+    </bean>
+    <bean id="sqlService" class="com.study.spring.user.sqlservice.OxmSqlService">
+        <property name="unmarshaller" ref="unmarshaller"/>
+        <property name="sqlMap" value="classpath:sqlmap/sqlmap.xml"/>
+    </bean>
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="com.study.spring.user.sqlservice.jaxb"/>
     </bean>
 </beans>
