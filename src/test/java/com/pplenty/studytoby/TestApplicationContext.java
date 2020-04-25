@@ -5,6 +5,7 @@ import com.pplenty.studytoby.chapter05.UserServiceTest;
 import com.pplenty.studytoby.sqlservice.OxmSqlService;
 import com.pplenty.studytoby.sqlservice.SqlService;
 import org.mariadb.jdbc.Driver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -26,6 +27,9 @@ import javax.sql.DataSource;
 @Configuration
 public class TestApplicationContext {
 
+    @Autowired
+    UserDao userDao;
+
     @Bean
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
@@ -44,19 +48,13 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public UserDao userDao() {
-        UserDaoJdbc dao = new UserDaoJdbc();
-        return dao;
-    }
-
-    @Bean
     public UserService userService() {
-        return new UserServiceImpl(userDao(), policy(), mailSender());
+        return new UserServiceImpl(userDao, policy(), mailSender());
     }
 
     @Bean
     public UserService testUserService() {
-        return new TestUserService(userDao(), policy(), mailSender());
+        return new TestUserService(userDao, policy(), mailSender());
     }
 
     @Bean
