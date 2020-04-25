@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,6 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ContextConfiguration(classes = {TestAppContext.class, AppContext.class})
 public class UserDaoTest {
+
+    @Autowired
+    private DefaultListableBeanFactory beanFactory;
 
     @Autowired
     private UserDao userDao;
@@ -77,6 +81,15 @@ public class UserDaoTest {
         checkSameUser(userGet1, user1);
         User userGet2 = userDao.get(user2.getId());
         checkSameUser(userGet2, user2);
+
+    }
+
+    @DisplayName("빈 목록 조회")
+    @Test
+    void beans() {
+        for (String name : beanFactory.getBeanDefinitionNames()) {
+            System.out.println(name + "\t" + beanFactory.getBean(name).getClass().getName());
+        }
 
     }
 
