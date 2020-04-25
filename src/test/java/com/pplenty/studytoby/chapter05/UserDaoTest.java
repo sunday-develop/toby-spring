@@ -1,6 +1,7 @@
 package com.pplenty.studytoby.chapter05;
 
 import com.pplenty.studytoby.Level;
+import com.pplenty.studytoby.TestApplicationContext;
 import com.pplenty.studytoby.User;
 import com.pplenty.studytoby.UserDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @DisplayName("서비스 추상화")
 @SpringBootTest
-@ContextConfiguration(locations = "classpath:test-applicationContext.xml")
+@ContextConfiguration(classes = TestApplicationContext.class)
 public class UserDaoTest {
 
     @Autowired
