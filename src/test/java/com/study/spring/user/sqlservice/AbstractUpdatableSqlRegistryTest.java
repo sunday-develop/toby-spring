@@ -14,6 +14,10 @@ abstract class AbstractUpdatableSqlRegistryTest {
 
     private UpdatableSqlRegistry sqlRegistry;
 
+    public UpdatableSqlRegistry getSqlRegistry() {
+        return sqlRegistry;
+    }
+
     @BeforeEach
     void setUp() {
         sqlRegistry = createUpdatableSqlRegistry();
