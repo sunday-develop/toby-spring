@@ -7,6 +7,7 @@ import com.pplenty.studytoby.sqlservice.SqlService;
 import org.mariadb.jdbc.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -22,6 +23,7 @@ import javax.sql.DataSource;
 /**
  * Created by yusik on 2020/04/26.
  */
+@ComponentScan(basePackages = "com.pplenty.studytoby")
 @EnableTransactionManagement
 @ImportResource("classpath:test-applicationContext.xml")
 @Configuration
