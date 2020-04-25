@@ -23,7 +23,7 @@ import java.sql.Driver;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.study.spring")
-@Import(SqlServiceContext.class)
+@Import({SqlServiceContext.class, ProductionAppContext.class})
 public class AppContext {
 
     @Autowired
@@ -65,8 +65,9 @@ public class AppContext {
 
     @Bean
     public MailSender mailSender() {
-        return new JavaMailSenderImpl();
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("mail.mycompany.com");
+        return mailSender;
     }
-
 
 }

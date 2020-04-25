@@ -5,14 +5,12 @@ import com.study.spring.user.service.UserService;
 import com.study.spring.user.service.UserServiceTest;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.MailSender;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.test.context.ActiveProfiles;
 
 @Configuration
-@EnableTransactionManagement
-@ComponentScan(basePackages = "com.study.spring")
+@ActiveProfiles("test")
 public class TestApplicationContext {
 
     @Bean
