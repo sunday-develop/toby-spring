@@ -2,6 +2,7 @@ package springbook.user.dao;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Component;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 import springbook.user.sqlservice.SqlService;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+@Component
 public class UserDaoJdbc implements UserDao {
 
     private static final RowMapper<User> USER_MAPPER = (rs, rowNum) -> User.builder()

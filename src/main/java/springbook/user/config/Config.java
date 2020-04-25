@@ -6,6 +6,7 @@ import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -24,7 +25,6 @@ import org.springframework.transaction.interceptor.NameMatchTransactionAttribute
 import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import springbook.user.dao.UserDao;
-import springbook.user.dao.UserDaoJdbc;
 import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
 import springbook.user.sqlservice.*;
@@ -37,6 +37,7 @@ import java.util.Properties;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
 @Configuration
+@ComponentScan(basePackages = "springbook.user")
 @EnableTransactionManagement
 public class Config {
 
@@ -71,13 +72,8 @@ public class Config {
     }
 
     @Bean
-    public UserService userService() {
-        return new UserServiceImpl(userDao(), mailSender());
-    }
-
-    @Bean
-    public UserDao userDao() {
-        return new UserDaoJdbc(dataSource(), sqlService());
+    public UserService userService(UserDao userDao) {
+        return new UserServiceImpl(userDao, mailSender());
     }
 
     @Bean
