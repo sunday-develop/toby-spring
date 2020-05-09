@@ -27,7 +27,7 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.toby.tobyspring")
-public class TestApplicationContext {
+public class AppContext {
 
     @Autowired
     UserDao userDao;
@@ -49,25 +49,6 @@ public class TestApplicationContext {
         DataSourceTransactionManager tm = new DataSourceTransactionManager();
         tm.setDataSource(dataSource());
         return tm;
-    }
-
-    @Bean
-    public DefaultUserUpgradePolicy defaultUserUpgradePolicy() {
-        return new DefaultUserUpgradePolicy();
-    }
-
-    @Bean
-    public UserService testUserService() {
-        UserServiceTest.TestUserServiceImpl testUserService = new UserServiceTest.TestUserServiceImpl();
-        testUserService.setUserDao(this.userDao);
-        testUserService.setUserUpgradePolicy(defaultUserUpgradePolicy());
-        testUserService.setMailSender(mailSender());
-        return testUserService;
-    }
-
-    @Bean
-    public MailSender mailSender() {
-        return new DummyMailSender();
     }
 
     @Bean

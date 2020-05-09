@@ -1,6 +1,6 @@
 package com.toby.tobyspring.user.dao;
 
-import com.toby.tobyspring.config.TestApplicationContext;
+import com.toby.tobyspring.config.AppContext;
 import com.toby.tobyspring.user.domain.Grade;
 import com.toby.tobyspring.user.domain.User;
 import com.toby.tobyspring.user.exception.DuplicateUserIdException;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @ref https://howtodoinjava.com/junit5/before-each-annotation-example/
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestApplicationContext.class)
+@ContextConfiguration(classes = AppContext.class)
 @DisplayName("userDao test")
 public class UserDaoTest {
 
