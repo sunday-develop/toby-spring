@@ -2,13 +2,14 @@ package com.toby.tobyspring.config;
 
 import com.toby.tobyspring.issuetracker.sqlservice.EmbeddedDbSqlRegistry;
 import com.toby.tobyspring.user.dao.UserDao;
-import com.toby.tobyspring.user.dao.UserDaoJdbc;
 import com.toby.tobyspring.user.service.*;
 import com.toby.tobyspring.user.sqlservice.OxmSqlService;
 import com.toby.tobyspring.user.sqlservice.SqlRegistry;
 import com.toby.tobyspring.user.sqlservice.SqlService;
 import oracle.jdbc.driver.OracleDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -25,7 +26,11 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 
 @Configuration
 @EnableTransactionManagement
+@ComponentScan(basePackages = "com.toby.tobyspring")
 public class TestApplicationContext {
+
+    @Autowired
+    UserDao userDao;
 
     @Bean
     public DataSource dataSource() {
@@ -47,20 +52,6 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public UserDao userDao() {
-        return new UserDaoJdbc();
-    }
-
-    @Bean
-    public UserService userService() {
-        UserServiceImpl service = new UserServiceImpl();
-        service.setUserDao(userDao());
-        service.setUserUpgradePolicy(defaultUserUpgradePolicy());
-        service.setMailSender(mailSender());
-        return service;
-    }
-
-    @Bean
     public DefaultUserUpgradePolicy defaultUserUpgradePolicy() {
         return new DefaultUserUpgradePolicy();
     }
@@ -68,7 +59,7 @@ public class TestApplicationContext {
     @Bean
     public UserService testUserService() {
         UserServiceTest.TestUserServiceImpl testUserService = new UserServiceTest.TestUserServiceImpl();
-        testUserService.setUserDao(userDao());
+        testUserService.setUserDao(this.userDao);
         testUserService.setUserUpgradePolicy(defaultUserUpgradePolicy());
         testUserService.setMailSender(mailSender());
         return testUserService;
