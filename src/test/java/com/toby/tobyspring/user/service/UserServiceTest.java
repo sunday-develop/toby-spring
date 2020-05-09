@@ -1,5 +1,6 @@
 package com.toby.tobyspring.user.service;
 
+import com.toby.tobyspring.config.TestApplicationContext;
 import com.toby.tobyspring.user.dao.UserDao;
 import com.toby.tobyspring.user.domain.Grade;
 import com.toby.tobyspring.user.domain.User;
@@ -27,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "/applicationContext.xml")
+@ContextConfiguration(classes = TestApplicationContext.class)
 @DisplayName("userService test")
-class UserServiceTest {
+public class UserServiceTest {
     @Autowired
     UserService userService;
 
@@ -128,7 +129,7 @@ class UserServiceTest {
         assertEquals(Grade.BASIC, userWithoutGradeRead.getGrade());
     }
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    public static class TestUserServiceImpl extends UserServiceImpl {
         private String id = "dblack";
 
         @Override
