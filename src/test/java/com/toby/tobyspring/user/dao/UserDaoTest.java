@@ -10,7 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -24,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @ref https://howtodoinjava.com/junit5/before-each-annotation-example/
  */
 @ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
 @ContextConfiguration(classes = AppContext.class)
 @DisplayName("userDao test")
 public class UserDaoTest {
@@ -43,6 +46,17 @@ public class UserDaoTest {
         user1 = new User("adahyekim", "김다혜", "dahye", Grade.BASIC, 1, 0, "dahyekim@nav.com");
         user2 = new User("btoby", "토비", "toby", Grade.SILVER, 55, 10, "toby@nav.com");
         user3 = new User("cwhiteship", "백기선", "white", Grade.GOLD, 100, 40, "white@nav.com");
+    }
+
+    @Autowired
+    DefaultListableBeanFactory bf;
+
+    @Test
+    @DisplayName("등록된 빈 내역을 조회하는 테스트 메소드")
+    void beans() {
+        for (String n : bf.getBeanDefinitionNames()) {
+            System.out.println(n + " \t" + bf.getBean(n).getClass().getName());
+        }
     }
 
     @Test
