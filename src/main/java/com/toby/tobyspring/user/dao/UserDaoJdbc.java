@@ -4,6 +4,7 @@ import com.toby.tobyspring.user.domain.Grade;
 import com.toby.tobyspring.user.domain.User;
 import com.toby.tobyspring.user.exception.DuplicateUserIdException;
 import com.toby.tobyspring.user.sqlservice.SqlService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,8 +14,10 @@ import java.util.List;
 
 public class UserDaoJdbc implements UserDao {
     private JdbcTemplate jdbcTemplate;
+    @Autowired
     private SqlService sqlService;
 
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }

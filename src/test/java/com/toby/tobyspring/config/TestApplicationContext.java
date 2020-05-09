@@ -10,7 +10,6 @@ import com.toby.tobyspring.user.sqlservice.SqlService;
 import oracle.jdbc.driver.OracleDriver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -49,10 +48,7 @@ public class TestApplicationContext {
 
     @Bean
     public UserDao userDao() {
-        UserDaoJdbc dao = new UserDaoJdbc();
-        dao.setDataSource(dataSource());
-        dao.setSqlService(sqlService());
-        return dao;
+        return new UserDaoJdbc();
     }
 
     @Bean
