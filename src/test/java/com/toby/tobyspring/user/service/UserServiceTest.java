@@ -1,7 +1,6 @@
 package com.toby.tobyspring.user.service;
 
 import com.toby.tobyspring.config.AppContext;
-import com.toby.tobyspring.config.TestAppContext;
 import com.toby.tobyspring.user.dao.UserDao;
 import com.toby.tobyspring.user.domain.Grade;
 import com.toby.tobyspring.user.domain.User;
